@@ -7,7 +7,8 @@ This project is a **work in progress**.
 
 ### Features in this Prototype ✅
 - Text encryption  
-- Modern UI built with XAML and WPF  
+- Modern UI built with XAML and WPF
+- Color Changing animations (*More animations coming soon!*)
 
 ### Upcoming Features 🚀
 - Text decryption  
