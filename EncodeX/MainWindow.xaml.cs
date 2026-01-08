@@ -1,5 +1,6 @@
 using System.IO;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -25,7 +26,68 @@ namespace EncodeX
         Brush color = Brushes.Green;
         public MainWindow()
         {
+            
             InitializeComponent();
+            Border_haha.MouseEnter += (s, e) =>
+            {
+                animation(encrypt_btn);
+                animation(button_Encrypt);
+                animation(button_Decrypt);
+                animation(button_password);
+                animation(Border_pss);
+                animation(Border_encrypt);
+                animation(Border_decrypt);
+                animation(decrypt_btn);
+                DoubleAnimation animX = new DoubleAnimation
+                {
+                    From = 389,
+                    To = 489,
+                    Duration = TimeSpan.FromMilliseconds(300),
+                };
+                errorLabel.BeginAnimation(Canvas.LeftProperty, animX);
+            };
+            Border_haha.MouseLeave += (s, e) =>
+            {
+                animation2(encrypt_btn, "319,223,71,66");
+                animation2(button_Encrypt, "153,0,69,0");
+                animation2(button_Decrypt, "129,0,69,0");
+                animation2(button_password, "294,0,46,0");
+                animation2(Border_pss, "296,24,48,0");
+                animation2(Border_encrypt, "33,24,33,192");
+                animation2(Border_decrypt, "98,24,114,192");
+                animation2(decrypt_btn, "319,223,71,66");
+                DoubleAnimation animX = new DoubleAnimation
+                {
+                    From = 489,
+                    To = 389,
+                    Duration = TimeSpan.FromMilliseconds(300),
+                };
+                errorLabel.BeginAnimation(Canvas.LeftProperty, animX);
+            };
+        }
+        public void animation(FrameworkElement thing) 
+        {
+            Thickness current = thing.Margin;
+            ThicknessAnimation animation = new ThicknessAnimation
+            {
+                From = current,
+                To = new Thickness(current.Left+100, current.Top, current.Right-100, current.Bottom),
+                Duration = TimeSpan.FromMilliseconds(300),
+            };
+            thing.BeginAnimation(FrameworkElement.MarginProperty, animation);
+        }
+        public void animation2(FrameworkElement thing , string end)
+        {
+            string[] strings = end.Split(',');
+            Thickness End = new Thickness(double.Parse(strings[0]), double.Parse(strings[1]), double.Parse(strings[2]), double.Parse(strings[3]));
+            Thickness current = thing.Margin;
+            ThicknessAnimation animation = new ThicknessAnimation
+            {
+                From = current,
+                To = End,
+                Duration = TimeSpan.FromMilliseconds(300),
+            };
+            thing.BeginAnimation(FrameworkElement.MarginProperty, animation);
         }
 
         private void button_password_Click(object sender, RoutedEventArgs e)
@@ -140,10 +202,14 @@ namespace EncodeX
                 Border_pss.BorderBrush = color;
 
             }
-            decrypt(password, plainText);
+            input_field.Text = decrypt(password, plainText);
         }
         public string encrypt(string password, string text)
         {
+            if (text == "")
+            {
+                return "";
+            }
             string encrypted;
             byte[] salt = new byte[16];
             using (var rng = RandomNumberGenerator.Create())
@@ -174,9 +240,46 @@ namespace EncodeX
             return encrypted;
         }
 
-        public void decrypt(string password, string text)
+        public string decrypt(string password, string text)
         {
+            if (text == "")
+            {
+                return "";
+            }
+            string decrypted;
+            byte[] encrypted = Convert.FromBase64String(text);
+            byte[] salt = new byte[16];
+            byte[] iv = new byte[16];
+            Array.Copy(encrypted, 0, salt, 0, salt.Length);
+            Array.Copy(encrypted, salt.Length, iv, 0, iv.Length);
+            var kdf = new Rfc2898DeriveBytes(password, salt, 100000);
+            byte[] key = kdf.GetBytes(32);
 
+            try
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = key;
+                    aes.IV = iv;
+                    using (MemoryStream msEncrypt = new MemoryStream(encrypted, 32, encrypted.Length - 32))
+                    using (CryptoStream cs = new CryptoStream(msEncrypt, aes.CreateDecryptor(), CryptoStreamMode.Read))
+                    using (MemoryStream msDecrypt = new MemoryStream())
+                    {
+                        cs.CopyTo(msDecrypt);
+
+                        decrypted = Encoding.UTF8.GetString(msDecrypt.ToArray());
+                    }
+                }
+            }
+            catch
+            {
+                decrypted = "";
+                errorLabel.Content = "Decryption failed. Check your password and try again.";
+                errorLabel.Visibility = Visibility.Visible;
+                Border_pss.BorderBrush = Brushes.Red;
+            }
+
+                return decrypted;
         }
 
         public void decrypt_clicked(object sender, RoutedEventArgs e)
@@ -338,6 +441,6 @@ namespace EncodeX
                 button_password.Tag = "not Locked";
             }
         }
+        
     }
 }
-
