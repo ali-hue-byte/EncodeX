@@ -8,11 +8,14 @@ This project is a **work in progress**.
 ### Features in this Prototype ✅
 - Text encryption and decryption
 - Password strength checking
+- File Encryption
 - Modern UI built with XAML and WPF
 - Color Changing animations (*More animations coming soon!*)
 
 ### Upcoming Features 🚀
-- File encryption and decryption  
+- File decryption
+- Folder encryption and decryption
+- Encrypted file/folder saving
 - More surprises!  
 
 ---
