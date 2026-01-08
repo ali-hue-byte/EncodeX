@@ -553,6 +553,13 @@ namespace EncodeX
                 button_Decrypt.Tag = "Not Clicked";
             }
         }
-        
+
+        private void button_files_Click(object sender, RoutedEventArgs e)
+        {
+            input_field.Visibility = Visibility.Hidden;
+            Select_file.Visibility= Visibility.Visible;
+            
+
+        }
     }
 }
