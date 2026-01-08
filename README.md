@@ -21,8 +21,7 @@ This project is a **work in progress**.
 You can run EncodeX in two ways:
 
 1. **Run the pre-built app (easiest, no setup required):**  
-   - Download the `.exe` file from the [Releases](#) section (coming soon).  
-   - Double-click to launch the app on Windows.
+   - Double-click the exe file to launch the app on Windows **(coming soon!)**.  
 
 2. **Build and run from source:**  
    - Clone the repository:  
