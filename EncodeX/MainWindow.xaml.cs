@@ -14,6 +14,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace EncodeX
 {
@@ -38,6 +39,7 @@ namespace EncodeX
                 animation(Border_encrypt);
                 animation(Border_decrypt);
                 animation(decrypt_btn);
+                animation(arrow);
                 DoubleAnimation animX = new DoubleAnimation
                 {
                     From = 389,
@@ -56,6 +58,7 @@ namespace EncodeX
                 animation2(Border_encrypt, "33,24,33,192");
                 animation2(Border_decrypt, "98,24,114,192");
                 animation2(decrypt_btn, "319,223,71,66");
+                animation2(arrow, "328,2,80,246");
                 DoubleAnimation animX = new DoubleAnimation
                 {
                     From = 489,
@@ -113,8 +116,15 @@ namespace EncodeX
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            
             string password = password_field.Text;
             string plainText = input_field.Text;
+
+            if (plainText == "")
+            {
+                encrypted_field.Text = "";
+                return;
+            }
 
             if (password_field.IsReadOnly == true)
             {
@@ -122,13 +132,9 @@ namespace EncodeX
                 password = "password@1010^";
 
             }
-            else if (password == "")
-            {
-                errorLabel.Visibility = Visibility.Visible;
-                Border_pss.BorderBrush = Brushes.Red;
-                return;
-            }
-            else if (password.Length < 8)
+
+            
+            else if (password.Length < 8 || password == "")
             {
                 errorLabel.Content = "Password must be at least 8 characters long";
                 errorLabel.Visibility = Visibility.Visible;
@@ -171,10 +177,78 @@ namespace EncodeX
                 Border_pss.BorderBrush = color;
 
             }
-            encrypted_field.Text = encrypt(password, plainText);
+            arrowProgress.Width = 0;
+            arrowTranslate.X = 0;
+            DoubleAnimation widthAnim = new DoubleAnimation
+            {
+                From = 0,
+                To = 20,
+                Duration = TimeSpan.FromMilliseconds(200),
+                FillBehavior = FillBehavior.Stop
+            };
+
+            widthAnim.Completed += (s1, e1) =>
+            {
+                arrowProgress.Width = 20;
+
+                DoubleAnimation posAnim = new DoubleAnimation
+                {
+                    From = 0,   
+                    To = -20,   
+                    Duration = TimeSpan.FromMilliseconds(100),
+                    FillBehavior = FillBehavior.Stop
+                };
+
+                
+
+                posAnim.Completed += (s2, e2) =>
+                {
+                    DoubleAnimation resetAnim = new DoubleAnimation
+                    {
+                        From = 20,
+                        To = 0,
+                        Duration = TimeSpan.FromMilliseconds(100),
+                        FillBehavior = FillBehavior.Stop
+                    };
+                    DoubleAnimation moveAnim2 = new DoubleAnimation
+                    {
+                        From = -20,
+                        To = -70,
+                        Duration = TimeSpan.FromMilliseconds(150),
+                        FillBehavior = FillBehavior.Stop
+                    };
+
+                    arrowProgress.BeginAnimation(FrameworkElement.WidthProperty, resetAnim);
+                    arrowTranslate.BeginAnimation(TranslateTransform.XProperty, moveAnim2);
+
+                    
+                        encrypted_field.Text = encrypt(password, plainText);
+                    
 
 
+                    arrowTranslate.X = -20;
+
+                    arrowProgress.Width = 0;
+                    
+
+
+
+                };
+
+                arrowTranslate.BeginAnimation(TranslateTransform.XProperty, posAnim);
+            };
+
+            arrowProgress.BeginAnimation(FrameworkElement.WidthProperty, widthAnim);
+
+
+
+
+
+
+            
         }
+
+        
 
         private void decrypt_txt(object sender, RoutedEventArgs e)
         {
@@ -247,16 +321,17 @@ namespace EncodeX
                 return "";
             }
             string decrypted;
-            byte[] encrypted = Convert.FromBase64String(text);
-            byte[] salt = new byte[16];
-            byte[] iv = new byte[16];
-            Array.Copy(encrypted, 0, salt, 0, salt.Length);
-            Array.Copy(encrypted, salt.Length, iv, 0, iv.Length);
-            var kdf = new Rfc2898DeriveBytes(password, salt, 100000);
-            byte[] key = kdf.GetBytes(32);
 
             try
             {
+                
+                byte[] encrypted = Convert.FromBase64String(text);
+                byte[] salt = new byte[16];
+                byte[] iv = new byte[16];
+                Array.Copy(encrypted, 0, salt, 0, salt.Length);
+                Array.Copy(encrypted, salt.Length, iv, 0, iv.Length);
+                var kdf = new Rfc2898DeriveBytes(password, salt, 100000);
+                byte[] key = kdf.GetBytes(32);
                 using (Aes aes = Aes.Create())
                 {
                     aes.Key = key;
@@ -274,9 +349,9 @@ namespace EncodeX
             catch
             {
                 decrypted = "";
-                errorLabel.Content = "Decryption failed. Check your password and try again.";
+                errorLabel.Content = "Decryption failed. Check your input and try again.";
                 errorLabel.Visibility = Visibility.Visible;
-                Border_pss.BorderBrush = Brushes.Red;
+                
             }
 
                 return decrypted;
@@ -284,6 +359,13 @@ namespace EncodeX
 
         public void decrypt_clicked(object sender, RoutedEventArgs e)
         {
+            if (button_Decrypt.Tag as String == "Clicked")
+            {
+                return;
+            }
+            Random random = new Random();
+            int[] options = [0, 360];
+            int choice = options[random.Next(options.Length)];
             Anim2(input_field);
             Anim2(encrypted_field);
             button_Decrypt.Foreground = new SolidColorBrush(Colors.Gray);
@@ -338,6 +420,20 @@ namespace EncodeX
             input_field.IsReadOnly = true;
             encrypted_field.IsReadOnly = false;
             button_password.Tag = "Locked";
+            arrow.RenderTransform = new RotateTransform(0);
+            
+            arrow.RenderTransformOrigin = new Point(0.5, 0.5);
+
+            DoubleAnimation rotate = new DoubleAnimation
+            {
+                From = 180,
+                To = choice,
+                Duration = TimeSpan.FromMilliseconds(400)
+            };
+            arrow.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotate);
+
+            button_Decrypt.Tag = "Clicked";
+            button_Encrypt.Tag = "Not Clicked";
         }
 
         public void Anim(double x, double y, Button target, Button final)
@@ -385,9 +481,12 @@ namespace EncodeX
         }
         public void encrypt_clicked(object sender, RoutedEventArgs e)
         {
+            Random random = new Random();
+            int[] options = { 180, 540 };
+            int choice = options[random.Next(options.Length)];
             input_field.IsReadOnly = false;
             encrypted_field.IsReadOnly = true;
-            if (button_Encrypt.Foreground is SolidColorBrush scb && scb.Color == (Color)ColorConverter.ConvertFromString("#149414"))
+            if (button_Encrypt.Tag as String == "Clicked")
             {
                 return;
             }
@@ -439,6 +538,19 @@ namespace EncodeX
                     errorLabel.Visibility = Visibility.Hidden;
                 }
                 button_password.Tag = "not Locked";
+                arrow.RenderTransform = new RotateTransform(0);
+
+                arrow.RenderTransformOrigin = new Point(0.5, 0.5);
+
+                DoubleAnimation rotate = new DoubleAnimation
+                {
+                    From = 360,
+                    To = choice,
+                    Duration = TimeSpan.FromMilliseconds(400)
+                };
+                arrow.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotate);
+                button_Encrypt.Tag = "Clicked";
+                button_Decrypt.Tag = "Not Clicked";
             }
         }
         
