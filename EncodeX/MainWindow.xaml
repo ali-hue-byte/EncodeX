@@ -63,21 +63,21 @@
             </Border.Triggers>
             <StackPanel Margin="0,0,0,4">
                 <Grid Height="604" RenderTransformOrigin="0.552,0.512">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    
-                    <RowDefinition Height="*"/>
-                    
-                </Grid.RowDefinitions>
-                
-                <Button  x:Name="Button_text" Grid.Row ="0" Margin="0,229,0,5" Background="#2E3440" BorderThickness="0">
- 
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="#2E3440" CornerRadius="8">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Image Source="pack://application:,,,/icons/text_icon.png" Width="68" Stretch="Uniform"/>
-                                <Label Content="Text"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+
+                        <RowDefinition Height="*"/>
+
+                    </Grid.RowDefinitions>
+
+                    <Button  x:Name="Button_text" Grid.Row ="0" Margin="0,229,0,5" Background="#2E3440" >
+
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border" Background="#2E3440" CornerRadius="8" BorderThickness="3" BorderBrush="White">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="pack://application:,,,/icons/text_icon.png" Width="68" Stretch="Uniform"/>
+                                        <Label Content="Text"
                            Width="80"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Right"
@@ -85,53 +85,56 @@
                            FontWeight="Bold"
                            FontFamily="Verdana"
                            Foreground="White"
-                           Margin="10,0,0,0"/>
-                            </StackPanel>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#3B4252"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#4C566A"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-                
-
-            </Button>
-                <Button x:Name="button_files" Grid.Row="1" Margin="0,0,0,234" Background="#2E3440" BorderThickness="0">
-
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="border" Background="#2E3440" CornerRadius="8">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Image Source="pack://application:,,,/icons/files_icon.png" Width="68" Height ="50" Stretch="Uniform"/>
-                                    <Label Content="Files"
-               Width="80"
-               VerticalAlignment="Center"
-               HorizontalAlignment="Right"
-               FontSize="24"
-               FontWeight="Bold"
-               FontFamily="Verdana"
-               Foreground="White"
-               Margin="10,0,0,0"/>
-                                </StackPanel>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="#3B4252"/>
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="#4C566A"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Button.Template>
+                           Margin="10,0,0,0"
+                                       />
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#3B4252"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#4C566A"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
 
 
-                </Button>
+                    </Button>
+                    <Button x:Name="button_files" Grid.Row="1" Margin="0,0,0,234"
+        Background="#2E3440" BorderThickness="0" Click="button_files_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border" Background="{TemplateBinding Background}" 
+                    CornerRadius="8" BorderThickness="1" BorderBrush="White">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="pack://application:,,,/icons/files_icon.png"
+                           Width="68" Height="50" Stretch="Uniform"/>
+
+                                        <TextBlock Text="Files"
+                               Width="80"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Right"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               FontFamily="Verdana"
+                               Foreground="White"
+                               Margin="10,0,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#3B4252"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#4C566A"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
                 </Grid>
             </StackPanel>
 
@@ -352,8 +355,38 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
 
 
         </Label>
+        <Border x:Name="File_input" Grid.Row="2" Grid.Column="1" CornerRadius="10" Background="#1A1E28" BorderBrush="#149414" BorderThickness="2" Margin="34,37,33,310" Grid.RowSpan="2" Visibility="Hidden">
+            <TextBox x:Name ="input_field1" TextWrapping="Wrap" Background="#1A1E28" BorderThickness="0" VerticalScrollBarVisibility="Hidden"  Margin="8,8,8,8" Foreground="White" FontSize="15"/>
+        </Border>
+        <Button x:Name ="Select_file" Grid.Row="3" Grid.Column="1" Content="Select File" Margin="120,57,120,232" Background="#149414" FontSize="14" FontFamily="Segoe UI" FontWeight="Bold" Click="Select_click" RenderTransformOrigin="0.5,0.5" Visibility="Hidden">
+            <Button.RenderTransform>
+                <ScaleTransform x:Name="scale2" ScaleX="1" ScaleY="1"/>
+            </Button.RenderTransform>
+            <Button.Template>
 
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                        CornerRadius="10" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}">
 
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#1AAE1A"/>
+
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#0F5E0F"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
 
 
