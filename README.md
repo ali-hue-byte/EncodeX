@@ -35,7 +35,7 @@ You can run EncodeX in two ways:
 
 **Requirements for building from source:**  
 - Windows OS (WPF apps only run on Windows)  
-- [.NET 6 or later](https://dotnet.microsoft.com/) installed  
+- [.NET 10](https://dotnet.microsoft.com/) installed  
 - Visual Studio 2022 or later recommended
 
 ---
