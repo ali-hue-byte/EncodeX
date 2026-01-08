@@ -362,10 +362,10 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
 
 
         </Label>
-        <Border x:Name="File_input" Grid.Row="2" Grid.Column="1" CornerRadius="10" Background="#1A1E28" BorderBrush="#149414" BorderThickness="2" Margin="34,37,33,310" Grid.RowSpan="2" Visibility="Hidden">
+        <Border x:Name="File_input"  Grid.Row="2" Grid.Column="1" CornerRadius="10" Background="#1A1E28" BorderBrush="#149414" BorderThickness="2" Margin="34,37,33,286" Grid.RowSpan="2" Visibility="Hidden">
             <TextBox x:Name ="input_field1" TextWrapping="Wrap" Background="#1A1E28" BorderThickness="0" VerticalScrollBarVisibility="Hidden"  Margin="8,8,8,8" Foreground="White" FontSize="15"/>
         </Border>
-        <Button x:Name ="Select_file" Visibility=" Hidden" Grid.Row="3" Grid.Column="1" Content="Select file" Margin="110,57,101,232" Background="#149414" FontSize="14" FontFamily="Segoe UI" FontWeight="Bold" Click="Button_Click" RenderTransformOrigin="0.5,0.5">
+        <Button x:Name ="Select_file" Visibility="Hidden"  Grid.Row="3" Grid.Column="1" Content="Select file" Margin="110,57,101,232" Background="#149414" FontSize="14" FontFamily="Segoe UI" FontWeight="Bold" Click="Select_" RenderTransformOrigin="0.5,0.5">
             <Button.RenderTransform>
                 <ScaleTransform x:Name="scale2" ScaleX="1" ScaleY="1"/>
             </Button.RenderTransform>
@@ -427,6 +427,68 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
                 </ControlTemplate>
             </Button.Template>
         </Button>
+        <Button x:Name ="Select_folder"  Visibility="Hidden" Grid.Row="3" Grid.Column="1" Content="Select folder" Margin="110,103,101,186" Background="#149414" FontSize="14" FontFamily="Segoe UI" FontWeight="Bold" Click="Select_2" RenderTransformOrigin="0.5,0.5">
+            <Button.RenderTransform>
+                <ScaleTransform x:Name="scale3" ScaleX="1" ScaleY="1"/>
+            </Button.RenderTransform>
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="scale3" Storyboard.TargetProperty="ScaleX" To="1.1" Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetName="scale3" Storyboard.TargetProperty="ScaleY" To="1.1" Duration="0:0:0.2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="scale3" Storyboard.TargetProperty="ScaleX" To="1.0" Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetName="scale3" Storyboard.TargetProperty="ScaleY" To="1.0" Duration="0:0:0.2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Button.Triggers>
+            <Button.Template>
+
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+    CornerRadius="10" 
+    BorderBrush="{TemplateBinding BorderBrush}" 
+    BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#1AAE1A"/>
+
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#0F5E0F"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="Tag" Value="Blue"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="border" Property="Background" Value="#3B82F6"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsPressed" Value="True"/>
+                                <Condition Property="Tag" Value="Blue"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="border" Property="Background" Value="#1D4ED8"/>
+                        </MultiTrigger>
+
+
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
         <Button x:Name="Copy" Grid.Column="3" Content="" HorizontalAlignment="Left" Margin="68,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="34" Width="36" Click="Button_Click_1">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
@@ -448,7 +510,7 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
                 </ControlTemplate>
             </Button.Template>
             <Button.ToolTip>
-                <ToolTip x:Name="tool1" Placement="Bottom">
+                <ToolTip x:Name="tool1" Placement="MousePoint">
                     <ToolTip.Background>
                         <SolidColorBrush Color="#1AAE1A"/>
                     </ToolTip.Background>
@@ -483,7 +545,7 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
                 </ControlTemplate>
             </Button.Template>
             <Button.ToolTip>
-                <ToolTip Placement="Bottom">
+                <ToolTip Placement="MousePoint">
                     <ToolTip.Background>
                         <SolidColorBrush Color="#2563EB"/>
                     </ToolTip.Background>
@@ -494,7 +556,6 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
                 </ToolTip>
             </Button.ToolTip>
         </Button>
-
 
 
     </Grid>
