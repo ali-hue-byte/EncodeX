@@ -25,6 +25,7 @@ namespace EncodeX
 
     public partial class MainWindow : Window
     {
+        string choice ="text";
         Brush color = Brushes.Green;
         public MainWindow()
         {
@@ -43,6 +44,7 @@ namespace EncodeX
                 animation(arrow);
                 animation(File_input);
                 animation(Select_file);
+                animation(Select_folder);
                 DoubleAnimation animX = new DoubleAnimation
                 {
                     From = 389,
@@ -62,8 +64,9 @@ namespace EncodeX
                 animation2(Border_decrypt, "98,24,114,192");
                 animation2(decrypt_btn, "319,223,71,66");
                 animation2(arrow, "328,2,80,246");
-                animation2(File_input, "34,37,33,310");
-                animation2(Select_file, "120,57,120,232");
+                animation2(File_input, "34,37,33,286");
+                animation2(Select_file, "110,57,101,232");
+                animation2(Select_folder, "110,103,101,186");
                 DoubleAnimation animX = new DoubleAnimation
                 {
                     From = 489,
@@ -124,6 +127,7 @@ namespace EncodeX
 
             string password = password_field.Text;
             string plainText = input_field.Text;
+            string file = input_field1.Text;
 
             if (plainText == "")
             {
@@ -228,8 +232,15 @@ namespace EncodeX
                     arrowProgress.BeginAnimation(FrameworkElement.WidthProperty, resetAnim);
                     arrowTranslate.BeginAnimation(TranslateTransform.XProperty, moveAnim2);
 
+                    if (choice == "text")
+                    {
+                        encrypted_field.Text = encrypt(password, plainText);
+                    }
+                    else
+                    {
+                        encrypted_field.Text = encrypt_file(password, file);
+                    }
 
-                    encrypted_field.Text = encrypt(password, plainText);
 
 
 
@@ -388,6 +399,40 @@ namespace EncodeX
             return encrypted;
         }
 
+        public string encrypt_file(string password, string filePath)
+        {
+            
+
+            string encrypted;
+            byte[] salt = new byte[16];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
+            var kdf = new Rfc2898DeriveBytes(password, salt, 100000);
+            byte[] key = kdf.GetBytes(32);
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = key;
+                aes.GenerateIV();
+                byte[] iv = aes.IV;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    ms.Write(salt, 0, salt.Length);
+                    ms.Write(iv, 0, iv.Length);
+                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        byte[] fileBytes = File.ReadAllBytes(filePath);
+                        cs.Write(fileBytes, 0, fileBytes.Length);
+                    }
+                    encrypted = Convert.ToBase64String(ms.ToArray());
+                }
+
+                ;
+            }
+            return encrypted;
+        }
+
         public string decrypt(string password, string text)
         {
             if (text == "")
@@ -467,10 +512,10 @@ namespace EncodeX
                 Duration = TimeSpan.FromMilliseconds(400)
             };
 
-            
-            opacity_anim(Copy,1.0,0.0);
+
+            opacity_anim(Copy, 1.0, 0.0);
             opacity_anim(Copy2, 0.0, 1.0);
-            Copy2.Visibility= Visibility.Visible;
+            Copy2.Visibility = Visibility.Visible;
             button_Decrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
             button_Encrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
             Border_encrypt.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
@@ -655,8 +700,10 @@ namespace EncodeX
 
         private void button_files_Click(object sender, RoutedEventArgs e)
         {
-            input_field.IsReadOnly = true;
+            choice = "file";
+            input_field1.IsReadOnly = true;
             Border_encrypt.Visibility = Visibility.Hidden;
+            Select_folder.Visibility = Visibility.Visible;
             Select_file.Visibility = Visibility.Visible;
             File_input.Visibility = Visibility.Visible;
             Border border_files = (Border)button_files.Template.FindName("border_files", button_files);
@@ -667,9 +714,11 @@ namespace EncodeX
         }
         private void button_Text_Click(object sender, RoutedEventArgs e)
         {
+            choice = "text";
             input_field.IsReadOnly = false;
             Border_encrypt.Visibility = Visibility.Visible;
             Select_file.Visibility = Visibility.Hidden;
+            Select_folder.Visibility = Visibility.Hidden;
             File_input.Visibility = Visibility.Hidden;
             Border border_files = (Border)button_files.Template.FindName("border_files", button_files);
             Border border = (Border)Button_text.Template.FindName("border", Button_text);
@@ -689,7 +738,7 @@ namespace EncodeX
                 PlacementTarget = Copy,
                 Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom,
                 Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1AAE1A")),
-                Foreground= Brushes.White,
+                Foreground = Brushes.White,
                 FontFamily = new FontFamily("Arial Black"),
                 FontSize = 11
             };
@@ -709,6 +758,49 @@ namespace EncodeX
                 FontFamily = new FontFamily("Arial Black"),
                 FontSize = 11
             };
+        }
+        private void Select_(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                
+                try
+                {
+                    string filePath = openFileDialog.FileName;
+
+                    input_field1.Text = filePath;
+                    choice = "file";
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Content = "Error reading file: " + ex.Message;
+                    errorLabel.Visibility = Visibility.Visible;
+                }
+            }
+
+        }
+
+        private void Select_2(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFolderDialog openFileDialog = new Microsoft.Win32.OpenFolderDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+
+                try
+                {
+                    string filePath = openFileDialog.FolderName;
+
+                    input_field1.Text = filePath;
+                    choice = "folder";
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Content = "Error reading file: " + ex.Message;
+                    errorLabel.Visibility = Visibility.Visible;
+                }
+            }
+
         }
     }
 }
