@@ -61,6 +61,81 @@
                     </BeginStoryboard>
                 </EventTrigger>
             </Border.Triggers>
+            <StackPanel Margin="0,0,0,4">
+                <Grid Height="604" RenderTransformOrigin="0.552,0.512">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    
+                    <RowDefinition Height="*"/>
+                    
+                </Grid.RowDefinitions>
+                
+                <Button  x:Name="Button_text" Grid.Row ="0" Margin="0,229,0,5" Background="#2E3440" BorderThickness="0">
+ 
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="#2E3440" CornerRadius="8">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="pack://application:,,,/icons/text_icon.png" Width="68" Stretch="Uniform"/>
+                                <Label Content="Text"
+                           Width="80"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           FontFamily="Verdana"
+                           Foreground="White"
+                           Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#3B4252"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#4C566A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+                
+
+            </Button>
+                <Button x:Name="button_files" Grid.Row="1" Margin="0,0,0,234" Background="#2E3440" BorderThickness="0">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="#2E3440" CornerRadius="8">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Image Source="pack://application:,,,/icons/files_icon.png" Width="68" Height ="50" Stretch="Uniform"/>
+                                    <Label Content="Files"
+               Width="80"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Right"
+               FontSize="24"
+               FontWeight="Bold"
+               FontFamily="Verdana"
+               Foreground="White"
+               Margin="10,0,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#3B4252"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#4C566A"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+
+
+                </Button>
+                </Grid>
+            </StackPanel>
+
+
         </Border>
 
         <Border x:Name="Border_encrypt" Grid.Row="2" Grid.Column="1" CornerRadius="10" Background="#1A1E28" BorderBrush="#149414" BorderThickness="2" Margin="33,24,33,192" Grid.RowSpan="2">
@@ -157,11 +232,11 @@
               Grid.Column="2"
                Content="Please enter a password"
 HorizontalAlignment="Left"
-VerticalAlignment="Center"
+VerticalAlignment="Top"
 Width="316"
 Foreground="Red"
-FontWeight="Bold" Canvas.Left="430" Canvas.Top="209" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                   Visibility="Collapsed"
+FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                   Visibility="Hidden"
 />
         </Canvas>
         <Button x:Name ="button_Encrypt" Content="Encryption" Margin="153,0,69,0" VerticalAlignment="Center" Height="98" Background="Transparent" BorderThickness="0" FontFamily="Verdana" FontWeight="Bold" FontSize="40" Foreground="#149414" Click="encrypt_clicked" Grid.ColumnSpan="2">
@@ -199,6 +274,8 @@ FontWeight="Bold" Canvas.Left="430" Canvas.Top="209" HorizontalContentAlignment=
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="#1D4ED8"/>
                         </Trigger>
+
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Button.Template>
@@ -252,6 +329,29 @@ FontWeight="Bold" Canvas.Left="430" Canvas.Top="209" HorizontalContentAlignment=
                 </ControlTemplate>
             </Button.Template>
         </Button>
+
+        <Label x:Name ="arrow" Height="80" Grid.Column="1" Grid.ColumnSpan="2" Margin="328,2,80,246" Grid.Row="3" RenderTransformOrigin="0.5,0.5">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+            <Grid>
+                <Image x:Name="arrow1" Source="/icons/Arrow.png" Stretch="Uniform"/>
+                <Rectangle x:Name="arrowProgress" Fill="Green" Opacity="0.6" Width="0" Height ="20" HorizontalAlignment="Right" >
+                    <Rectangle.RenderTransform>
+                        <TranslateTransform x:Name="arrowTranslate" X="0" />
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+
+
+            </Grid>
+
+
+        </Label>
 
 
 
