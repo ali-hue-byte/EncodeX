@@ -14,6 +14,7 @@ This project is a **work in progress**.
 - Color Changing animations (*More animations coming soon!*)
 
 ### Upcoming Features 🚀
+- Large files support
 - More surprises!  
 
 ---
