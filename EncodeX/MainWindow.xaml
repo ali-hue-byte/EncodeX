@@ -242,14 +242,17 @@
               Grid.Column="2"
                Content="Please enter a password"
 HorizontalAlignment="Left"
-VerticalAlignment="Top"
-Width="316"
+VerticalAlignment="Center"
+Width="416"
 Foreground="Red"
-FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+FontWeight="Bold" Canvas.Left="339" Canvas.Top="210" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                    Visibility="Hidden"
 />
         </Canvas>
-        <Button x:Name ="button_Encrypt" Content="Encryption" Margin="153,0,69,0" VerticalAlignment="Center" Height="98" Background="Transparent" BorderThickness="0" FontFamily="Verdana" FontWeight="Bold" FontSize="40" Foreground="#149414" Click="encrypt_clicked" Grid.ColumnSpan="2">
+        <Button x:Name ="button_Encrypt"             
+            AutomationProperties.Name=""
+AutomationProperties.HelpText=""
+            ToolTipService.IsEnabled="False" Tag ="Clicked" ToolTip= "{x:Null}" Content="Encryption" Margin="153,0,69,0" VerticalAlignment="Center" Height="98" Background="Transparent" BorderThickness="0" FontFamily="Verdana" FontWeight="Bold" FontSize="40" Foreground="#149414" Click="encrypt_clicked" Grid.ColumnSpan="2">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Background="{TemplateBinding Background}" CornerRadius="10">
@@ -269,7 +272,10 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
             </Button.Template>
 
         </Button>
-        <Button x:Name ="button_Decrypt" Grid.Column="2" Content="Decryption" Margin="129,0,69,0" VerticalAlignment="Center" Height="98" Background="Transparent" BorderThickness="0" FontFamily="Verdana" FontWeight="Bold" FontSize="40" Foreground="Gray" Click="decrypt_clicked" Grid.ColumnSpan="2">
+        <Button x:Name ="button_Decrypt"             ToolTip="{x:Null}"
+            AutomationProperties.Name=""
+AutomationProperties.HelpText=""
+            ToolTipService.IsEnabled="False"  Grid.Column="2" Content="Decryption" Margin="129,0,69,0" VerticalAlignment="Center" Height="98" Background="Transparent" BorderThickness="0" FontFamily="Verdana" FontWeight="Bold" FontSize="40" Foreground="Gray" Click="decrypt_clicked" Grid.ColumnSpan="2">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Background="{TemplateBinding Background}" CornerRadius="10">
@@ -365,47 +371,78 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
         <Border x:Name="File_input"  Grid.Row="2" Grid.Column="1" CornerRadius="10" Background="#1A1E28" BorderBrush="#149414" BorderThickness="2" Margin="34,37,33,286" Grid.RowSpan="2" Visibility="Hidden">
             <TextBox x:Name ="input_field1" TextWrapping="Wrap" Background="#1A1E28" BorderThickness="0" VerticalScrollBarVisibility="Hidden"  Margin="8,8,8,8" Foreground="White" FontSize="15"/>
         </Border>
-        <Button x:Name ="Select_file" Visibility="Hidden"  Grid.Row="3" Grid.Column="1" Content="Select file" Margin="110,57,101,232" Background="#149414" FontSize="14" FontFamily="Segoe UI" FontWeight="Bold" Click="Select_" RenderTransformOrigin="0.5,0.5">
+        <Button x:Name="Select_file"
+        Visibility="Hidden"
+        Grid.Row="3"
+        Grid.Column="1"
+        Content="Select file"
+        Margin="110,57,101,232"
+        Background="#149414"
+        FontSize="14"
+        FontFamily="Segoe UI"
+        FontWeight="Bold"
+        Click="Select_"
+        RenderTransformOrigin="0.5,0.5"
+                ToolTip="{x:Null}"
+                AutomationProperties.Name=""
+    AutomationProperties.HelpText=""
+                ToolTipService.IsEnabled="False">
+
             <Button.RenderTransform>
-                <ScaleTransform x:Name="scale2" ScaleX="1" ScaleY="1"/>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    <TranslateTransform X="0" Y="0"/>
+                </TransformGroup>
             </Button.RenderTransform>
+
             <Button.Triggers>
                 <EventTrigger RoutedEvent="MouseEnter">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="scale2" Storyboard.TargetProperty="ScaleX" To="1.1" Duration="0:0:0.2" />
-                            <DoubleAnimation Storyboard.TargetName="scale2" Storyboard.TargetProperty="ScaleY" To="1.1" Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX"
+                                     To="1.1"
+                                     Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleY"
+                                     To="1.1"
+                                     Duration="0:0:0.2"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
+
                 <EventTrigger RoutedEvent="MouseLeave">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="scale2" Storyboard.TargetProperty="ScaleX" To="1.0" Duration="0:0:0.2" />
-                            <DoubleAnimation Storyboard.TargetName="scale2" Storyboard.TargetProperty="ScaleY" To="1.0" Duration="0:0:0.2" />
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleX"
+                                     To="1.0"
+                                     Duration="0:0:0.2"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[0].ScaleY"
+                                     To="1.0"
+                                     Duration="0:0:0.2"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
             </Button.Triggers>
+
             <Button.Template>
-
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" Background="{TemplateBinding Background}" 
-            CornerRadius="10" 
-            BorderBrush="{TemplateBinding BorderBrush}" 
-            BorderThickness="{TemplateBinding BorderThickness}">
-
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="10"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
                     </Border>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background" Value="#1AAE1A"/>
-
                         </Trigger>
+
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background" Value="#0F5E0F"/>
                         </Trigger>
+
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True"/>
@@ -413,6 +450,7 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
                             </MultiTrigger.Conditions>
                             <Setter TargetName="border" Property="Background" Value="#3B82F6"/>
                         </MultiTrigger>
+
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsPressed" Value="True"/>
@@ -420,14 +458,15 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
                             </MultiTrigger.Conditions>
                             <Setter TargetName="border" Property="Background" Value="#1D4ED8"/>
                         </MultiTrigger>
-
-
-
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Button x:Name ="Select_folder"  Visibility="Hidden" Grid.Row="3" Grid.Column="1" Content="Select folder" Margin="110,103,101,186" Background="#149414" FontSize="14" FontFamily="Segoe UI" FontWeight="Bold" Click="Select_2" RenderTransformOrigin="0.5,0.5">
+
+        <Button x:Name ="Select_folder"             ToolTip="{x:Null}"
+            AutomationProperties.Name=""
+AutomationProperties.HelpText=""
+            ToolTipService.IsEnabled="False" Visibility="Hidden" Grid.Row="3" Grid.Column="1" Content="Select folder" Margin="110,103,101,186" Background="#149414" FontSize="14" FontFamily="Segoe UI" FontWeight="Bold" Click="Select_2" RenderTransformOrigin="0.5,0.5">
             <Button.RenderTransform>
                 <ScaleTransform x:Name="scale3" ScaleX="1" ScaleY="1"/>
             </Button.RenderTransform>
@@ -452,7 +491,7 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
             <Button.Template>
 
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" Background="{TemplateBinding Background}" 
+                    <Border x:Name="border2" Background="{TemplateBinding Background}" 
     CornerRadius="10" 
     BorderBrush="{TemplateBinding BorderBrush}" 
     BorderThickness="{TemplateBinding BorderThickness}">
@@ -462,34 +501,32 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#1AAE1A"/>
+                            <Setter TargetName="border2" Property="Background" Value="#1AAE1A"/>
 
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#0F5E0F"/>
+                            <Setter TargetName="border2" Property="Background" Value="#0F5E0F"/>
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True"/>
                                 <Condition Property="Tag" Value="Blue"/>
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="border" Property="Background" Value="#3B82F6"/>
+                            <Setter TargetName="border2" Property="Background" Value="#3B82F6"/>
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsPressed" Value="True"/>
                                 <Condition Property="Tag" Value="Blue"/>
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="border" Property="Background" Value="#1D4ED8"/>
+                            <Setter TargetName="border2" Property="Background" Value="#1D4ED8"/>
                         </MultiTrigger>
-
-
 
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Button x:Name="Copy" Grid.Column="3" Content="" HorizontalAlignment="Left" Margin="68,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="34" Width="36" Click="Button_Click_1">
+        <Button x:Name="Copy" Grid.Column="3" Content="" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Center" Height="34" Width="36" Click="Button_Click_1" Margin="26,0,0,0">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" Background="#1A1E28" CornerRadius="4" BorderThickness="2" BorderBrush="Green" Margin="0,0,-6,-8">
@@ -517,14 +554,80 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
                     <ToolTip.Content>
                         <TextBlock Text="Copy to Clipboard" Foreground="White" FontFamily="Arial Black" FontSize="11" Padding="5"/>
                     </ToolTip.Content>
-                    
+
+                </ToolTip>
+            </Button.ToolTip>
+        </Button>
+
+        <Button x:Name="Save" Grid.Column="3" Content="" HorizontalAlignment="Left" Margin="108,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="34" Width="36" Click="Save_File">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="#1A1E28" CornerRadius="4" BorderThickness="2" BorderBrush="Green" Margin="0,0,-6,-8">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="icons/enc_save.png" Width="38" Height="30" Stretch="Uniform"/>
+
+
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#3B4252"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#4C566A"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.ToolTip>
+                <ToolTip x:Name="tool2" Placement="MousePoint">
+                    <ToolTip.Background>
+                        <SolidColorBrush Color="#1AAE1A"/>
+                    </ToolTip.Background>
+                    <ToolTip.Content>
+                        <TextBlock Text="Save" Foreground="White" FontFamily="Arial Black" FontSize="11" Padding="5"/>
+                    </ToolTip.Content>
+
+                </ToolTip>
+            </Button.ToolTip>
+        </Button>
+
+        <Button x:Name="paste" Grid.Column="1" Content="" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="34" Width="36" Click="Paste">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="#1A1E28" CornerRadius="4" BorderThickness="2" BorderBrush="Green" Margin="0,0,-6,-8">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="icons/enc_paste.png" Width="38" Height="30" Stretch="Uniform"/>
+
+
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#3B4252"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#4C566A"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.ToolTip>
+                <ToolTip x:Name="tool3" Placement="MousePoint">
+                    <ToolTip.Background>
+                        <SolidColorBrush Color="#1AAE1A"/>
+                    </ToolTip.Background>
+                    <ToolTip.Content>
+                        <TextBlock Text="Past From Clipboard" Foreground="White" FontFamily="Arial Black" FontSize="11" Padding="5"/>
+                    </ToolTip.Content>
+
                 </ToolTip>
             </Button.ToolTip>
         </Button>
 
 
 
-        <Button x:Name="Copy2" Grid.Column="1" Content="" Visibility="Hidden" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="34" Width="36" Click="Button_Click_2">
+        <Button x:Name="Copy2" Grid.Column="1"  Content="" Visibility="Collapsed" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Center" Height="34" Width="36" Click="Button_Click_2" Margin="110,0,0,0">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border" Background="#1A1E28" CornerRadius="4" BorderThickness="2" BorderBrush="#2563EB" Margin="0,0,-6,-8">
@@ -552,10 +655,77 @@ FontWeight="Bold" Canvas.Left="389" Canvas.Top="210" HorizontalContentAlignment=
                     <ToolTip.Content>
                         <TextBlock Text="Copy to Clipboard" Foreground="White" FontFamily="Arial Black" FontSize="11" Padding="5"/>
                     </ToolTip.Content>
-                    
+
                 </ToolTip>
             </Button.ToolTip>
         </Button>
+
+        <Button x:Name="paste2" Grid.Column="3" Content="" Visibility="Collapsed" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Center" Height="34" Width="36" Click="Paste2" Margin="68,0,0,0" >
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="#1A1E28" CornerRadius="4" BorderThickness="2" BorderBrush="#2563EB" Margin="0,0,-6,-8" >
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="icons/dec_paste.png" Width="38" Height="30" Stretch="Uniform"/>
+
+
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#3B4252"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#4C566A"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.ToolTip>
+                <ToolTip x:Name="tool4" Placement="MousePoint">
+                    <ToolTip.Background>
+                        <SolidColorBrush Color="#2563EB"/>
+                    </ToolTip.Background>
+                    <ToolTip.Content>
+                        <TextBlock Text="Past From Clipboard" Foreground="White" FontFamily="Arial Black" FontSize="11" Padding="5"/>
+                    </ToolTip.Content>
+
+                </ToolTip>
+            </Button.ToolTip>
+        </Button>
+
+        <Button x:Name="Save2" Visibility="Collapsed" Grid.Column="1" Content="" HorizontalAlignment="Left" Margin="192,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="34" Width="36" Click="Save_File2">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="#1A1E28" CornerRadius="4" BorderThickness="2" BorderBrush="#2563EB" Margin="0,0,-6,-8">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="icons/dec_save.png" Width="38" Height="30" Stretch="Uniform"/>
+
+
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#3B4252"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#4C566A"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.ToolTip>
+                <ToolTip x:Name="tool5" Placement="MousePoint">
+                    <ToolTip.Background>
+                        <SolidColorBrush Color="#2563EB"/>
+                    </ToolTip.Background>
+                    <ToolTip.Content>
+                        <TextBlock Text="Save" Foreground="White" FontFamily="Arial Black" FontSize="11" Padding="5"/>
+                    </ToolTip.Content>
+
+                </ToolTip>
+            </Button.ToolTip>
+        </Button>
+
 
 
     </Grid>
