@@ -1,4 +1,5 @@
 using System.IO;
+using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -262,11 +263,15 @@ namespace EncodeX
                     {
                         encrypted_field.Text = encrypt_file(password, file);
                     }
+                    else
+                    {
+                        encrypted_field.Text = Encrypt_folder(password, file);
+                    }
 
 
 
 
-                    arrowTranslate.X = -20;
+                        arrowTranslate.X = -20;
 
                     arrowProgress.Width = 0;
 
@@ -628,6 +633,7 @@ namespace EncodeX
             {
                 return;
             }
+            input_field1.Text = "";
             if (choice != "text")
             {
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
@@ -809,6 +815,7 @@ namespace EncodeX
             {
                 return;
             }
+            input_field1.Text = "";
             mode = "encrypt";
             if(choice != "text")
             {
@@ -941,8 +948,8 @@ namespace EncodeX
         }
         private void button_files_Click(object sender, RoutedEventArgs e)
         {
-            
-            
+            encrypted_field.Text = "";
+
             choice = "file";
             
             Border_encrypt.Visibility = Visibility.Hidden;
@@ -1000,8 +1007,10 @@ namespace EncodeX
         }
         private void button_Text_Click(object sender, RoutedEventArgs e)
         {
+            encrypted_field.Text = "";
             if (choice != "text")
             {
+                
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
                 {
                     Border_decrypt.RenderTransform = new TranslateTransform();
@@ -1257,6 +1266,85 @@ namespace EncodeX
                 }
             }
 
+
+        }
+
+public static byte[] ZipFolderToBytes(string folderPath)
+    {
+        using (var ms = new MemoryStream())
+        {
+            using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, true))
+            {
+                var files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
+
+                foreach (var file in files)
+                {
+                    string entryName = System.IO.Path.GetRelativePath(folderPath, file);
+                    var entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
+
+                    using var entryStream = entry.Open();
+                    using var fileStream = File.OpenRead(file);
+                    fileStream.CopyTo(entryStream);
+                }
+            }
+            return ms.ToArray(); 
         }
     }
+        public String Encrypt_folder(String password,String folder)
+        {
+            try
+            {
+                
+                string encrypted;
+                string fileName = System.IO.Path.GetFileName(folder) +".zip";
+
+                
+                byte[] salt = new byte[16];
+                using (var rng = RandomNumberGenerator.Create())
+                {
+                    rng.GetBytes(salt);
+                }
+                var kdf = new Rfc2898DeriveBytes(password, salt, 100000);
+                byte[] key = kdf.GetBytes(32);
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = key;
+                    aes.GenerateIV();
+                    byte[] iv = aes.IV;
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        ms.Write(salt, 0, salt.Length);
+                        ms.Write(iv, 0, iv.Length);
+                        byte[] folder_zip = ZipFolderToBytes(folder);
+                        byte[] fileNameBytes = Encoding.UTF8.GetBytes(fileName);
+                        byte[] fileNameLengthBytes = BitConverter.GetBytes(fileNameBytes.Length);
+                        
+
+                        ms.Write(fileNameLengthBytes, 0, fileNameLengthBytes.Length);
+                        using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                        {
+                            
+
+                            cs.Write(fileNameBytes, 0, fileNameBytes.Length);
+                            cs.Write(folder_zip, 0, folder_zip.Length);
+                            cs.FlushFinalBlock();
+                        }
+                        encrypted = Convert.ToBase64String(ms.ToArray());
+                    }
+
+
+                    ;
+                }
+
+                return encrypted;
+            }
+            catch (Exception ex)
+            {
+                errorLabel.Content = "Error reading file: " + ex.Message;
+                errorLabel.Visibility = Visibility.Visible;
+                return "";
+            }
+        }
+
+}
 }
