@@ -8,7 +8,7 @@ This project is a **work in progress**.
 ### Features in this Prototype ✅
 - Text encryption and decryption
 - Password strength checking
-- File Encryption and Decreption
+- File Encryption and Decreption (Save file after decryption in order to restore it to its original format and make it usable again)
 - Save Encrypted or decrypted data
 - Modern UI built with XAML and WPF
 - Color Changing animations (*More animations coming soon!*)
