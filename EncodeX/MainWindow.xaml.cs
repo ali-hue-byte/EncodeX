@@ -1,9 +1,13 @@
+using System;
+using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,7 +23,6 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
-using System;
 
 namespace EncodeX
 {
@@ -145,7 +148,7 @@ namespace EncodeX
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
 
             string password = password_field.Text;
@@ -209,81 +212,114 @@ namespace EncodeX
                 Border_pss.BorderBrush = color;
 
             }
-            SolidColorBrush newBrush = new SolidColorBrush(Colors.Green);
-            arrowProgress.Fill = newBrush;
-            arrowProgress.Width = 0;
-            arrowTranslate.X = 0;
-            DoubleAnimation widthAnim = new DoubleAnimation
-            {
-                From = 0,
-                To = 20,
-                Duration = TimeSpan.FromMilliseconds(200),
-                FillBehavior = FillBehavior.Stop
-            };
 
-            widthAnim.Completed += (s1, e1) =>
-            {
-                arrowProgress.Width = 20;
 
-                DoubleAnimation posAnim = new DoubleAnimation
+            if (choice == "text")
+            {
+                RectangleGeometry clip;
+                if (arrow1.Clip == null)
                 {
-                    From = 0,
-                    To = -20,
-                    Duration = TimeSpan.FromMilliseconds(100),
+                    clip = new RectangleGeometry(new Rect(0, 0, arrow1.ActualWidth, arrow1.Height));
+                    arrow1.Clip = clip;
+                }
+                else
+                {
+                    clip = (RectangleGeometry)arrow1.Clip;
+                }
+                progress1.Visibility = Visibility.Visible;
+                double totalWidth = arrow1.ActualWidth;
+
+
+                RectAnimation anim = new RectAnimation
+                {
+                    From = new Rect(0, 0, totalWidth, arrow1.Height),
+                    To = new Rect(totalWidth, 0, 0, arrow1.Height),
+                    Duration = TimeSpan.FromMilliseconds(200),
                     FillBehavior = FillBehavior.Stop
                 };
 
+                anim.Completed += (s, ev) =>
+                        {
+                            RectangleGeometry clip = (RectangleGeometry)arrow1.Clip;
+                            clip.Rect = new Rect(0, 0, arrow1.ActualWidth, arrow1.Height);
+                            progress1.Visibility = Visibility.Hidden;
+                            encrypted_field.Text = encrypt(password, plainText);
+
+                        };
+                clip.BeginAnimation(RectangleGeometry.RectProperty, anim);
+
+            }
+            else if (choice == "file")
+            {
+                string filePath = "";
 
 
-                posAnim.Completed += (s2, e2) =>
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
-                    DoubleAnimation resetAnim = new DoubleAnimation
-                    {
-                        From = 20,
-                        To = 0,
-                        Duration = TimeSpan.FromMilliseconds(100),
-                        FillBehavior = FillBehavior.Stop
-                    };
-                    DoubleAnimation moveAnim2 = new DoubleAnimation
-                    {
-                        From = -20,
-                        To = -70,
-                        Duration = TimeSpan.FromMilliseconds(150),
-                        FillBehavior = FillBehavior.Stop
-                    };
-
-                    arrowProgress.BeginAnimation(FrameworkElement.WidthProperty, resetAnim);
-                    arrowTranslate.BeginAnimation(TranslateTransform.XProperty, moveAnim2);
-
-                    if (choice == "text")
-                    {
-                        encrypted_field.Text = encrypt(password, plainText);
-                    }
-                    else if(choice == "file")
-                    {
-                        encrypted_field.Text = encrypt_file(password, file);
-                    }
-                    else
-                    {
-                        encrypted_field.Text = Encrypt_folder(password, file);
-                    }
-
-
-
-
-                        arrowTranslate.X = -20;
-
-                    arrowProgress.Width = 0;
-
-
-
-
+                    Filter = "Encrypted file (*.enc)|*.enc|Text file (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = ".txt",
+                    AddExtension = true
                 };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        filePath = saveFileDialog.FileName;
 
-                arrowTranslate.BeginAnimation(TranslateTransform.XProperty, posAnim);
-            };
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Content = "Encryption failed ";
+                        errorLabel.Visibility = Visibility.Visible;
+                    }
+                }
+                try
+                {
+                    encrypted_field.Text = await Task.Run(()=>encrypt_file(password, file, filePath));
+                }
+                catch (Exception ex)
+                {
+                    errorLabel.Content = "Encryption failed ";
+                    errorLabel.Visibility = Visibility.Visible;
+                }
+                progress1.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                string filePath = "";
 
-            arrowProgress.BeginAnimation(FrameworkElement.WidthProperty, widthAnim);
+
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Encrypted file (*.enc)|*.enc|Text file (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = ".txt",
+                    AddExtension = true
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        filePath = saveFileDialog.FileName;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Content = "Error saving file";
+                        errorLabel.Visibility = Visibility.Visible;
+                    }
+                }
+
+                try
+                {
+                    encrypted_field.Text = await Task.Run(() => Encrypt_folder(password, file, filePath));
+                }
+                catch (Exception ex)
+                {
+                    this.Dispatcher.Invoke(() =>
+                errorLabel.Content = "Error decrypting file",
+                errorLabel.Visibility = Visibility.Visible);
+                }
+                progress1.Visibility = Visibility.Hidden;
 
 
 
@@ -291,12 +327,18 @@ namespace EncodeX
 
 
 
+
+
+
+
+            }
         }
 
 
         
-        private void decrypt_txt(object sender, RoutedEventArgs e)
+        private async void decrypt_txt(object sender, RoutedEventArgs e)
         {
+            
 
             string password = password_field.Text;
             string plainText = encrypted_field.Text;
@@ -326,77 +368,77 @@ namespace EncodeX
                 Border_pss.BorderBrush = color;
 
             }
-            SolidColorBrush newBrush = new SolidColorBrush(Colors.DodgerBlue);
-            arrowProgress.Fill = newBrush;
-            arrowProgress.Width = 0;
-            arrowTranslate.X = 0;
-            DoubleAnimation widthAnim = new DoubleAnimation
-            {
-                From = 0,
-                To = 20,
-                Duration = TimeSpan.FromMilliseconds(200),
-                FillBehavior = FillBehavior.Stop
-            };
+            
 
-            widthAnim.Completed += (s1, e1) =>
-            {
-                arrowProgress.Width = 20;
-
-                DoubleAnimation posAnim = new DoubleAnimation
+             if (choice == "text")
+              {
+                RectangleGeometry clip;
+                if (arrow1.Clip == null)
                 {
-                    From = 0,
-                    To = -20,
-                    Duration = TimeSpan.FromMilliseconds(100),
+                    clip = new RectangleGeometry(new Rect(0, 0, arrow1.ActualWidth, arrow1.Height));
+                    arrow1.Clip = clip;
+                }
+                else
+                {
+                    clip = (RectangleGeometry)arrow1.Clip;
+                }
+                progress2.Visibility = Visibility.Visible;
+                double totalWidth = arrow1.ActualWidth;
+
+
+                RectAnimation anim = new RectAnimation
+                {
+                    From = new Rect(0, 0, totalWidth, arrow1.Height),
+                    To = new Rect(totalWidth, 0, 0, arrow1.Height),
+                    Duration = TimeSpan.FromMilliseconds(200),
                     FillBehavior = FillBehavior.Stop
                 };
 
-
-
-                posAnim.Completed += (s2, e2) =>
+                anim.Completed += (s, ev) =>
                 {
-                    DoubleAnimation resetAnim = new DoubleAnimation
-                    {
-                        From = 20,
-                        To = 0,
-                        Duration = TimeSpan.FromMilliseconds(100),
-                        FillBehavior = FillBehavior.Stop
-                    };
-                    DoubleAnimation moveAnim2 = new DoubleAnimation
-                    {
-                        From = -20,
-                        To = -70,
-                        Duration = TimeSpan.FromMilliseconds(150),
-                        FillBehavior = FillBehavior.Stop
-                    };
+                    RectangleGeometry clip = (RectangleGeometry)arrow1.Clip;
+                    clip.Rect = new Rect(0, 0, arrow1.ActualWidth, arrow1.Height);
+                    progress2.Visibility = Visibility.Hidden;
+                    input_field.Text = decrypt(password, plainText);
 
-                    arrowProgress.BeginAnimation(FrameworkElement.WidthProperty, resetAnim);
-                    arrowTranslate.BeginAnimation(TranslateTransform.XProperty, moveAnim2);
-
-                    if (choice == "text")
-                    {
-                        input_field.Text = decrypt(password, plainText);
+                };
+                clip.BeginAnimation(RectangleGeometry.RectProperty, anim);
+               
                     }
                     else
                     {
-                        encrypted_field.Text = decrypt_file(password, file)[1];
-                    }
-
-
-
-
-                        arrowTranslate.X = -20;
-
-                    arrowProgress.Width = 0;
-
-
-
-
+                string filePath;
+                
+                
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "All files (*.*)|*.*",
+                    DefaultExt = ".txt",
+                    AddExtension = false,
+                    FileName = get_name(password,file)
                 };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    
+                        filePath = saveFileDialog.FileName;
+                        
+                    
+                }
+                filePath = saveFileDialog.FileName;
+                List<string> result = await Task.Run(() => decrypt_file(password, file, filePath));
+                try
+                {
+                    encrypted_field.Text = result[1];
+                }
+                catch (Exception ex)
+                {
+                    return;
+                }
+                progress2.Visibility = Visibility.Hidden;
+                
+            }
 
-                arrowTranslate.BeginAnimation(TranslateTransform.XProperty, posAnim);
-            };
 
-            arrowProgress.BeginAnimation(FrameworkElement.WidthProperty, widthAnim);
         }
         public string encrypt(string password, string text)
         {
@@ -434,15 +476,32 @@ namespace EncodeX
             return encrypted;
         }
 
-        public string encrypt_file(string password, string filePath)
+        public string encrypt_file(string password, string filePath, string destination)
         {
 
             try
             {
+                
+                this.Dispatcher.Invoke(() =>
+                {
+                    encrypted_field.Text = "";
+                    button_Encrypt.IsEnabled = false;
+                    button_Decrypt.IsEnabled = false;
+                    encrypt_btn.IsEnabled = false;
+                    Select_file.IsEnabled = false;
+                    Select_folder.IsEnabled = false;
+                    Copy.IsEnabled = false;
+                    paste.IsEnabled = false;
+                    Save.IsEnabled = false;
+                    Button_text.IsEnabled = false;
+                    button_files.IsEnabled = false;
+                    button_password.IsEnabled = false;
+                });
+                
                 string encrypted;
                 string fileName = System.IO.Path.GetFileName(filePath);
                
-                Console.WriteLine(fileName);
+                
                 byte[] salt = new byte[16];
                 using (var rng = RandomNumberGenerator.Create())
                 {
@@ -455,7 +514,8 @@ namespace EncodeX
                     aes.Key = key;
                     aes.GenerateIV();
                     byte[] iv = aes.IV;
-                    using (MemoryStream ms = new MemoryStream())
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                    using (FileStream ms = new FileStream(destination, FileMode.Create, FileAccess.Write)) 
                     {
                         ms.Write(salt, 0, salt.Length);
                         ms.Write(iv, 0, iv.Length);
@@ -465,39 +525,87 @@ namespace EncodeX
                         ms.Write(fileNameLengthBytes, 0,fileNameLengthBytes.Length);
                         using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
                         {
-                            byte[] fileBytes = File.ReadAllBytes(filePath);
-                            
                             cs.Write(fileNameBytes, 0, fileNameBytes.Length);
-                            cs.Write(fileBytes, 0, fileBytes.Length);
+                            byte[] buffer = new byte[8192];
+                            long totalbytes = fs.Length;
+                            long bytesread = 0;
+                            int bytesRead;
+                            while ((bytesRead = fs.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                cs.Write(buffer, 0, bytesRead);
+                                bytesread += bytesRead;
+                                double progress = (double)bytesread/totalbytes;
+                                this.Dispatcher.BeginInvoke(() =>
+                                {
+                                    update_arrow(progress);
+                                });
+                            }
+                            
                             cs.FlushFinalBlock();
                         }
-                        encrypted = Convert.ToBase64String(ms.ToArray());
+                        String name = System.IO.Path.GetFileName(destination);
+                        Double size = new FileInfo(destination).Length;
+                        String unit = "bytes";
+                        if (size > 1024)
+                        {
+                            size = size / 1024;
+                            unit = "KB";
+                            if (size > 1024)
+                            {
+                                size = size / 1024;
+                                unit = "MB";
+                                if (size > 1024)
+                                {
+                                    size = size / 1024;
+                                    unit = "GB";
+
+                                }
+
+                            }
+
+
+                        }
+                        String sizeText = size.ToString("0.00") + " " + unit;
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            button_Encrypt.IsEnabled = true;
+                            button_Decrypt.IsEnabled = true;
+                            encrypt_btn.IsEnabled = true;
+                            Select_file.IsEnabled = true;
+                            Select_folder.IsEnabled = true;
+                            Copy.IsEnabled = true;
+                            paste.IsEnabled = true;
+                            Save.IsEnabled = true;
+                            Button_text.IsEnabled = true;
+                            button_files.IsEnabled = true;
+                            button_password.IsEnabled = true;
+                        });
+                        
+                        return "File Path: " + destination + "\n" + "File Name: " + name + "\n" + "File size: " + sizeText;
                     }
                     
 
                     ;
                 }
                 
-                return encrypted;
+                
             }
             catch (Exception ex)
             {
-                errorLabel.Content = "Error reading file: " + ex.Message;
-                errorLabel.Visibility = Visibility.Visible;
+                this.Dispatcher.Invoke(() =>
+                errorLabel.Content = "Error encrypting file",
+                errorLabel.Visibility = Visibility.Visible);
                 return "";
             }
         }
-
-        public List<string> decrypt_file(string password, string filepath)
+        public String get_name(String password ,String filepath)
         {
-            try
+            byte[] encryptedBytes = new byte[36];
+
+            using (FileStream ms = new FileStream(filepath, FileMode.Open, FileAccess.Read))
             {
-                if (string.IsNullOrEmpty(filepath)) return new List<string> { "" };
+                ms.Read(encryptedBytes, 0, 36);
 
-                List<string> result = new List<string>();
-
-                string encrypted = File.ReadAllText(filepath);
-                byte[] encryptedBytes = Convert.FromBase64String(encrypted);
 
                 byte[] salt = new byte[16];
                 byte[] iv = new byte[16];
@@ -508,7 +616,72 @@ namespace EncodeX
                 Array.Copy(encryptedBytes, salt.Length + iv.Length, fileNameLengthBytes, 0, 4);
 
                 int fileNameLength = BitConverter.ToInt32(fileNameLengthBytes);
-                
+                var kdf = new Rfc2898DeriveBytes(password, salt, 100000);
+                byte[] key = kdf.GetBytes(32);
+                ms.Position = 36;
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = key;
+                    aes.IV = iv;
+
+                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read))
+                    {
+                       
+                        byte[] fileNameBytes = new byte[fileNameLength];
+                        int totalRead = 0;
+                        while (totalRead < fileNameLength)
+                        {
+                            int bytesRead = cs.Read(fileNameBytes, totalRead, fileNameLength - totalRead);
+
+                            totalRead += bytesRead;
+                        }
+                        string fileName = Encoding.UTF8.GetString(fileNameBytes);
+
+                        return fileName;
+                    }
+                }
+            }
+        }
+        public List<string> decrypt_file(string password, string filepath, string destination)
+        {
+            try
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    button_Encrypt.IsEnabled = false;
+                    button_Decrypt.IsEnabled = false;
+                    encrypt_btn.IsEnabled = false;
+                    Select_file.IsEnabled = false;
+                    Select_folder.IsEnabled = false;
+                    Copy.IsEnabled = false;
+                    paste.IsEnabled = false;
+                    Save.IsEnabled = false;
+                    Button_text.IsEnabled = false;
+                    button_files.IsEnabled = false;
+                    button_password.IsEnabled = false;
+                });
+                if (string.IsNullOrEmpty(filepath)) return new List<string> { "" };
+
+                List<string> result = new List<string>();
+
+
+                byte[] encryptedBytes = new byte[36];
+
+                using (FileStream ss = new FileStream(filepath, FileMode.Open, FileAccess.Read))
+                {
+                    ss.Read(encryptedBytes, 0, 36);
+                }
+
+                byte[] salt = new byte[16];
+                byte[] iv = new byte[16];
+                byte[] fileNameLengthBytes = new byte[4];
+
+                Array.Copy(encryptedBytes, 0, salt, 0, salt.Length);
+                Array.Copy(encryptedBytes, salt.Length, iv, 0, iv.Length);
+                Array.Copy(encryptedBytes, salt.Length + iv.Length, fileNameLengthBytes, 0, 4);
+
+                int fileNameLength = BitConverter.ToInt32(fileNameLengthBytes);
+
 
                 var kdf = new Rfc2898DeriveBytes(password, salt, 100000);
                 byte[] key = kdf.GetBytes(32);
@@ -518,42 +691,92 @@ namespace EncodeX
                     aes.Key = key;
                     aes.IV = iv;
 
-                    using (MemoryStream ms = new MemoryStream(encryptedBytes, 36, encryptedBytes.Length - 36))
+                    using (FileStream ms = new FileStream(filepath, FileMode.Open, FileAccess.Read))
                     using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read))
                     {
+                        ms.Position = 36;
                         byte[] fileNameBytes = new byte[fileNameLength];
                         int totalRead = 0;
                         while (totalRead < fileNameLength)
                         {
                             int bytesRead = cs.Read(fileNameBytes, totalRead, fileNameLength - totalRead);
-                            if (bytesRead == 0)
-                                throw new Exception("Unexpected end of stream while reading filename");
+
                             totalRead += bytesRead;
                         }
                         string fileName = Encoding.UTF8.GetString(fileNameBytes);
-                        
 
-                        using (MemoryStream msContent = new MemoryStream())
+
+                        using (FileStream msContent = new FileStream(destination, FileMode.Create, FileAccess.Write))
                         {
-                            cs.CopyTo(msContent);
-                            string decryptedContentBase64 = Convert.ToBase64String(msContent.ToArray());
+                            byte[] buffer = new byte[200*1024 * 1024];
+                            long totalBytes = ms.Length;
+                            int bytesRead;
+                            long total =0;
+                            while ((bytesRead = cs.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                msContent.Write(buffer, 0, bytesRead);
+                                total += bytesRead;
+                                double progress = (double)total / totalBytes;
+                                this.Dispatcher.Invoke(() => update_arrow(progress));
+                            }
+
+                            
+                            Double size = new FileInfo(destination).Length;
+                            String unit = "bytes";
+                            if (size > 1024)
+                            {
+                                size = size / 1024;
+                                unit = "KB";
+                                if (size > 1024)
+                                {
+                                    size = size / 1024;
+                                    unit = "MB";
+                                    if (size > 1024)
+                                    {
+                                        size = size / 1024;
+                                        unit = "GB";
+
+                                    }
+
+                                }
+
+
+                            }
+                            String sizeText = size.ToString("0.00") + " " + unit;
 
                             result.Add(fileName);
-                            result.Add(decryptedContentBase64);
+                            result.Add("File Name: " + fileName + "\nFilePath: " + destination + "\nFileSize: " + sizeText);
                         }
                     }
                 }
-
+                this.Dispatcher.Invoke(() =>
+                {
+                    button_Encrypt.IsEnabled = true;
+                    button_Decrypt.IsEnabled = true;
+                    encrypt_btn.IsEnabled = true;
+                    Select_file.IsEnabled = true;
+                    Select_folder.IsEnabled = true;
+                    Copy.IsEnabled = true;
+                    paste.IsEnabled = true;
+                    Save.IsEnabled = true;
+                    Button_text.IsEnabled = true;
+                    button_files.IsEnabled = true;
+                    button_password.IsEnabled = true;
+                });
                 return result;
             }
-            catch
+            catch (Exception ex)
             {
-                errorLabel.Content = "Error reading file";
-                errorLabel.Visibility = Visibility.Visible;
-                return new List<string> { "" };
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        errorLabel.Content = "Error decrypting file" ;
+                        errorLabel.Visibility = Visibility.Visible;
+                    });
+                    return new List<string> { "" };
+                }
             }
         }
-
 
         public string decrypt(string password, string text)
         {
@@ -1124,7 +1347,7 @@ namespace EncodeX
                 }
                 catch (Exception ex)
                 {
-                    errorLabel.Content = "Error reading file: " + ex.Message;
+                    errorLabel.Content = "Error reading file" ;
                     errorLabel.Visibility = Visibility.Visible;
                 }
             }
@@ -1146,7 +1369,7 @@ namespace EncodeX
                 }
                 catch (Exception ex)
                 {
-                    errorLabel.Content = "Error reading folder: " + ex.Message;
+                    errorLabel.Content = "Error reading folder ";
                     errorLabel.Visibility = Visibility.Visible;
                 }
             }
@@ -1179,7 +1402,7 @@ namespace EncodeX
 
         private void Save_File(object sender, RoutedEventArgs e)
         {
-            if (choice == "text" || mode == "encrypt")
+            if (choice == "text")
             {
                 Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
@@ -1196,7 +1419,29 @@ namespace EncodeX
                     }
                     catch (Exception ex)
                     {
-                        errorLabel.Content = "Error saving file: " + ex.Message;
+                        errorLabel.Content = "Error saving file ";
+                        errorLabel.Visibility = Visibility.Visible;
+                    }
+                }
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Text file (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = ".txt",
+                    AddExtension = true
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        string filePath = saveFileDialog.FileName;
+                        File.WriteAllText(filePath, encrypted_field.Text);
+                    }
+                    catch (Exception ex)
+                    {
+                        errorLabel.Content = "Error saving file ";
                         errorLabel.Visibility = Visibility.Visible;
                     }
                 }
@@ -1223,80 +1468,108 @@ namespace EncodeX
                     }
                     catch (Exception ex)
                     {
-                        errorLabel.Content = "Error saving file: " + ex.Message;
+                        errorLabel.Content = "Error saving file";
                         errorLabel.Visibility = Visibility.Visible;
                     }
                 }
             }
             else
-
-
             {
-                string password;
-                if (password_field.IsReadOnly == true)
-                {
-                    password = "password@1010^";
-
-                }
-                else
-                {
-                    password = password_field.Text;
-                }
-                    List<String> data = decrypt_file(password, input_field1.Text);
-                String extension = System.IO.Path.GetExtension(data[0]);
                 Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
-                    FileName = data[0],
-                    Filter = "All files (*.*)|*.*",
-                    AddExtension = false
+                    Filter = "Text file (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = ".enc",
+                    AddExtension = true
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     try
                     {
-                        byte[] data2 = Convert.FromBase64String(data[1]);
                         string filePath = saveFileDialog.FileName;
-                        File.WriteAllBytes(filePath, data2);
+                        File.WriteAllText(filePath, encrypted_field.Text);
                     }
                     catch (Exception ex)
                     {
-                        errorLabel.Content = "Error saving file: " + ex.Message;
+                        errorLabel.Content = "Error saving file";
                         errorLabel.Visibility = Visibility.Visible;
                     }
                 }
             }
 
-
         }
 
-public static byte[] ZipFolderToBytes(string folderPath)
-    {
-        using (var ms = new MemoryStream())
+
+        
+        
+        public void update_arrow(double progress) 
         {
-            using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, true))
+            Rect rect;
+            var parada = progress1;
+            if(mode == "encrypt")
+            { parada = progress1; }
+            else
+            { parada = progress2; }
+            double totalWidth = parada.ActualWidth;
+            if (parada.Visibility == Visibility.Hidden)
             {
-                var files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
-
-                foreach (var file in files)
-                {
-                    string entryName = System.IO.Path.GetRelativePath(folderPath, file);
-                    var entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
-
-                    using var entryStream = entry.Open();
-                    using var fileStream = File.OpenRead(file);
-                    fileStream.CopyTo(entryStream);
-                }
+                rect = new Rect(totalWidth, 0, totalWidth, parada.Height);
             }
-            return ms.ToArray(); 
+            else
+            {
+                rect = ((RectangleGeometry)parada.Clip).Rect;
+            }
+                parada.Visibility = Visibility.Visible;
+
+            RectangleGeometry clip;
+            if (parada.Clip == null)
+            {
+                clip = new RectangleGeometry(new Rect(0, 0, parada.ActualWidth, parada.Height));
+                parada.Clip = clip;
+            }
+            else
+            {
+                clip = (RectangleGeometry)parada.Clip;
+            }
+            
+            
+
+
+            RectAnimation anim = new RectAnimation
+            {
+                From = rect,
+                To = new Rect(totalWidth * (1-progress), 0, totalWidth, parada.Height),
+                Duration = TimeSpan.FromMilliseconds(500),
+                FillBehavior = FillBehavior.HoldEnd,
+            };
+
+            
+            clip.BeginAnimation(RectangleGeometry.RectProperty, anim);
         }
-    }
-        public String Encrypt_folder(String password,String folder)
+
+        public string  Encrypt_folder(String password,String folder,String destination)
         {
+
             try
             {
+                this.Dispatcher.Invoke(() =>
+                {
+                    encrypted_field.Text = "";
+                    button_Encrypt.IsEnabled = false;
+                    button_Decrypt.IsEnabled = false;
+                    encrypt_btn.IsEnabled = false;
+                    Select_file.IsEnabled = false;
+                    Select_folder.IsEnabled = false;
+                    Copy.IsEnabled = false;
+                    paste.IsEnabled = false;
+                    Save.IsEnabled = false;
+                    Button_text.IsEnabled = false;
+                    button_files.IsEnabled = false;
+                    button_password.IsEnabled = false;
+                });
                 
-                string encrypted;
-                string fileName = System.IO.Path.GetFileName(folder) +".zip";
+
+                String encrypted;
+                String fileName = System.IO.Path.GetFileName(folder) +".zip";
 
                 
                 byte[] salt = new byte[16];
@@ -1310,41 +1583,110 @@ public static byte[] ZipFolderToBytes(string folderPath)
                 {
                     aes.Key = key;
                     aes.GenerateIV();
+                    
                     byte[] iv = aes.IV;
-                    using (MemoryStream ms = new MemoryStream())
+                    
+                    using FileStream fs2 = new FileStream(destination, FileMode.Create, FileAccess.Write);
                     {
-                        ms.Write(salt, 0, salt.Length);
-                        ms.Write(iv, 0, iv.Length);
-                        byte[] folder_zip = ZipFolderToBytes(folder);
+
+                        fs2.Write(salt, 0, salt.Length);
+                        fs2.Write(iv, 0, iv.Length);
+
                         byte[] fileNameBytes = Encoding.UTF8.GetBytes(fileName);
                         byte[] fileNameLengthBytes = BitConverter.GetBytes(fileNameBytes.Length);
-                        
 
-                        ms.Write(fileNameLengthBytes, 0, fileNameLengthBytes.Length);
-                        using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+
+                        fs2.Write(fileNameLengthBytes, 0, fileNameLengthBytes.Length);
+                        using (CryptoStream cs = new CryptoStream(fs2, aes.CreateEncryptor(), CryptoStreamMode.Write))
                         {
-                            
-
                             cs.Write(fileNameBytes, 0, fileNameBytes.Length);
-                            cs.Write(folder_zip, 0, folder_zip.Length);
-                            cs.FlushFinalBlock();
-                        }
-                        encrypted = Convert.ToBase64String(ms.ToArray());
+                            using (var archive = new ZipArchive(cs, ZipArchiveMode.Create, true))
+                            {
+                                var files = Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories);
+                                int processed = 0;
+                                int totalFiles = files.Count();
+
+                                foreach (var file in files)
+                                {
+                                    string entryName = System.IO.Path.GetRelativePath(folder, file);
+                                    var entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
+
+                                    using var entryStream = entry.Open();
+                                    using var fileStream = File.OpenRead(file);
+                                    byte[] buffer = new byte[8000];
+                                    int bytesRead;
+                                    while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                                    {
+                                        entryStream.Write(buffer, 0, bytesRead);
+                                    }
+
+                                    processed++;
+                                    double progress = (double)processed / totalFiles;
+                                    this.Dispatcher.Invoke(() =>
+                                    {
+                                        update_arrow(progress);
+                                    });
+                                }
+                            }
+                        
+                        cs.FlushFinalBlock();
+                    }
+                        
                     }
 
 
                     ;
                 }
+                String name = System.IO.Path.GetFileName(destination);
+                Double size = new FileInfo(destination).Length;
+                String unit = "bytes";
+                if (size > 1024)
+                {
+                    size = size / 1024;
+                    unit = "KB";
+                    if (size > 1024)
+                    {
+                        size = size / 1024;
+                        unit = "MB";
+                        if (size > 1024)
+                        {
+                            size = size / 1024;
+                            unit = "GB";
 
-                return encrypted;
+                        }
+
+                    }
+
+
+                }
+                String sizeText = size.ToString("0.00") + " " + unit;
+                this.Dispatcher.Invoke(() =>
+                {
+                    button_Encrypt.IsEnabled = true;
+                    button_Decrypt.IsEnabled = true;
+                    encrypt_btn.IsEnabled = true;
+                    Select_file.IsEnabled = true;
+                    Select_folder.IsEnabled = true;
+                    Copy.IsEnabled = true;
+                    paste.IsEnabled = true;
+                    Save.IsEnabled = true;
+                    Button_text.IsEnabled = true;
+                    button_files.IsEnabled = true;
+                    button_password.IsEnabled = true;
+                });
+               
+                return "File Path: "+destination + "\n" +"File Name: "+name+"\n"+"File size: "+sizeText;
             }
             catch (Exception ex)
             {
-                errorLabel.Content = "Error reading file: " + ex.Message;
-                errorLabel.Visibility = Visibility.Visible;
+                this.Dispatcher.Invoke(() =>
+                errorLabel.Content = "Error encrypting folder",
+                errorLabel.Visibility = Visibility.Visible);
+                
                 return "";
             }
         }
 
-}
+        
+    }
 }
