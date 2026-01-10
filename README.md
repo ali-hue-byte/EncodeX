@@ -12,9 +12,9 @@ This project is a **work in progress**.
 - Save Encrypted or decrypted data
 - Modern UI built with XAML and WPF
 - Color Changing animations (*More animations coming soon!*)
+- Large files support
 
 ### Upcoming Features 🚀
-- Large files support
 - More surprises!  
 
 ---
