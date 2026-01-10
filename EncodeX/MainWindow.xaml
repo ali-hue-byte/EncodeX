@@ -346,7 +346,7 @@ AutomationProperties.HelpText=""
             </Button.Template>
         </Button>
 
-        <Label x:Name ="arrow" Height="80" Grid.Column="1" Grid.ColumnSpan="2" Margin="328,2,80,246" Grid.Row="3" RenderTransformOrigin="0.5,0.5">
+        <Label x:Name ="arrow" Height="80" Grid.Column="1" Grid.ColumnSpan="2" Margin="318,2,76,246" Grid.Row="3" RenderTransformOrigin="0.5,0.5">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleX="-1"/>
@@ -355,13 +355,49 @@ AutomationProperties.HelpText=""
                     <TranslateTransform/>
                 </TransformGroup>
             </Label.RenderTransform>
-            <Grid>
-                <Image x:Name="arrow1" Source="/icons/Arrow.png" Stretch="Uniform"/>
-                <Rectangle x:Name="arrowProgress" Fill="Green" Opacity="0.6" Width="0" Height ="20" HorizontalAlignment="Right" >
-                    <Rectangle.RenderTransform>
-                        <TranslateTransform x:Name="arrowTranslate" X="0" />
-                    </Rectangle.RenderTransform>
-                </Rectangle>
+            <Grid Height="76" Width="85">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="46.5"/>
+                </Grid.RowDefinitions>
+
+
+
+                <Image x:Name="arrow1" Source="/icons/Arrow.png" Stretch="Uniform" Margin="-2,6,0,0" Grid.RowSpan="2" RenderTransformOrigin="0.498,0.514" HorizontalAlignment="Left" Width="74" Height="62" VerticalAlignment="Top">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1"/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="-360.271"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+                <Image x:Name="progress1" HorizontalAlignment="Left" Visibility="Hidden"
+ VerticalAlignment="Top"
+Source="/icons/arrow_progress.png" RenderTransformOrigin="0.5,0.5" Width="67" Height="68" Stretch="Uniform" Margin="1,1,0,0" Grid.RowSpan="2">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+
+                <Image x:Name="progress2" Margin="0,1,11,8" Source="/icons/progress1.png" Height="68" Stretch="Fill" Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5" Visibility="Hidden">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+
+
 
 
             </Grid>
@@ -725,6 +761,7 @@ AutomationProperties.HelpText=""
                 </ToolTip>
             </Button.ToolTip>
         </Button>
+
 
 
 
