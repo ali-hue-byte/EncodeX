@@ -42,8 +42,15 @@ namespace EncodeX
         {
             
             InitializeComponent();
-            
 
+            First.MouseEnter += (s, e) =>
+            {
+                btn_anim.Visibility = Visibility.Visible;
+            };
+            First.MouseLeave += (s, e) =>
+            {
+                btn_anim.Visibility = Visibility.Collapsed;
+            };
             Border_haha.MouseEnter += (s, e) =>
             {
                 animation(encrypt_btn);
@@ -1687,6 +1694,45 @@ namespace EncodeX
             }
         }
 
-        
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            btn_anim.Visibility = Visibility.Collapsed;
+            DoubleAnimation opac = new DoubleAnimation
+            {
+                From =1.0 ,
+                To = 0.0,
+                Duration = TimeSpan.FromMilliseconds(300),
+                FillBehavior = FillBehavior.Stop,
+            };
+
+            DoubleAnimation opac2 = new DoubleAnimation
+            {
+                From = 0.0,
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(800),
+                FillBehavior = FillBehavior.Stop,
+            };
+            Border_haha.BeginAnimation(OpacityProperty, opac2);
+            Border_encrypt.BeginAnimation(OpacityProperty, opac2);
+            Border_decrypt.BeginAnimation(OpacityProperty, opac2);
+            Border_pss.BeginAnimation(OpacityProperty, opac2);
+            encrypt_btn.BeginAnimation(OpacityProperty, opac2);
+            button_password.BeginAnimation(OpacityProperty, opac2);
+            button_Encrypt.BeginAnimation(OpacityProperty, opac2);
+
+            opac.Completed += (s, e) => 
+            {
+                MainFrame.Visibility = Visibility.Collapsed;
+                First.Visibility = Visibility.Collapsed;
+                Lock.Visibility = Visibility.Collapsed;
+                
+
+            };
+
+            MainFrame.BeginAnimation(OpacityProperty, opac);
+            Lock.BeginAnimation(OpacityProperty, opac);
+            First.BeginAnimation(OpacityProperty, opac);
+            
+        }
     }
 }
