@@ -13,6 +13,7 @@ This project is a **work in progress**.
 - Modern UI built with XAML and WPF
 - Color Changing animations (*More animations coming soon!*)
 - Large files support
+- Added a temporary first page to serve as an initial landing interface during development.
 
 ### Upcoming Features 🚀
 - More surprises!  
