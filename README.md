@@ -1,22 +1,19 @@
 # EncodeX 🔒
 
 A simple app to **encrypt and decrypt text or files**, keeping your information secure and private with just a few clicks.  
-This project is a **work in progress**.
+
 
 ---
 
-### Features in this Prototype ✅
+### Features ✅
 - Text encryption and decryption
 - Password strength checking
 - Files/Folders Encryption and Decreption 
 - Save Encrypted / decrypted data or file informations
 - Modern UI built with XAML and WPF
-- Color Changing animations (*More animations coming soon!*)
+- Color Changing animations 
 - Large files support
-- Added a temporary first page to serve as an initial landing interface during development.
 
-### Upcoming Features 🚀
-- More surprises!  
 
 ---
 
