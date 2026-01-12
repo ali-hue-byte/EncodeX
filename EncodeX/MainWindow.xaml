@@ -804,17 +804,418 @@ AutomationProperties.HelpText=""
                 <Label x:Name="first_Copy23" FontSize="25" Foreground="#3B82F6" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Height="290" Width="64" Margin="174,-106,0,0"/>
                 <Label x:Name="first_Copy24" FontSize="25" Foreground="#3B82F6" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Height="334" Width="64" Margin="506,112,0,0"/>
                 <Label x:Name="first_Copy13" FontSize="25" Foreground="#3B82F6" Content="" HorizontalAlignment="Left" Margin="582,-45,0,0" VerticalAlignment="Top" Height="282" Width="64" Grid.ColumnSpan="2"/>
-                <Border
+                <Border x:Name="Decrypted"
+Background="#88000000"
+CornerRadius="15"
+Padding="18,14" Margin="386,368,349,170" Grid.ColumnSpan="2" Visibility="Hidden">
+                    <TextBlock FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#8FD3FF"><Run Text="Data matters. Security first."/><LineBreak/><Run Text="Encrypt and decrypt with ease. "/></TextBlock>
+                </Border>
+                <Border x:Name="Encrypted"
     Background="#88000000"
     CornerRadius="15"
-    Padding="18,14" Margin="405,368,368,178" Grid.ColumnSpan="2">
+    Padding="18,14" Margin="386,368,349,170" Grid.ColumnSpan="2"/>
 
-                    <TextBlock
-        Text="Data matters. Security first.&#x0a;Encrypt and decrypt with ease."
-        Foreground="#8FD3FF"
-        FontSize="18"
-        TextAlignment="Center"/>
-                </Border>
+
+                <Button x:Name="D" Content="X" HorizontalAlignment="Left" Margin="414,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="i" Content="T" HorizontalAlignment="Left" Margin="3,380,0,0" VerticalAlignment="Top" Grid.Column="1" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="r" Content="@" HorizontalAlignment="Left" Margin="570,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.ColumnSpan="2" >
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="u" Content="u" HorizontalAlignment="Left" Margin="561,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="c" Content="4" HorizontalAlignment="Left" Margin="552,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="e10" Content="R" HorizontalAlignment="Left" Margin="540,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="S"  Content="Z" HorizontalAlignment="Left" Margin="528,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" >
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="s" Content="z" HorizontalAlignment="Left" Margin="514,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="r2" Content="T" HorizontalAlignment="Left" Margin="504,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="e2" Content="r" HorizontalAlignment="Left" Margin="499,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="t" Content="L" HorizontalAlignment="Left" Margin="491,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="t2" Content="7" HorizontalAlignment="Left" Margin="481,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="a" Content="P" HorizontalAlignment="Left" Margin="470,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="m" Content="k" HorizontalAlignment="Left" Margin="460,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="a2" Content="A" HorizontalAlignment="Left" Margin="446,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="t3" Content="9" HorizontalAlignment="Left" Margin="436,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="a3" Content="q" HorizontalAlignment="Left" Margin="425,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" >
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="y" Content="Q" HorizontalAlignment="Left" Margin="23,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="d" Content="7" HorizontalAlignment="Left" Margin="514,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="n" Content="z" HorizontalAlignment="Left" Margin="503,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="a5" Content="a" HorizontalAlignment="Left" Margin="493,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="t4" Content="x" HorizontalAlignment="Left" Margin="481,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="p" Content="o" HorizontalAlignment="Left" Margin="469,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" >
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="y2" Content="2" HorizontalAlignment="Left" Margin="458,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" >
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="r3" Content="L" HorizontalAlignment="Left" Margin="448,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="c4" Content="q" HorizontalAlignment="Left" Margin="436,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="n2" Content="F" HorizontalAlignment="Left" Margin="427,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="E" Content="9" HorizontalAlignment="Left" Margin="416,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="t8" Content="1" HorizontalAlignment="Left" Margin="13,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="t7" Content="N" HorizontalAlignment="Left" Margin="89,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="s3" Content="s" HorizontalAlignment="Left" Margin="82,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="r5" Content="8" HorizontalAlignment="Left" Margin="71,380,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="i3" Content="m" HorizontalAlignment="Left" Margin="55,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="f" Content="Q" HorizontalAlignment="Left" Margin="41,381,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="e6" Content="9" HorizontalAlignment="Left" Margin="91,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="s2" Content="s" HorizontalAlignment="Left" Margin="82,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="a4" Content="2" HorizontalAlignment="Left" Margin="72,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="e4" Content="E" HorizontalAlignment="Left" Margin="62,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="h" Content="K" HorizontalAlignment="Left" Margin="45,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="t6" Content="8" HorizontalAlignment="Left" Margin="35,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="i2" Content="T" HorizontalAlignment="Left" Margin="27,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1" >
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="w" Content="u" HorizontalAlignment="Left" Margin="19,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="t5" Content="z" HorizontalAlignment="Left" Margin="7,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="p2" Content="p" HorizontalAlignment="Left" Margin="580,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0" Grid.ColumnSpan="2">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="y3" Content="1" HorizontalAlignment="Left" Margin="570,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="r4" Content="r" HorizontalAlignment="Left" Margin="565,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button  x:Name="c2" Content="4" HorizontalAlignment="Left" Margin="554,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="e3" Content="n" HorizontalAlignment="Left" Margin="542,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="d2" Content="R" HorizontalAlignment="Left" Margin="530,408,0,0" VerticalAlignment="Top" FontSize="20" Background="Transparent" Foreground="#8FD3FF" BorderThickness="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
             </Grid>
 
 
@@ -822,10 +1223,21 @@ AutomationProperties.HelpText=""
         </Border>
 
 
+        <Image x:Name="Lock" Stretch="Fill" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/icons/lock.png" Grid.RowSpan="4" Grid.ColumnSpan="3" Grid.Column="1"  Height="282" Width="284" Margin="208,40,0,0"/>
+
+        <Button x:Name="btn_lock" Background="Transparent" Click="get_key" Margin="254,59,42,316" Grid.ColumnSpan="2" Grid.RowSpan="4" Grid.Column="1" BorderThickness="0">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border BorderBrush="Transparent" Background="Transparent" BorderThickness="0">
 
 
-        <Image x:Name="Lock"  Source="/icons/lock.png" Margin="206,60,332,270" Grid.RowSpan="4" Grid.ColumnSpan="3" Grid.Column="1" MouseEnter="Lock_Hovered" MouseLeave="Lock_unHovered"/>
 
+                    </Border>
+
+                </ControlTemplate>
+            </Button.Template>
+
+        </Button>
         <Button x:Name="First" RenderTransformOrigin="0.5,0.5" Grid.Column="1" Content="Get Started" FontFamily="Microsoft PhagsPa" FontSize="20" FontStyle="Normal" FontWeight="DemiBold" Margin="266,164,54,0" Grid.Row="3" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="54" Click="Button_Click_3" >
             <Button.Template>
 
@@ -870,7 +1282,9 @@ AutomationProperties.HelpText=""
 
 
         </Button>
-        <Label/>
+        <Label x:Name="Instructions" Opacity="0.4"  Content="Find the key and decrypt the text!" 
+       FontSize="18" Foreground="White" 
+       HorizontalContentAlignment="Center" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="3" Margin="186,35,294,0" Grid.Row="3" />
 
 
 
