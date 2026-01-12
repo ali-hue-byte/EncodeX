@@ -42,15 +42,93 @@ namespace EncodeX
         {
             
             InitializeComponent();
+            
+            List<Label> labels = new List<Label> {
+                first,
+                first_Copy,
+                first_Copy1,
+                first_Copy2,
+                first_Copy3,
+                first_Copy4,
+                first_Copy5,
+                first_Copy6,
+                first_Copy7,
+                first_Copy8, 
+                first_Copy9,
+                first_Copy10,
+                first_Copy11,
+                first_Copy12,
+                first_Copy13,
+                
+            };
 
-            First.MouseEnter += (s, e) =>
+            List<Label> lbl2 = new List<Label>
             {
-                btn_anim.Visibility = Visibility.Visible;
+                first_Copy14,
+                first_Copy15,
+                first_Copy16,
+                first_Copy17,
+                first_Copy18,
+                first_Copy19,
+                first_Copy20,
+                first_Copy21,
+                first_Copy22,
+                first_Copy23,
+                first_Copy24,
             };
-            First.MouseLeave += (s, e) =>
+
+            Dictionary<Label, List<int>> dict = new Dictionary<Label, List<int>>{
+    { first,        new List<int> { 206 - 400, 206 + 500, 1200} },
+    { first_Copy,   new List<int> { 203 - 300, 203 + 500, 1500} },
+    { first_Copy1,  new List<int> { 139 - 500, 139 + 600, 1300 } },
+    { first_Copy2,  new List<int> { 312 - 400, 312 + 1000, 1800 } },
+    { first_Copy3,  new List<int> { 139 - 700, 139 + 500, 1500 } },
+    { first_Copy4,  new List<int> { 260 - 400, 260 + 400, 1500 } },
+    { first_Copy5,  new List<int> { 183 - 400, 183 + 500, 1700 } },
+    { first_Copy6,  new List<int> { 92 - 400, 92 + 500, 1500 } },
+    { first_Copy7,  new List<int> { 278 - 400, 278 + 500, 1500 } },
+    { first_Copy8,  new List<int> { 340 - 400, 340 + 500, 1500 } },
+    { first_Copy9,  new List<int> { 203 - 400, 203 + 500, 1200 } },
+    { first_Copy10, new List<int> { 139 - 800, 139 + 500, 1500 } },
+    { first_Copy11, new List<int> { -95 - 400, -95 + 500, 1500 } },
+    { first_Copy12, new List<int> { 279 - 600, 279 + 500, 1700 } },
+    { first_Copy13, new List<int> { -45 - 700, -45 + 800, 2000 } },
+
+    { first_Copy14, new List<int> { -134 - 400, -134 + 800, 2400 } },
+    { first_Copy15, new List<int> { -95 - 400, -95 + 800, 2400 } },
+    { first_Copy16, new List<int> { -45 - 800, -45 + 1000, 2400 } },
+    { first_Copy17, new List<int> { -106 - 400, -106 + 800, 2400 } },
+    { first_Copy18, new List<int> { -91 - 200, -91 + 800, 2400 } },
+    { first_Copy19, new List<int> { -60 - 600, -60 + 700, 2400 } },
+    { first_Copy20, new List<int> { 413 - 900, 413 + 800, 3100 } },
+    { first_Copy21, new List<int> { 368 - 700, 368 + 900, 2200 } },
+    { first_Copy22, new List<int> { -128 - 400, -128 + 800, 2400 } },
+    { first_Copy23, new List<int> { -106 - 400, -106 + 800, 2400 } },
+    { first_Copy24, new List<int> { 112 - 400, 112 + 800, 2400 } },
+};
+
+
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(100);
+
+            foreach (KeyValuePair<Label,List<int>> label in dict)
             {
-                btn_anim.Visibility = Visibility.Collapsed;
-            };
+                animate(label.Key, label.Value[0], label.Value[1], label.Value[2]);
+                
+                    timer.Tick += (s, e) =>
+                    { Timer_text(label.Key, Random_text()); };
+                
+                
+
+            }
+
+            
+
+            timer.Start();
+            
+            
+            
             Border_haha.MouseEnter += (s, e) =>
             {
                 animation(encrypt_btn);
@@ -1696,7 +1774,7 @@ namespace EncodeX
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            btn_anim.Visibility = Visibility.Collapsed;
+           
             DoubleAnimation opac = new DoubleAnimation
             {
                 From =1.0 ,
@@ -1733,6 +1811,38 @@ namespace EncodeX
             Lock.BeginAnimation(OpacityProperty, opac);
             First.BeginAnimation(OpacityProperty, opac);
             
+        }
+
+        public static String Random_text()
+        {
+            String output = "";
+            String choices = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+/";
+            var ran = new Random();
+            for (int i = 0; i < 15; i++) 
+            {
+                char next = choices[ran.Next(choices.Length)];
+                output += "\n";
+                output += next;
+            };
+            return output;
+
+        }
+        public void Timer_text(Label lbl, String text)
+        {
+            lbl.Content = text;
+            
+        }
+
+         public void animate (Label label, int x, int y, int t)
+        {
+            ThicknessAnimation mov = new ThicknessAnimation
+            {
+                From = new Thickness(label.Margin.Left, x, label.Margin.Right, label.Margin.Bottom),
+                To = new Thickness(label.Margin.Left, y, label.Margin.Right, label.Margin.Bottom),
+                Duration = TimeSpan.FromMilliseconds(t),
+                RepeatBehavior = RepeatBehavior.Forever
+            };
+            label.BeginAnimation(Label.MarginProperty, mov);
         }
     }
 }
