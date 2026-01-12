@@ -814,7 +814,7 @@ AutomationProperties.HelpText=""
 
 
 
-        <Image x:Name="Lock"  Source="/icons/lock.png" Margin="208,100,330,230" Grid.RowSpan="4" Grid.ColumnSpan="3" Grid.Column="1"/>
+        <Image x:Name="Lock"  Source="/icons/lock.png" Margin="208,100,330,230" Grid.RowSpan="4" Grid.ColumnSpan="3" Grid.Column="1" MouseEnter="Lock_Hovered" MouseLeave="Lock_unHovered"/>
 
         <Button x:Name="First" RenderTransformOrigin="0.5,0.5" Grid.Column="1" Content="Get Started" FontFamily="Microsoft PhagsPa" FontSize="20" FontStyle="Normal" FontWeight="DemiBold" HorizontalAlignment="Left" Margin="266,164,0,0" Grid.Row="3" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="54" Width="170" Click="Button_Click_3" >
             <Button.Template>
