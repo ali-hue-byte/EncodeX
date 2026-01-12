@@ -29,53 +29,31 @@ namespace EncodeX
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    
+
     public partial class MainWindow : Window
     {
-        
-        
+
+        bool gotten_key = false;
         string mode = "encrypt";
-        string choice ="text";
+        string choice = "text";
         Brush color = Brushes.Green;
-        
+
         public MainWindow()
         {
-            
+
             InitializeComponent();
-            
-            List<Label> labels = new List<Label> {
-                first,
-                first_Copy,
-                first_Copy1,
-                first_Copy2,
-                first_Copy3,
-                first_Copy4,
-                first_Copy5,
-                first_Copy6,
-                first_Copy7,
-                first_Copy8, 
-                first_Copy9,
-                first_Copy10,
-                first_Copy11,
-                first_Copy12,
-                first_Copy13,
-                
+
+
+            btn_lock.MouseEnter += (s, e) =>
+            {
+                Lock_Hovered(s,e);
+            };
+            btn_lock.MouseLeave += (s, e) =>
+            {
+                Lock_unHovered(s, e);
             };
 
-            List<Label> lbl2 = new List<Label>
-            {
-                first_Copy14,
-                first_Copy15,
-                first_Copy16,
-                first_Copy17,
-                first_Copy18,
-                first_Copy19,
-                first_Copy20,
-                first_Copy21,
-                first_Copy22,
-                first_Copy23,
-                first_Copy24,
-            };
+            
 
             Dictionary<Label, List<int>> dict = new Dictionary<Label, List<int>>{
     { first,        new List<int> { 206 - 400, 206 + 500, 1200} },
@@ -112,23 +90,23 @@ namespace EncodeX
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(100);
 
-            foreach (KeyValuePair<Label,List<int>> label in dict)
+            foreach (KeyValuePair<Label, List<int>> label in dict)
             {
                 animate(label.Key, label.Value[0], label.Value[1], label.Value[2]);
-                
-                    timer.Tick += (s, e) =>
-                    { Timer_text(label.Key, Random_text()); };
-                
-                
+
+                timer.Tick += (s, e) =>
+                { Timer_text(label.Key, Random_text()); };
+
+
 
             }
 
-            
+
 
             timer.Start();
-            
-            
-            
+
+
+
             Border_haha.MouseEnter += (s, e) =>
             {
                 animation(encrypt_btn);
@@ -185,7 +163,7 @@ namespace EncodeX
                 };
                 errorLabel.BeginAnimation(Canvas.LeftProperty, animX);
             };
-            
+
         }
         public void animation(FrameworkElement thing)
         {
@@ -360,7 +338,7 @@ namespace EncodeX
                 }
                 try
                 {
-                    encrypted_field.Text = await Task.Run(()=>encrypt_file(password, file, filePath));
+                    encrypted_field.Text = await Task.Run(() => encrypt_file(password, file, filePath));
                 }
                 catch (Exception ex)
                 {
@@ -420,10 +398,10 @@ namespace EncodeX
         }
 
 
-        
+
         private async void decrypt_txt(object sender, RoutedEventArgs e)
         {
-            
+
 
             string password = password_field.Text;
             string plainText = encrypted_field.Text;
@@ -453,10 +431,10 @@ namespace EncodeX
                 Border_pss.BorderBrush = color;
 
             }
-            
 
-             if (choice == "text")
-              {
+
+            if (choice == "text")
+            {
                 RectangleGeometry clip;
                 if (arrow1.Clip == null)
                 {
@@ -488,26 +466,26 @@ namespace EncodeX
 
                 };
                 clip.BeginAnimation(RectangleGeometry.RectProperty, anim);
-               
-                    }
-                    else
-                    {
+
+            }
+            else
+            {
                 string filePath;
-                
-                
+
+
                 Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     Filter = "All files (*.*)|*.*",
                     DefaultExt = ".txt",
                     AddExtension = false,
-                    FileName = get_name(password,file)
+                    FileName = get_name(password, file)
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    
-                        filePath = saveFileDialog.FileName;
-                        
-                    
+
+                    filePath = saveFileDialog.FileName;
+
+
                 }
                 filePath = saveFileDialog.FileName;
                 List<string> result = await Task.Run(() => decrypt_file(password, file, filePath));
@@ -520,7 +498,7 @@ namespace EncodeX
                     return;
                 }
                 progress2.Visibility = Visibility.Hidden;
-                
+
             }
 
 
@@ -566,7 +544,7 @@ namespace EncodeX
 
             try
             {
-                
+
                 this.Dispatcher.Invoke(() =>
                 {
                     encrypted_field.Text = "";
@@ -582,11 +560,11 @@ namespace EncodeX
                     button_files.IsEnabled = false;
                     button_password.IsEnabled = false;
                 });
-                
+
                 string encrypted;
                 string fileName = System.IO.Path.GetFileName(filePath);
-               
-                
+
+
                 byte[] salt = new byte[16];
                 using (var rng = RandomNumberGenerator.Create())
                 {
@@ -600,14 +578,14 @@ namespace EncodeX
                     aes.GenerateIV();
                     byte[] iv = aes.IV;
                     using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                    using (FileStream ms = new FileStream(destination, FileMode.Create, FileAccess.Write)) 
+                    using (FileStream ms = new FileStream(destination, FileMode.Create, FileAccess.Write))
                     {
                         ms.Write(salt, 0, salt.Length);
                         ms.Write(iv, 0, iv.Length);
                         byte[] fileNameBytes = Encoding.UTF8.GetBytes(fileName);
                         byte[] fileNameLengthBytes = BitConverter.GetBytes(fileNameBytes.Length);
-                        
-                        ms.Write(fileNameLengthBytes, 0,fileNameLengthBytes.Length);
+
+                        ms.Write(fileNameLengthBytes, 0, fileNameLengthBytes.Length);
                         using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
                         {
                             cs.Write(fileNameBytes, 0, fileNameBytes.Length);
@@ -619,13 +597,13 @@ namespace EncodeX
                             {
                                 cs.Write(buffer, 0, bytesRead);
                                 bytesread += bytesRead;
-                                double progress = (double)bytesread/totalbytes;
+                                double progress = (double)bytesread / totalbytes;
                                 this.Dispatcher.BeginInvoke(() =>
                                 {
                                     update_arrow(progress);
                                 });
                             }
-                            
+
                             cs.FlushFinalBlock();
                         }
                         String name = System.IO.Path.GetFileName(destination);
@@ -665,15 +643,15 @@ namespace EncodeX
                             button_files.IsEnabled = true;
                             button_password.IsEnabled = true;
                         });
-                        
+
                         return "File Path: " + destination + "\n" + "File Name: " + name + "\n" + "File size: " + sizeText;
                     }
-                    
+
 
                     ;
                 }
-                
-                
+
+
             }
             catch (Exception ex)
             {
@@ -683,7 +661,7 @@ namespace EncodeX
                 return "";
             }
         }
-        public String get_name(String password ,String filepath)
+        public String get_name(String password, String filepath)
         {
             byte[] encryptedBytes = new byte[36];
 
@@ -711,7 +689,7 @@ namespace EncodeX
 
                     using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read))
                     {
-                       
+
                         byte[] fileNameBytes = new byte[fileNameLength];
                         int totalRead = 0;
                         while (totalRead < fileNameLength)
@@ -793,10 +771,10 @@ namespace EncodeX
 
                         using (FileStream msContent = new FileStream(destination, FileMode.Create, FileAccess.Write))
                         {
-                            byte[] buffer = new byte[200*1024 * 1024];
+                            byte[] buffer = new byte[200 * 1024 * 1024];
                             long totalBytes = ms.Length;
                             int bytesRead;
-                            long total =0;
+                            long total = 0;
                             while ((bytesRead = cs.Read(buffer, 0, buffer.Length)) > 0)
                             {
                                 msContent.Write(buffer, 0, bytesRead);
@@ -805,7 +783,7 @@ namespace EncodeX
                                 this.Dispatcher.Invoke(() => update_arrow(progress));
                             }
 
-                            
+
                             Double size = new FileInfo(destination).Length;
                             String unit = "bytes";
                             if (size > 1024)
@@ -855,7 +833,7 @@ namespace EncodeX
                 {
                     this.Dispatcher.Invoke(() =>
                     {
-                        errorLabel.Content = "Error decrypting file" ;
+                        errorLabel.Content = "Error decrypting file";
                         errorLabel.Visibility = Visibility.Visible;
                     });
                     return new List<string> { "" };
@@ -913,10 +891,10 @@ namespace EncodeX
             {
                 button.Tag = button.ToolTip;
             }
-            
+
             object tt2 = button.Tag;
-            
-            
+
+
             DoubleAnimation opacity = new DoubleAnimation
             {
                 From = x,
@@ -924,7 +902,7 @@ namespace EncodeX
                 Duration = TimeSpan.FromMilliseconds(400)
             };
             button.BeginAnimation(FrameworkElement.OpacityProperty, opacity);
-            
+
             if (btn != null && y == 0.0)
             {
                 button.ToolTip = tt;
@@ -949,7 +927,7 @@ namespace EncodeX
                     Border_decrypt.RenderTransform = new TranslateTransform();
                 }
                 ;
-                
+
                 if (!(File_input.RenderTransform is TranslateTransform))
                 {
                     File_input.RenderTransform = new TranslateTransform();
@@ -961,7 +939,7 @@ namespace EncodeX
                 transform4.X = -405;
                 transform4.Y = 0;
                 var group = (TransformGroup)Select_file.RenderTransform;
-                
+
                 var transform42 = (TranslateTransform)group.Children[1];
                 transform42.X = 405;
                 transform42.Y = 0;
@@ -973,12 +951,12 @@ namespace EncodeX
                 opacity_anim(File_input, 0.0, 1.0);
                 opacity_anim(Select_folder, 1.0, 0.0);
                 Select_folder.Visibility = Visibility.Hidden;
-                
-                
+
+
             }
             mode = "decrypt";
             errorLabel.Visibility = Visibility.Hidden;
-            
+
             Random random = new Random();
             int[] options = [0, 360];
             int choice1 = options[random.Next(options.Length)];
@@ -998,17 +976,17 @@ namespace EncodeX
                 Duration = TimeSpan.FromMilliseconds(400)
             };
 
-            opacity_anim(Save, 1.0, 0.0,Save);
+            opacity_anim(Save, 1.0, 0.0, Save);
             opacity_anim(Save2, 0.0, 1.0);
-            opacity_anim(Copy, 1.0, 0.0,Copy);
+            opacity_anim(Copy, 1.0, 0.0, Copy);
             opacity_anim(Copy2, 0.0, 1.0);
-            opacity_anim(paste, 1.0, 0.0,paste);
+            opacity_anim(paste, 1.0, 0.0, paste);
             opacity_anim(paste2, 0.0, 1.0);
-            
+
             Copy2.Visibility = Visibility.Visible;
             Save2.Visibility = Visibility.Visible;
             paste2.Visibility = Visibility.Visible;
-            
+
             button_Decrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
             button_Encrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
             Border_encrypt.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
@@ -1066,10 +1044,11 @@ namespace EncodeX
             button_Decrypt.Tag = "Clicked";
             button_Encrypt.Tag = "Not Clicked";
 
-            if(choice != "text")
+            if (choice != "text")
             {
                 encrypted_field.IsReadOnly = true;
-            };
+            }
+            ;
             Select_file.Tag = "Blue";
         }
 
@@ -1125,14 +1104,14 @@ namespace EncodeX
             }
             input_field1.Text = "";
             mode = "encrypt";
-            if(choice != "text")
+            if (choice != "text")
             {
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
                 {
                     Border_decrypt.RenderTransform = new TranslateTransform();
                 }
                 ;
-                
+
 
                 if (!(File_input.RenderTransform is TranslateTransform))
                 {
@@ -1145,7 +1124,7 @@ namespace EncodeX
                 transform4.X = 1;
                 transform4.Y = 0;
                 var group = (TransformGroup)Select_file.RenderTransform;
-               
+
 
                 var transform42 = (TranslateTransform)group.Children[1];
                 transform42.X = -1;
@@ -1165,7 +1144,7 @@ namespace EncodeX
             int choice1 = options[random.Next(options.Length)];
             input_field.IsReadOnly = false;
             encrypted_field.IsReadOnly = true;
-            
+
 
 
             Anim2(input_field);
@@ -1181,11 +1160,11 @@ namespace EncodeX
                 To = Colors.Gray,
                 Duration = TimeSpan.FromMilliseconds(400)
             };
-            opacity_anim(Copy2, 1.0, 0.0,Copy2);
+            opacity_anim(Copy2, 1.0, 0.0, Copy2);
             opacity_anim(Copy, 0.0, 1.0);
-            opacity_anim(Save2, 1.0, 0.0,Save2);
+            opacity_anim(Save2, 1.0, 0.0, Save2);
             opacity_anim(Save, 0.0, 1.0);
-            opacity_anim(paste2, 1.0, 0.0,paste2);
+            opacity_anim(paste2, 1.0, 0.0, paste2);
             opacity_anim(paste, 0.0, 1.0);
             Copy.Visibility = Visibility.Visible;
             Save.Visibility = Visibility.Visible;
@@ -1259,7 +1238,7 @@ namespace EncodeX
             encrypted_field.Text = "";
 
             choice = "file";
-            
+
             Border_encrypt.Visibility = Visibility.Hidden;
             Select_folder.Visibility = Visibility.Visible;
             Select_file.Visibility = Visibility.Visible;
@@ -1270,8 +1249,9 @@ namespace EncodeX
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
                 {
                     Border_decrypt.RenderTransform = new TranslateTransform();
-                };
-                
+                }
+                ;
+
                 if (!(File_input.RenderTransform is TranslateTransform))
                 {
                     File_input.RenderTransform = new TranslateTransform();
@@ -1280,18 +1260,18 @@ namespace EncodeX
 
 
                 var transform = (TranslateTransform)Border_decrypt.RenderTransform;
-                transform.X = -405; 
+                transform.X = -405;
                 transform.Y = 0;
                 var group = (TransformGroup)Select_file.RenderTransform;
-               
+
                 var transform2 = (TranslateTransform)group.Children[1];
                 transform2.X = 405;
                 transform2.Y = 0;
                 var transform3 = (TranslateTransform)File_input.RenderTransform;
                 transform3.X = 405;
                 transform3.Y = 0;
-                opacity_anim(Border_decrypt,0.0, 1.0);
-                opacity_anim(Select_file,0.0 ,1.0);
+                opacity_anim(Border_decrypt, 0.0, 1.0);
+                opacity_anim(Select_file, 0.0, 1.0);
                 opacity_anim(File_input, 0.0, 1.0);
                 Select_folder.Tag = "Blue";
                 Select_file.Tag = "Blue";
@@ -1318,13 +1298,13 @@ namespace EncodeX
             encrypted_field.Text = "";
             if (choice != "text")
             {
-                
+
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
                 {
                     Border_decrypt.RenderTransform = new TranslateTransform();
                 }
                 ;
-               
+
 
                 if (!(File_input.RenderTransform is TranslateTransform))
                 {
@@ -1337,7 +1317,7 @@ namespace EncodeX
                 transform4.X = 1;
                 transform4.Y = 0;
                 var group = (TransformGroup)Select_file.RenderTransform;
-              
+
                 var transform42 = (TranslateTransform)group.Children[1];
                 transform42.X = -1;
                 transform42.Y = 0;
@@ -1345,8 +1325,8 @@ namespace EncodeX
                 transform43.X = -1;
                 transform43.Y = 0;
                 opacity_anim(Border_decrypt, 0.0, 1.0);
-                
-                
+
+
             }
             opacity_anim(Select_folder, 1.0, 0.0);
             opacity_anim(Select_file, 1.0, 0.0);
@@ -1358,7 +1338,7 @@ namespace EncodeX
             {
                 input_field.IsReadOnly = false;
             }
-            
+
             Border_encrypt.Visibility = Visibility.Visible;
             Select_file.Visibility = Visibility.Hidden;
             Select_folder.Visibility = Visibility.Hidden;
@@ -1370,9 +1350,10 @@ namespace EncodeX
 
             if (mode == "decrypt")
             {
-               
+
                 encrypted_field.IsReadOnly = false;
-            };
+            }
+            ;
 
         }
 
@@ -1401,28 +1382,29 @@ namespace EncodeX
             else
             {
                 Clipboard.SetText(encrypted_field.Text);
-            };
+            }
+            ;
 
-                ToolTip tt = new ToolTip
-                {
-                    Content = "Copied to Clipboard!",
-                    IsOpen = true,
-                    StaysOpen = false,
-                    PlacementTarget = Copy2,
-                    Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom,
-                    Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2563EB")),
-                    Foreground = Brushes.White,
-                    FontFamily = new FontFamily("Arial Black"),
-                    FontSize = 11
-                };
+            ToolTip tt = new ToolTip
+            {
+                Content = "Copied to Clipboard!",
+                IsOpen = true,
+                StaysOpen = false,
+                PlacementTarget = Copy2,
+                Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom,
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2563EB")),
+                Foreground = Brushes.White,
+                FontFamily = new FontFamily("Arial Black"),
+                FontSize = 11
+            };
         }
-        
+
         private void Select_(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
-                
+
                 try
                 {
                     string filePath = openFileDialog.FileName;
@@ -1432,7 +1414,7 @@ namespace EncodeX
                 }
                 catch (Exception ex)
                 {
-                    errorLabel.Content = "Error reading file" ;
+                    errorLabel.Content = "Error reading file";
                     errorLabel.Visibility = Visibility.Visible;
                 }
             }
@@ -1482,7 +1464,7 @@ namespace EncodeX
             {
                 input_field1.Text = Clipboard.GetText();
             }
-            
+
         }
 
         private void Save_File(object sender, RoutedEventArgs e)
@@ -1531,7 +1513,7 @@ namespace EncodeX
                     }
                 }
             }
-            
+
         }
 
         private void Save_File2(object sender, RoutedEventArgs e)
@@ -1584,13 +1566,13 @@ namespace EncodeX
         }
 
 
-        
-        
-        public void update_arrow(double progress) 
+
+
+        public void update_arrow(double progress)
         {
             Rect rect;
             var parada = progress1;
-            if(mode == "encrypt")
+            if (mode == "encrypt")
             { parada = progress1; }
             else
             { parada = progress2; }
@@ -1603,7 +1585,7 @@ namespace EncodeX
             {
                 rect = ((RectangleGeometry)parada.Clip).Rect;
             }
-                parada.Visibility = Visibility.Visible;
+            parada.Visibility = Visibility.Visible;
 
             RectangleGeometry clip;
             if (parada.Clip == null)
@@ -1615,23 +1597,23 @@ namespace EncodeX
             {
                 clip = (RectangleGeometry)parada.Clip;
             }
-            
-            
+
+
 
 
             RectAnimation anim = new RectAnimation
             {
                 From = rect,
-                To = new Rect(totalWidth * (1-progress), 0, totalWidth, parada.Height),
+                To = new Rect(totalWidth * (1 - progress), 0, totalWidth, parada.Height),
                 Duration = TimeSpan.FromMilliseconds(500),
                 FillBehavior = FillBehavior.HoldEnd,
             };
 
-            
+
             clip.BeginAnimation(RectangleGeometry.RectProperty, anim);
         }
 
-        public string  Encrypt_folder(String password,String folder,String destination)
+        public string Encrypt_folder(String password, String folder, String destination)
         {
 
             try
@@ -1651,12 +1633,12 @@ namespace EncodeX
                     button_files.IsEnabled = false;
                     button_password.IsEnabled = false;
                 });
-                
+
 
                 String encrypted;
-                String fileName = System.IO.Path.GetFileName(folder) +".zip";
+                String fileName = System.IO.Path.GetFileName(folder) + ".zip";
 
-                
+
                 byte[] salt = new byte[16];
                 using (var rng = RandomNumberGenerator.Create())
                 {
@@ -1668,9 +1650,9 @@ namespace EncodeX
                 {
                     aes.Key = key;
                     aes.GenerateIV();
-                    
+
                     byte[] iv = aes.IV;
-                    
+
                     using FileStream fs2 = new FileStream(destination, FileMode.Create, FileAccess.Write);
                     {
 
@@ -1713,10 +1695,10 @@ namespace EncodeX
                                     });
                                 }
                             }
-                        
-                        cs.FlushFinalBlock();
-                    }
-                        
+
+                            cs.FlushFinalBlock();
+                        }
+
                     }
 
 
@@ -1759,25 +1741,25 @@ namespace EncodeX
                     button_files.IsEnabled = true;
                     button_password.IsEnabled = true;
                 });
-               
-                return "File Path: "+destination + "\n" +"File Name: "+name+"\n"+"File size: "+sizeText;
+
+                return "File Path: " + destination + "\n" + "File Name: " + name + "\n" + "File size: " + sizeText;
             }
             catch (Exception ex)
             {
                 this.Dispatcher.Invoke(() =>
                 errorLabel.Content = "Error encrypting folder",
                 errorLabel.Visibility = Visibility.Visible);
-                
+
                 return "";
             }
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-           
+
             DoubleAnimation opac = new DoubleAnimation
             {
-                From =1.0 ,
+                From = 1.0,
                 To = 0.0,
                 Duration = TimeSpan.FromMilliseconds(300),
                 FillBehavior = FillBehavior.Stop,
@@ -1798,19 +1780,19 @@ namespace EncodeX
             button_password.BeginAnimation(OpacityProperty, opac2);
             button_Encrypt.BeginAnimation(OpacityProperty, opac2);
 
-            opac.Completed += (s, e) => 
+            opac.Completed += (s, e) =>
             {
                 MainFrame.Visibility = Visibility.Collapsed;
                 First.Visibility = Visibility.Collapsed;
                 Lock.Visibility = Visibility.Collapsed;
-                
+
 
             };
 
             MainFrame.BeginAnimation(OpacityProperty, opac);
             Lock.BeginAnimation(OpacityProperty, opac);
             First.BeginAnimation(OpacityProperty, opac);
-            
+
         }
 
         public static String Random_text()
@@ -1818,22 +1800,23 @@ namespace EncodeX
             String output = "";
             String choices = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+/";
             var ran = new Random();
-            for (int i = 0; i < 15; i++) 
+            for (int i = 0; i < 15; i++)
             {
                 char next = choices[ran.Next(choices.Length)];
                 output += "\n";
                 output += next;
-            };
+            }
+            ;
             return output;
 
         }
         public void Timer_text(Label lbl, String text)
         {
             lbl.Content = text;
-            
+
         }
 
-         public void animate (Label label, int x, int y, int t)
+        public void animate(Label label, int x, int y, int t)
         {
             ThicknessAnimation mov = new ThicknessAnimation
             {
@@ -1850,7 +1833,7 @@ namespace EncodeX
             Lock.RenderTransform = new ScaleTransform(1, 1);
             DoubleAnimation scale = new DoubleAnimation
             {
-                From = 1.0,
+                
                 To = 1.3,
                 Duration = TimeSpan.FromMilliseconds(400)
             };
@@ -1868,7 +1851,109 @@ namespace EncodeX
             };
 
             ((ScaleTransform)Lock.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, scale2);
-            ((ScaleTransform)Lock.RenderTransform).BeginAnimation (ScaleTransform.ScaleXProperty, scale2);
+            ((ScaleTransform)Lock.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, scale2);
+        }
+
+        public void hover_txt(Button btn, String x, int d)
+        {
+            btn.Content = x;
+            btn.FontSize = d;
+        }
+
+        public void reset(Dictionary<Button, List<String>> dict)
+        {
+            DoubleAnimation opac = new DoubleAnimation
+            {
+                To = 0.0,
+                Duration = TimeSpan.FromMilliseconds(400)
+            }; 
+            foreach(KeyValuePair<Button,List<String>> k in dict)
+            {
+                k.Key.BeginAnimation(OpacityProperty, opac);
+                opac.Completed += (sender, e) =>
+                {
+                    k.Key.Visibility = Visibility.Collapsed;
+                };
+            }
+            Encrypted.BeginAnimation(OpacityProperty, opac);
+            
+            Decrypted.Visibility = Visibility.Visible;
+            Instructions.BeginAnimation(OpacityProperty, opac);
+        }
+        public void get_key(object sender, RoutedEventArgs e) 
+        {
+            Dictionary<Button, List<String>> text_dict = new Dictionary<Button, List<String>>
+            {
+                { D,  new List<string> { "X", "D" } },
+    { a3,  new List<string> { "q", "a" } },
+    { t3,  new List<string> { "9", "t" } },
+    { a2, new List<string> { "A", "a" } },
+    { m,  new List<string> { "k", "m" } },
+    { a, new List<string> { "P", "a" } },
+    { t2, new List<string> { "7", "t" } },
+    { t, new List<string> { "L", "t" } },
+    { e2,  new List<string> { "r", "e" } },
+    { r2,  new List<string> { "T", "r" } },
+    { s,  new List<string> { "z", "s" } },
+    { S,  new List<string> { "Z", "S" } },
+    { e10, new List<string> { "R", "e" } },
+    { c,  new List<string> { "4", "c" } },
+    { u,  new List<string> { "u", "u" } },
+    { r, new List<string> { "@", "r" } },
+    { i,  new List<string> { "T", "i" } },
+    { t8, new List<string> { "1", "t" } },
+    { y,  new List<string> { "Q", "y" } },
+    { f,  new List<string> { "Q", "f" } },
+    { i3, new List<string> { "m", "i" } },
+    { r5, new List<string> { "8", "r" } },
+    { s3, new List<string> { "s", "s" } },
+    { t7, new List<string> { "N", "t" } },
+    { E,  new List<string> { "9", "E" } },
+    { n2,  new List<string> { "F", "n" } },
+    { c4, new List<string> { "q", "c" } },
+    { r3, new List<string> { "L", "r" } },
+    { y2, new List<string> { "2", "y" } },
+    { p,  new List<string> { "o", "p" } },
+    { t4, new List<string> { "x", "t" } },
+    { a5, new List<string> { "a", "a" } },
+    { n, new List<string> { "z", "n" } },
+    { d, new List<string> { "7", "d" } },
+    { d2, new List<string> { "R", "d" } },
+    { e3, new List<string> { "n", "e" } },
+    { c2, new List<string> { "4", "c" } },
+    { r4, new List<string> { "r", "r" } },
+    { y3, new List<string> { "1", "y" } },
+    { p2, new List<string> { "p", "p" } },
+    { t5, new List<string> { "z", "t" } },
+    { w, new List<string> { "u", "w" } },
+    { i2, new List<string> { "T", "i" } },
+    { t6, new List<string> { "8", "t" } },
+    { h, new List<string> { "K", "h" } },
+    { e4, new List<string> { "E", "e" } },
+    { a4, new List<string> { "2", "a" } },
+    { s2, new List<string> { "s", "s" } },
+    { e6, new List<string> { "9", "e" } },
+            };
+
+            foreach (KeyValuePair<Button, List<String>> b in text_dict)
+            {
+
+                b.Key.MouseEnter += (sender, e) => hover_txt(b.Key, b.Value[1], 25);
+                b.Key.MouseLeave += (sender, e) => hover_txt(b.Key, b.Value[0], 20);
+                b.Key.Click += (sender, e) => reset(text_dict);
+
+
+            }
+
+            string cursorPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icons", "cursor.cur");
+            Lock.Cursor = new Cursor(cursorPath);
+            btn_lock.Cursor = new Cursor(cursorPath);
+            Encrypted.Cursor = new Cursor(cursorPath);
+            foreach (KeyValuePair<Button, List<String>> k in text_dict)
+            {
+                k.Key.Cursor = new Cursor(cursorPath);
+            }
+            Instructions.Content = "Click to see the magic!";   
         }
     }
 }
