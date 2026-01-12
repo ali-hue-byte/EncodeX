@@ -1844,5 +1844,31 @@ namespace EncodeX
             };
             label.BeginAnimation(Label.MarginProperty, mov);
         }
+        public void Lock_Hovered(object sender, MouseEventArgs e)
+        {
+            Lock.RenderTransformOrigin = new Point(0.5, 0.5);
+            Lock.RenderTransform = new ScaleTransform(1, 1);
+            DoubleAnimation scale = new DoubleAnimation
+            {
+                From = 1.0,
+                To = 1.3,
+                Duration = TimeSpan.FromMilliseconds(400)
+            };
+
+            ((ScaleTransform)Lock.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, scale);
+            ((ScaleTransform)Lock.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, scale);
+        }
+
+        public void Lock_unHovered(object sender, MouseEventArgs e)
+        {
+            DoubleAnimation scale2 = new DoubleAnimation
+            {
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(400)
+            };
+
+            ((ScaleTransform)Lock.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, scale2);
+            ((ScaleTransform)Lock.RenderTransform).BeginAnimation (ScaleTransform.ScaleXProperty, scale2);
+        }
     }
 }
