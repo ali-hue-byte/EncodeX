@@ -25,6 +25,7 @@ using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
 using System.Timers;
 using System.CodeDom;
+using System.Text;
 
 namespace EncodeX
 {
@@ -34,9 +35,15 @@ namespace EncodeX
 
     public partial class MainWindow : Window
     {
+        private List<System.Timers.Timer> activeTimers = new List<System.Timers.Timer>();
+
         private System.Timers.Timer timing;
         private System.Timers.Timer timing3;
         private System.Timers.Timer timing2;
+        private System.Timers.Timer timing4;
+        private System.Timers.Timer timing5;
+        private System.Timers.Timer timing6;
+        private System.Timers.Timer timing7;
         System.Timers.Timer timing3_1;
         bool gotten_key = false;
         string mode = "encrypt";
@@ -253,6 +260,7 @@ namespace EncodeX
             List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
 
             String txt = input_field.Text;
+            List<Rune> runes = txt.EnumerateRunes().ToList();
             DoubleAnimation oopac = new DoubleAnimation
             {
                 From = 0.0,
@@ -278,14 +286,14 @@ namespace EncodeX
             title.Visibility = Visibility.Visible;
             info.Visibility = Visibility.Visible;
 
-            int it = txt.Length;
+            int it = runes.Count;
             if (it > 16)
             {
                 it = 16;
             }
             for (int i=0; i < it; i++)
             {
-                char c = txt[i];
+                Rune c = runes[i];
                 labels_txt[i].Content = c;
                 labels_txt[i].BeginAnimation(OpacityProperty, oopac);
                 labels_txt[i].Visibility = Visibility.Visible;
@@ -299,6 +307,7 @@ namespace EncodeX
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => {
                     System.Timers.Timer timer = new System.Timers.Timer(1500*(index+1));
                     timer.AutoReset = false;
+                    activeTimers.Add(timer);
                     timer.Elapsed += (s, e) =>
                     {
                         System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -321,7 +330,7 @@ namespace EncodeX
                                 };
 
                             string to_show = "";
-                            char c = txt[index];
+                            Rune c = runes[index];
                             byte[] b = Encoding.UTF8.GetBytes(c.ToString());
                             foreach (byte c2 in b)
                             {
@@ -347,7 +356,486 @@ namespace EncodeX
 
                 })); }
         }
-        
+        public void action2()
+        {
+            
+            foreach (var timer in activeTimers)
+            {
+                timer.Stop();
+                timer.Dispose();
+            }
+            activeTimers.Clear();
+            Arr.Visibility = Visibility.Hidden;
+            List<Label> labels_txt = new List<Label> { str_1, str_2, str_3, str_4, str_5, str_6, str_7, str_8, str_9, str_10, str_11, str_12, str_13, str_14, str_15, str_16 };
+            List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
+            foreach (Label label in labels_txt) 
+            {
+                label.Visibility = Visibility.Hidden;
+
+            }
+            foreach (Label label in labels_b)
+            {
+                label.Visibility = Visibility.Hidden;
+
+            }
+
+            opacity_anim(info, 1.0, 0.0);
+            opacity_anim(title, 1.0, 0.0);
+            title.Content = "2. Padding";
+            info.Content = "AES encryption works on fixed-size 16-byte blocks, meaning  \n" +
+                "that the algorithm can only process data in chunks of exactly 16 \n" +
+                "bytes.\n" +
+                "After converting text into bytes, the byte array representing \n" +
+                "your text may not always be a multiple of 16 bytes, especially \n" +
+                "if the text length is short or if it contains characters that \n" +
+                "use multiple bytes in UTF-8. \n" +
+                "To ensure that each block is exactly 16 bytes, we add  \n" +
+                "padding to the last block. \n" +
+                "Padding is a set of extra bytes appended to the byte array \n" +
+                "to fill out the block to 16 bytes. Without padding, AES \n" +
+                "would not be able to encrypt the last block \n" +
+                "properly, and the encryption would fail or produce incorrect \n" +
+                "results.\n" +
+                "\n" +
+                "Note: If the last block is already 16 bytes, a full extra block of \n" +
+                "padding is added.";
+            opacity_anim(info, 0.0, 1.0);
+            opacity_anim(title, 0.0, 1.0);
+        }
+
+        public void actions3()
+        {
+            String txt = input_field.Text;
+            byte[] c = Encoding.UTF8.GetBytes(txt);
+            opacity_anim(info, 1.0, 0.0);
+
+            info.Content = "There are several common padding schemes : (dec= decimal) \n" +
+
+    "1. **PKCS7 / CMS Padding**:\n" +
+    "   - Each added byte is the number of padding bytes. \n" +
+    "   - If 11 bytes are needed, each byte = 0x0B hex (11 dec).\n" +
+    "   - Pros: Widely used, unambiguous.\n" +
+
+    "2. **Bit / ISO 7816-4 Padding**:\n" +
+    "   - First byte = 0x80 hex (80 dec), remaining bytes = 0x00.\n" +
+    "   - Pros: Simple, often used in smart cards.\n" +
+
+    "3. **Zero Padding**:\n" +
+    "   - Fills remaining bytes with 0x00 hex (0 dec).\n" +
+    "   - Note: Can be ambiguous if plaintext ends with zeros.\n" +
+
+    "4. **Null Padding**:\n" +
+    "   - Same as Zero Padding, used for text or string data.\n" +
+
+    "5. **Space Padding**:\n" +
+    "   - Fills remaining bytes with ASCII spaces = 0x20 (32 dec).\n" +
+    "   - Only suitable if plaintext doesn’t end with spaces.\n"
+             
+    ;
+            String last16;
+            if (txt.Length >= 16)
+            {
+                int start = ((txt.Length / 16) * 16);
+                last16 = txt.Substring(start);
+                if (last16 == "")
+                {
+                    last16 = txt.Substring(txt.Length-16);
+                }
+            }
+            else
+            {
+                last16 = txt; 
+            }
+
+
+            opacity_anim(info, 0.0, 1.0);
+
+            String str_to_show = "";
+            byte[] bytes_last16 = Encoding.UTF8.GetBytes(last16);
+            byte[] ss = pad1(bytes_last16);
+            if (ss.Length == 16)
+            {
+                pad_info1_Copy.Content = "Last Block : " + last16 ;
+                pad_info1.Content = "Padding needed : "+(16-bytes_last16.Length).ToString();
+                pad_info2.Content = "Number of Bytes : "+ (bytes_last16.Length).ToString();
+                str_to_show += "[";
+                str_to_show += string.Join(", ",ss);
+                str_to_show += "]";
+            }
+            else
+            {
+                pad_info1_Copy.Content = "Last Block : "+last16;
+                pad_info1.Content = "Padding needed : "+ "16";
+                pad_info2.Content = "Number of Bytes : " + (bytes_last16.Length).ToString();
+                byte[] first = new byte[16];
+                byte[] second = new byte[16];
+                Array.Copy(ss, 0, first, 0, 16);
+                Array.Copy(ss,16, second, 0, 16);
+                str_to_show += "[";
+                str_to_show += string.Join(", ", first);
+                str_to_show += "]\n";
+                str_to_show += "[";
+                str_to_show += string.Join(", ", second);
+                str_to_show += "]";
+
+            }
+
+                System.Timers.Timer timing = new System.Timers.Timer(400);
+            timing.AutoReset = false;
+            timing.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    pad_show.Content = str_to_show;
+                    opacity_anim(pad_show, 0.0, 1.0);
+                    opacity_anim(pad_info1_Copy, 0.0, 1.0);
+                    pad_info1_Copy.Visibility = Visibility.Visible;
+                    pad_show.Visibility = Visibility.Visible;
+                    opacity_anim(pad_info1, 0.0, 1.0);
+                    pad_info1.Visibility = Visibility.Visible;
+                    opacity_anim(pad_info2, 0.0, 1.0);
+                    pad_info2.Visibility = Visibility.Visible;
+
+                    String str_to_show_2 = "";
+                    byte[] ss2 = pad2(bytes_last16);
+                    if (ss2.Length == 16)
+                    {
+
+                        str_to_show_2 += "[";
+                        str_to_show_2 += string.Join(", ", ss2);
+                        str_to_show_2 += "]";
+                    }
+                    else
+                    {
+
+                        byte[] first = new byte[16];
+                        byte[] second = new byte[16];
+                        Array.Copy(ss2, 0, first, 0, 16);
+                        Array.Copy(ss2, 16, second, 0, 16);
+                        str_to_show_2 += "[";
+                        str_to_show_2 += string.Join(", ", first);
+                        str_to_show_2 += "]\n";
+                        str_to_show_2 += "[";
+                        str_to_show_2 += string.Join(", ", second);
+                        str_to_show_2 += "]";
+                    }
+
+                        System.Timers.Timer timing2 = new System.Timers.Timer(5000);
+                        timing2.AutoReset = false;
+                        timing2.Elapsed += (s, e) =>
+                        {
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                pad_show.Margin = new Thickness(pad_show.Margin.Left ,pad_show.Margin.Top+90, pad_show.Margin.Right, pad_show.Margin.Bottom-90);
+                                pad_show.Content = str_to_show_2;
+                                opacity_anim(pad_show, 0.0, 1.0);
+                                
+                                pad_show.Visibility = Visibility.Visible;
+
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    pad_show.Content = str_to_show_2;
+                                    opacity_anim(pad_show, 0.0, 1.0);
+                                    
+                                    pad_show.Visibility = Visibility.Visible;
+                                    
+
+                                    String str_to_show_3 = "";
+                                    byte[] ss3 = pad3(bytes_last16);
+                                    if (ss3.Length == 16)
+                                    {
+
+                                        str_to_show_3 += "[";
+                                        str_to_show_3 += string.Join(", ", ss3);
+                                        str_to_show_3 += "]";
+                                    }
+                                    else
+                                    {
+
+                                        byte[] first = new byte[16];
+                                        byte[] second = new byte[16];
+                                        Array.Copy(ss3, 0, first, 0, 16);
+                                        Array.Copy(ss3, 16, second, 0, 16);
+                                        str_to_show_3 += "[";
+                                        str_to_show_3 += string.Join(", ", first);
+                                        str_to_show_3 += "]\n";
+                                        str_to_show_3 += "[";
+                                        str_to_show_3 += string.Join(", ", second);
+                                        str_to_show_3 += "]";
+                                    }
+
+                                    System.Timers.Timer timing22 = new System.Timers.Timer(5000);
+                                    timing22.AutoReset = false;
+                                    timing22.Elapsed += (s, e) =>
+                                    {
+                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
+                                            pad_show.Content = str_to_show_3;
+                                            opacity_anim(pad_show, 0.0, 1.0);
+
+                                            pad_show.Visibility = Visibility.Visible;
+
+
+                                            String str_to_show_4 = "";
+                                            byte[] ss4 = pad4(bytes_last16);
+                                            if (ss4.Length == 16)
+                                            {
+
+                                                str_to_show_4 += "[";
+                                                str_to_show_4 += string.Join(", ", ss4);
+                                                str_to_show_4 += "]";
+                                            }
+                                            else
+                                            {
+
+                                                byte[] first = new byte[16];
+                                                byte[] second = new byte[16];
+                                                Array.Copy(ss4, 0, first, 0, 16);
+                                                Array.Copy(ss4, 16, second, 0, 16);
+                                                str_to_show_4 += "[";
+                                                str_to_show_4 += string.Join(", ", first);
+                                                str_to_show_4 += "]\n";
+                                                str_to_show_4 += "[";
+                                                str_to_show_4 += string.Join(", ", second);
+                                                str_to_show_4 += "]";
+                                            }
+                                        System.Timers.Timer timing222 = new System.Timers.Timer(5000);
+                                        timing222.AutoReset = false;
+                                            timing222.Elapsed += (s, e) =>
+                                            {
+                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                {
+                                                    pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 80, pad_show.Margin.Right, pad_show.Margin.Bottom - 80);
+                                                    pad_show.Content = str_to_show_4;
+                                                    opacity_anim(pad_show, 0.0, 1.0);
+
+                                                    pad_show.Visibility = Visibility.Visible;
+
+
+                                                    String str_to_show_5 = "";
+                                                    byte[] ss5 = pad5(bytes_last16);
+                                                    if (ss5.Length == 16)
+                                                    {
+
+                                                        str_to_show_5 += "[";
+                                                        str_to_show_5 += string.Join(", ", ss5);
+                                                        str_to_show_5 += "]";
+                                                    }
+                                                    else
+                                                    {
+
+                                                        byte[] first = new byte[16];
+                                                        byte[] second = new byte[16];
+                                                        Array.Copy(ss5, 0, first, 0, 16);
+                                                        Array.Copy(ss5, 16, second, 0, 16);
+                                                        str_to_show_5 += "[";
+                                                        str_to_show_5 += string.Join(", ", first);
+                                                        str_to_show_5 += "]\n";
+                                                        str_to_show_5 += "[";
+                                                        str_to_show_5 += string.Join(", ", second);
+                                                        str_to_show_5 += "]";
+                                                    }
+                                                    System.Timers.Timer timing2222 = new System.Timers.Timer(5000);
+                                                    timing2222.AutoReset = false;
+                                                    timing2222.Elapsed += (s, e) =>
+                                                    {
+                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                        {
+                                                            pad_show.Margin = new Thickness(pad_show.Margin.Left, 206, pad_show.Margin.Right, 0);
+                                                            pad_show.Content = str_to_show_5;
+                                                            opacity_anim(pad_show, 0.0, 1.0);
+                                                            opacity_anim(info,0.0,1.0);
+                                                            info.Content = "6. **Random Padding**:\n- Fills remaining bytes with random values.\n- Often combined with other encryption modes to add \nextra randomness.\n \n \nAfter padding, AES can safely encrypt the full 16-byte blocks, \nand the ciphertext can later be decrypted correctly, \nremoving the padding automatically.";
+                                                        });
+                                                    }; timing2222.Start();
+                                                    activeTimers.Add(timing2222);
+                                                });
+                                                
+                                            };timing222.Start();
+                                            activeTimers.Add(timing222);
+                                        });
+                                    };
+                                    timing22.Start();
+                                    activeTimers.Add(timing22);
+
+                                });
+
+                            });
+                        };
+                    timing2.Start();
+                    activeTimers.Add(timing2);
+
+                });
+                };
+            timing.Start();
+            activeTimers.Add(timing);
+
+
+
+        }
+
+        public byte[] pad1(byte[] c)
+        {
+            byte[] result;
+            if (c.Length == 16)
+            {
+                result = new byte[32];
+                byte[] arr = new byte[16];
+                
+                Array.Copy(c, 0, arr, 0, c.Length);
+                for(int i =0; i < 16; i++)
+                {
+                    result[i] = (byte)(arr[i]);
+                }
+                for (int i = 16; i < 32; i++)
+                {
+                    result[i] = (byte)(16);
+                }
+
+            }
+            else
+            {
+                result = new byte[16];
+                Array.Copy(c,0, result, 0, c.Length);
+                for(int i = c.Length;i<16;i++)
+                {
+                    result[i] = (byte)(16-c.Length);
+                }
+            }
+            return result;
+        }
+
+        public byte[] pad3(byte[] c)
+        {
+            byte[] result;
+            if (c.Length == 16)
+            {
+                result = new byte[32];
+                byte[] arr = new byte[16];
+
+                Array.Copy(c, 0, arr, 0, c.Length);
+                for (int i = 0; i < 16; i++)
+                {
+                    result[i] = (byte)(arr[i]);
+                }
+                for (int i = 16; i < 32; i++)
+                {
+                    result[i] = (byte)(0);
+                }
+
+            }
+            else
+            {
+                result = new byte[16];
+                Array.Copy(c, 0, result, 0, c.Length);
+                for (int i = c.Length; i < 16; i++)
+                {
+                    result[i] = (byte)(0);
+                }
+            }
+            return result;
+        }
+
+        public byte[] pad2(byte[] c)
+        {
+            byte[] result;
+            if (c.Length == 16)
+            {
+                result = new byte[32];
+                byte[] arr = new byte[16];
+
+                Array.Copy(c, 0, arr, 0, c.Length);
+                for (int i = 0; i < 16; i++)
+                {
+                    result[i] = (byte)(arr[i]);
+                }
+                result[16] = 80;
+                for (int i = 17; i < 32; i++)
+                {
+                    result[i] = (byte)(0);
+                }
+
+            }
+            else
+            {
+                result = new byte[16];
+                Array.Copy(c, 0, result, 0, c.Length);
+                result[c.Length] = 80;
+                for (int i = c.Length+1; i < 16; i++)
+                {
+                    result[i] = (byte)(0);
+                }
+            }
+            return result;
+        }
+
+        public byte[] pad4(byte[] c)
+        {
+            byte[] result;
+            if (c.Length == 16)
+            {
+                result = new byte[32];
+                byte[] arr = new byte[16];
+
+                Array.Copy(c, 0, arr, 0, c.Length);
+                for (int i = 0; i < 16; i++)
+                {
+                    result[i] = (byte)(arr[i]);
+                }
+                for (int i = 16; i < 32; i++)
+                {
+                    result[i] = (byte)(32);
+                }
+
+            }
+            else
+            {
+                result = new byte[16];
+                Array.Copy(c, 0, result, 0, c.Length);
+                for (int i = c.Length; i < 16; i++)
+                {
+                    result[i] = (byte)(32);
+                }
+            }
+            return result;
+        }
+
+        public byte[] pad5(byte[] c)
+        {
+            byte[] result;
+            if (c.Length == 16)
+            {
+                result = new byte[32];
+                byte[] arr = new byte[16];
+
+                Array.Copy(c, 0, arr, 0, c.Length);
+                for (int i = 0; i < 16; i++)
+                {
+                    result[i] = (byte)(arr[i]);
+                }
+                for (int i = 16; i < 32; i++)
+                {
+                    Random n = new Random();
+                    int next = n.Next(0,256);
+                    result[i] = (byte)(next);
+                }
+
+            }
+            else
+            {
+                result = new byte[16];
+                Array.Copy(c, 0, result, 0, c.Length);
+                for (int i = c.Length; i < 16; i++)
+                {
+                    Random n = new Random();
+                    int next = n.Next(0, 256);
+                    result[i] = (byte)(next);
+                }
+            }
+            return result;
+        }
+
         public async void Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -637,6 +1125,26 @@ namespace EncodeX
                                         {
                                             skipping += 1;
                                             action1();
+                                            timing4 = new System.Timers.Timer(25000);
+                                            timing4.AutoReset = false;
+                                            timing4.Elapsed += (s, e) =>
+                                            {
+                                                System.Windows.Application.Current.Dispatcher.Invoke(() => 
+                                                {
+                                                    skipping += 1;
+                                                    action2();
+                                                    timing5 = new System.Timers.Timer(10000);
+                                                    timing5.AutoReset = false;
+                                                    timing5.Elapsed += (s, e) =>
+                                                    {
+                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                        {
+                                                            skipping += 1;
+                                                            actions3();
+                                                        });
+                                                    };timing5.Start();
+                                                } );
+                                            };timing4.Start();
                                         });
                                     };
                                     timing3.Start();
@@ -698,14 +1206,69 @@ namespace EncodeX
                 {
                     skipping += 1;
                     timing3_1.Stop();
-                    
-                }else if ( timing3 != null)
+                    timing3_1.Dispose();
+
+                }
+                else if ( timing3 != null)
                 {
                     skipping += 1;
                     timing3.Stop();
                     
                 }
                 action1();
+                timing3_1 = new System.Timers.Timer(25000);
+                timing3_1.AutoReset = false;
+                timing3_1.Elapsed += (s, e) =>
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        action2();
+                    }));
+                };
+                timing3_1.Start();
+            }else if (skipping == 2)
+            {
+                if (timing3_1 != null)
+                {
+                    skipping += 1;
+                    timing3_1.Stop();
+                    timing3_1.Dispose();
+
+                }
+                else if (timing4 != null)
+                {
+                    skipping += 1;
+                    timing4.Stop();
+
+                }
+                action2();
+                timing3_1 = new System.Timers.Timer(25000);
+                timing3_1.AutoReset = false;
+                timing3_1.Elapsed += (s, e) =>
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        actions3();
+                    }));
+                };
+                timing3_1.Start();
+            }else if (skipping == 3)
+            {
+                if (timing3_1 != null)
+                {
+                    skipping += 1;
+                    timing3_1.Stop();
+                    timing3_1.Dispose();
+
+                }
+                else if (timing5 != null)
+                {
+                    skipping += 1;
+                    timing5.Stop();
+
+                }
+                actions3();
+                
             }
 
             
