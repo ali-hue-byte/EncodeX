@@ -13,10 +13,16 @@ A simple app to **encrypt and decrypt text or files**, keeping your information 
 - Modern UI built with XAML and WPF
 - Color Changing animations 
 - Large files support
+- A page to learn how **Encryption** works *(in progress...)* 
 
 
 ---
 
+### Upcoming Features
+- Decryption simulation
+
+
+---
 ### Installation / How to Run
 
 You can run EncodeX in two ways:
