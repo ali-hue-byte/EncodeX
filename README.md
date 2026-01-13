@@ -1,6 +1,6 @@
 # EncodeX 🔒
 
-A simple app to **encrypt and decrypt text or files**, keeping your information secure and private with just a few clicks.  
+A simple app to **encrypt and decrypt text or files**, keeping your information secure and private with just a few clicks, and helps you learn how encryption works see encryption in action — explore and understand data security visually!
 
 
 ---
@@ -28,7 +28,7 @@ A simple app to **encrypt and decrypt text or files**, keeping your information 
 You can run EncodeX in two ways:
 
 1. **Run the app (easiest, no setup required):**  
-   - Download the ZIP from the [releases page](https://github.com/ali-hue-byte/EncodeX/releases).  
+   - Download the ZIP from the [Releases](https://github.com/ali-hue-byte/EncodeX/releases).  
    - Extract the ZIP file to a folder of your choice.  
    - Open the folder and double-click the `.exe` file to launch the app on Windows.
  
