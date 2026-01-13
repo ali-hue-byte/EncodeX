@@ -57,6 +57,7 @@ Suggestions, bug reports, or contributions are welcome. Feel free to open an iss
 
 ### Screenshots
 
-<img width="2070" height="1221" alt="image" src="https://github.com/user-attachments/assets/668ecbe9-0684-43da-9a03-c53694786296" />
+<img width="2069" height="1221" alt="image" src="https://github.com/user-attachments/assets/d5a90e0f-8d75-4dc7-956c-3b7c522fccd9" />
+
 
 
