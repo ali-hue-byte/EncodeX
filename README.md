@@ -1,6 +1,6 @@
 # EncodeX 🔒
 
-A simple app to **encrypt and decrypt text or files**, keeping your information secure and private with just a few clicks, and helps you learn how encryption works see encryption in action — explore and understand data security visually!
+A simple app to **encrypt and decrypt text, files or folders (supports large files)**, keeping your information secure and private with just a few clicks, and helps you learn how encryption works see encryption in action — explore and understand data security visually!
 
 
 ---
