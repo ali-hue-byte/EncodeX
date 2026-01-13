@@ -13,7 +13,7 @@ A simple app to **encrypt and decrypt text or files**, keeping your information 
 - Modern UI built with XAML and WPF
 - Color Changing animations 
 - Large files support
-- A page to learn how **Encryption** works *(in progress...)* 
+- A page to learn how **Encryption** works *(still in progress...)* 
 
 
 ---
