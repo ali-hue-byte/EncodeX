@@ -248,6 +248,7 @@ namespace EncodeX
 
         public void action1()
         {
+            Label last = str_1_b;
             List<Label> labels_txt = new List<Label> { str_1, str_2, str_3, str_4, str_5, str_6, str_7, str_8, str_9, str_10, str_11, str_12, str_13, str_14, str_15, str_16 };
             List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
 
@@ -288,6 +289,7 @@ namespace EncodeX
                 labels_txt[i].Content = c;
                 labels_txt[i].BeginAnimation(OpacityProperty, oopac);
                 labels_txt[i].Visibility = Visibility.Visible;
+                last = labels_b[i];
             }
             byte[] texts_bytes = Encoding.UTF8.GetBytes(txt);
             List<Label> lbls = new List<Label> { str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
@@ -330,7 +332,7 @@ namespace EncodeX
                             labels_b[index].BeginAnimation(OpacityProperty, oopac);
                             labels_b[index].Visibility = Visibility.Visible;
 
-                            if (labels_b[index] != str_8_b) 
+                            if (labels_b[index] != str_8_b && labels_b[index] != last) 
                             {
                                 Arr.BeginAnimation(Canvas.LeftProperty, po);
                             }
