@@ -23,6 +23,8 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
+using System.Timers;
+using System.CodeDom;
 
 namespace EncodeX
 {
@@ -32,17 +34,22 @@ namespace EncodeX
 
     public partial class MainWindow : Window
     {
-
+        private System.Timers.Timer timing;
+        private System.Timers.Timer timing3;
+        private System.Timers.Timer timing2;
+        System.Timers.Timer timing3_1;
         bool gotten_key = false;
         string mode = "encrypt";
         string choice = "text";
         Brush color = Brushes.Green;
+        int skipping = 0;
+
+        
 
         public MainWindow()
         {
 
             InitializeComponent();
-
 
             btn_lock.MouseEnter += (s, e) =>
             {
@@ -211,7 +218,135 @@ namespace EncodeX
 
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        public void move(FrameworkElement elem, String x, String y, int duration)
+        {
+            string[] start = x.Split(",");
+            string[] end = y.Split(",");
+            ThicknessAnimation move = new ThicknessAnimation
+            {
+                From = new Thickness(double.Parse(start[0]), double.Parse(start[1]), double.Parse(start[2]), double.Parse(start[3])),
+                To = new Thickness(double.Parse(end[0]), double.Parse(end[1]), double.Parse(end[2]), double.Parse(end[3])),
+                Duration = TimeSpan.FromMilliseconds(duration)
+            };
+            elem.BeginAnimation(FrameworkElement.MarginProperty, move);
+        }
+        public void change_color(Label elem, string x, int duration)
+        {
+            SolidColorBrush col = elem.Foreground as SolidColorBrush; 
+            if (col == null || col.IsFrozen)
+            {
+                col = new SolidColorBrush(((SolidColorBrush)elem.Foreground).Color);
+                elem.Foreground = col;
+            }
+            ColorAnimation chan = new ColorAnimation
+            {
+                To = (Color)ColorConverter.ConvertFromString(x),
+                Duration = TimeSpan.FromMilliseconds(duration)
+            };
+            col.BeginAnimation (SolidColorBrush.ColorProperty, chan);
+        }
+
+        public void action1()
+        {
+            List<Label> labels_txt = new List<Label> { str_1, str_2, str_3, str_4, str_5, str_6, str_7, str_8, str_9, str_10, str_11, str_12, str_13, str_14, str_15, str_16 };
+            List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
+
+            String txt = input_field.Text;
+            DoubleAnimation oopac = new DoubleAnimation
+            {
+                From = 0.0,
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(1000),
+            };
+            DoubleAnimation oopac2 = new DoubleAnimation
+            {
+                From = 1.0,
+                To = 0.0,
+                Duration = TimeSpan.FromMilliseconds(1000),
+            };
+            enc_steps.BeginAnimation(OpacityProperty, oopac2);
+            move(encr_steps, "0,161,0,0", "0,54,0,0", 1000);
+            change_color(encr_steps, "#22C55E", 800);
+            move(encr_steps_Copy4, "0,215,0,0", "1050,228,0,0", 1000);
+            move(encr_steps_Copy, "0,431,0,0", "1052,431,0,0", 1000);
+            move(encr_steps_Copy2, "0,323,0,0", "1084,323,0,0", 1000);
+            move(encr_steps_Copy1, "0,377,0,0", "-2022,377,0,0", 1000);
+            move(encr_steps_Copy3, "0,269,0,0", "-1923,269,0,0", 1000);
+            title.BeginAnimation(OpacityProperty, oopac);
+            info.BeginAnimation(OpacityProperty, oopac);
+            title.Visibility = Visibility.Visible;
+            info.Visibility = Visibility.Visible;
+
+            int it = txt.Length;
+            if (it > 16)
+            {
+                it = 16;
+            }
+            for (int i=0; i < it; i++)
+            {
+                char c = txt[i];
+                labels_txt[i].Content = c;
+                labels_txt[i].BeginAnimation(OpacityProperty, oopac);
+                labels_txt[i].Visibility = Visibility.Visible;
+            }
+            byte[] texts_bytes = Encoding.UTF8.GetBytes(txt);
+            List<Label> lbls = new List<Label> { str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
+            for (int i = 0; i < it; i++)
+            {
+                int index = i;
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => {
+                    System.Timers.Timer timer = new System.Timers.Timer(1500*(index+1));
+                    timer.AutoReset = false;
+                    timer.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                        if (lbls.Contains(labels_b[index]))
+                            {
+                                Arr.Visibility = Visibility.Collapsed;
+
+                            }
+                            else
+                            {
+                                Arr.Visibility= Visibility.Visible;
+                            }
+
+
+                                DoubleAnimation po = new DoubleAnimation
+                                {
+                                    To = Canvas.GetLeft(Arr) + 34,
+                                    Duration = TimeSpan.FromMilliseconds(1200)
+                                };
+
+                            string to_show = "";
+                            char c = txt[index];
+                            byte[] b = Encoding.UTF8.GetBytes(c.ToString());
+                            foreach (byte c2 in b)
+                            {
+                                to_show += c2.ToString();
+                                to_show += "\n";
+                            }
+                            labels_b[index].Content = to_show;
+                            labels_b[index].BeginAnimation(OpacityProperty, oopac);
+                            labels_b[index].Visibility = Visibility.Visible;
+
+                            if (labels_b[index] != str_8_b) 
+                            {
+                                Arr.BeginAnimation(Canvas.LeftProperty, po);
+                            }
+                            else
+                            {
+                                Arr.BeginAnimation(OpacityProperty, oopac2);
+                            }
+                            
+                        });
+                    };
+                    timer.Start();
+
+                })); }
+        }
+        
+        public async void Button_Click(object sender, RoutedEventArgs e)
         {
 
             string password = password_field.Text;
@@ -344,10 +479,23 @@ namespace EncodeX
                 {
                     errorLabel.Content = "Encryption failed ";
                     errorLabel.Visibility = Visibility.Visible;
+                    
+                        button_Encrypt.IsEnabled = true;
+                        button_Decrypt.IsEnabled = true;
+                        encrypt_btn.IsEnabled = true;
+                        Select_file.IsEnabled = true;
+                        Select_folder.IsEnabled = true;
+                        Copy.IsEnabled = true;
+                        paste.IsEnabled = true;
+                        Save.IsEnabled = true;
+                        Button_text.IsEnabled = true;
+                        button_files.IsEnabled = true;
+                        button_password.IsEnabled = true;
+                    
                 }
                 progress1.Visibility = Visibility.Hidden;
             }
-            else
+            else if (choice == "folder")
             {
                 string filePath = "";
 
@@ -369,6 +517,19 @@ namespace EncodeX
                     {
                         errorLabel.Content = "Error saving file";
                         errorLabel.Visibility = Visibility.Visible;
+                        
+                            button_Encrypt.IsEnabled = true;
+                            button_Decrypt.IsEnabled = true;
+                            encrypt_btn.IsEnabled = true;
+                            Select_file.IsEnabled = true;
+                            Select_folder.IsEnabled = true;
+                            Copy.IsEnabled = true;
+                            paste.IsEnabled = true;
+                            Save.IsEnabled = true;
+                            Button_text.IsEnabled = true;
+                            button_files.IsEnabled = true;
+                            button_password.IsEnabled = true;
+                       
                     }
                 }
 
@@ -384,21 +545,171 @@ namespace EncodeX
                 }
                 progress1.Visibility = Visibility.Hidden;
 
+            }
+            else
+            {
+                if (plainText == "")
+                {
+                    return;
+                }
 
+                ScaleTransform scale = new ScaleTransform(1.0, 1.0);
+                RotateTransform rotate = new RotateTransform(180);
 
+                TransformGroup group = new TransformGroup();
+                group.Children.Add(scale);
+                group.Children.Add(rotate);
 
+                arrow.RenderTransform = group;
+                
 
+                DoubleAnimation scaleAnim = new DoubleAnimation
+                {
+                    From = 1.0,
+                    To = 30.0,
+                    Duration = TimeSpan.FromMilliseconds(800),
+                    FillBehavior = FillBehavior.HoldEnd
+                };
+                DoubleAnimation scaleAnim2 = new DoubleAnimation
+                {
+                    From = 1.0,
+                    To = 30.0,
+                    Duration = TimeSpan.FromMilliseconds(800),
+                    FillBehavior = FillBehavior.HoldEnd
+                };
 
+                
 
+               
+                scaleAnim.Completed += (s, e) =>{
+                    Entry.Visibility = Visibility.Visible;
+                    DoubleAnimation oopac = new DoubleAnimation
+                    {
+                        From = 0.0,
+                        To = 1.0,
+                        Duration = TimeSpan.FromMilliseconds(1000),
+                    };
+                    DoubleAnimation oopac2 = new DoubleAnimation
+                    {
+                        From = 1.0,
+                        To = 0.0,
+                        Duration = TimeSpan.FromMilliseconds(1000),
+                    };
+                    intro.BeginAnimation(OpacityProperty, oopac);
+                    intro.Visibility = Visibility.Visible;
+                    timing = new System.Timers.Timer(10000);
+                    timing.AutoReset = false;
+                    timing.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            skipping += 1;
+                            intro.BeginAnimation(OpacityProperty, oopac2);
+                            timing2 = new System.Timers.Timer(200);
+                            timing2.AutoReset = false;
+                            timing2.Elapsed += (s, e) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    
 
+                                    enc_steps.BeginAnimation(OpacityProperty, oopac);
+                                    encr_steps_Copy.BeginAnimation(OpacityProperty, oopac);
+                                    encr_steps_Copy1.BeginAnimation(OpacityProperty, oopac);
+                                    encr_steps_Copy2.BeginAnimation(OpacityProperty, oopac);
+                                    encr_steps_Copy3.BeginAnimation(OpacityProperty, oopac);
+                                    encr_steps_Copy4.BeginAnimation(OpacityProperty, oopac);
+                                    enc_steps.Visibility = Visibility.Visible;
+                                    encr_steps.Visibility = Visibility.Visible;
+                                    encr_steps_Copy.Visibility = Visibility.Visible;
+                                    encr_steps_Copy1.Visibility = Visibility.Visible;
+                                    encr_steps_Copy2.Visibility = Visibility.Visible;
+                                    encr_steps_Copy3.Visibility = Visibility.Visible;
+                                    encr_steps_Copy4.Visibility = Visibility.Visible;
 
+                                    timing3 = new System.Timers.Timer(10000);
+                                    timing3.AutoReset = false;
+                                    timing3.Elapsed += (s, e) =>
+                                    {
+                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            skipping += 1;
+                                            action1();
+                                        });
+                                    };
+                                    timing3.Start();
+                                }
+                                );
+
+                            };
+                            timing2.Start();
+
+                        });
+                    };
+                    timing.Start();
+                    
+
+                };
+
+                scale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
+                scale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim2);
 
 
             }
         }
 
+        
+        public void Skipping_btn(object sender, EventArgs e)
+        {
+            if (skipping == 0)
+            {
+                if (timing != null)
+                {
+                    timing.Stop();
 
+                    intro.Visibility = Visibility.Collapsed;
+                    enc_steps.Visibility = Visibility.Visible;
+                    encr_steps.Visibility = Visibility.Visible;
+                    encr_steps_Copy.Visibility = Visibility.Visible;
+                    encr_steps_Copy1.Visibility = Visibility.Visible;
+                    encr_steps_Copy2.Visibility = Visibility.Visible;
+                    encr_steps_Copy3.Visibility = Visibility.Visible;
+                    encr_steps_Copy4.Visibility = Visibility.Visible;
+                    skipping += 1;
+                    timing3_1 = new System.Timers.Timer(10000);
+                    timing3_1.AutoReset = false;
+                    timing3_1.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                        {
+                            action1();
+                        }));
+                    };
+                    timing3_1.Start();
 
+                }
+
+            }
+            else if (skipping == 1)
+            {
+                if (timing3_1 != null)
+                {
+                    skipping += 1;
+                    timing3_1.Stop();
+                    
+                }else if ( timing3 != null)
+                {
+                    skipping += 1;
+                    timing3.Stop();
+                    
+                }
+                action1();
+            }
+
+            
+        }
+
+        
         private async void decrypt_txt(object sender, RoutedEventArgs e)
         {
 
@@ -589,7 +900,7 @@ namespace EncodeX
                         using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
                         {
                             cs.Write(fileNameBytes, 0, fileNameBytes.Length);
-                            byte[] buffer = new byte[8192];
+                            byte[] buffer = new byte[200*1024*1024];
                             long totalbytes = fs.Length;
                             long bytesread = 0;
                             int bytesRead;
@@ -920,7 +1231,7 @@ namespace EncodeX
                 return;
             }
             input_field1.Text = "";
-            if (choice != "text")
+            if (choice != "text" && choice != "learn")
             {
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
                 {
@@ -975,17 +1286,20 @@ namespace EncodeX
                 To = Colors.Gray,
                 Duration = TimeSpan.FromMilliseconds(400)
             };
+            if (choice != "learn")
+            {
+                opacity_anim(Save, 1.0, 0.0, Save);
+                opacity_anim(Save2, 0.0, 1.0);
+                opacity_anim(Copy, 1.0, 0.0, Copy);
+                opacity_anim(Copy2, 0.0, 1.0);
+                opacity_anim(paste, 1.0, 0.0, paste);
+                opacity_anim(paste2, 0.0, 1.0);
 
-            opacity_anim(Save, 1.0, 0.0, Save);
-            opacity_anim(Save2, 0.0, 1.0);
-            opacity_anim(Copy, 1.0, 0.0, Copy);
-            opacity_anim(Copy2, 0.0, 1.0);
-            opacity_anim(paste, 1.0, 0.0, paste);
-            opacity_anim(paste2, 0.0, 1.0);
-
-            Copy2.Visibility = Visibility.Visible;
-            Save2.Visibility = Visibility.Visible;
-            paste2.Visibility = Visibility.Visible;
+                Copy2.Visibility = Visibility.Visible;
+                Save2.Visibility = Visibility.Visible;
+                paste2.Visibility = Visibility.Visible;
+            }
+            
 
             button_Decrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
             button_Encrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
@@ -1104,7 +1418,7 @@ namespace EncodeX
             }
             input_field1.Text = "";
             mode = "encrypt";
-            if (choice != "text")
+            if (choice != "text" && choice !="learn")
             {
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
                 {
@@ -1160,15 +1474,19 @@ namespace EncodeX
                 To = Colors.Gray,
                 Duration = TimeSpan.FromMilliseconds(400)
             };
-            opacity_anim(Copy2, 1.0, 0.0, Copy2);
-            opacity_anim(Copy, 0.0, 1.0);
-            opacity_anim(Save2, 1.0, 0.0, Save2);
-            opacity_anim(Save, 0.0, 1.0);
-            opacity_anim(paste2, 1.0, 0.0, paste2);
-            opacity_anim(paste, 0.0, 1.0);
-            Copy.Visibility = Visibility.Visible;
-            Save.Visibility = Visibility.Visible;
-            paste.Visibility = Visibility.Visible;
+            if (choice != "learn")
+            {
+                opacity_anim(Copy2, 1.0, 0.0, Copy2);
+                opacity_anim(Copy, 0.0, 1.0);
+                opacity_anim(Save2, 1.0, 0.0, Save2);
+                opacity_anim(Save, 0.0, 1.0);
+                opacity_anim(paste2, 1.0, 0.0, paste2);
+                opacity_anim(paste, 0.0, 1.0);
+                Copy.Visibility = Visibility.Visible;
+                Save.Visibility = Visibility.Visible;
+                paste.Visibility = Visibility.Visible;
+            }
+            
             button_Decrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
             button_Encrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
             Border_encrypt.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
@@ -1235,125 +1553,250 @@ namespace EncodeX
         }
         private void button_files_Click(object sender, RoutedEventArgs e)
         {
-            encrypted_field.Text = "";
-
-            choice = "file";
-
-            Border_encrypt.Visibility = Visibility.Hidden;
-            Select_folder.Visibility = Visibility.Visible;
-            Select_file.Visibility = Visibility.Visible;
-            File_input.Visibility = Visibility.Visible;
-            if (mode == "decrypt")
+            if(choice!="file" && choice != "folder")
             {
-                Select_folder.Visibility = Visibility.Hidden;
-                if (!(Border_decrypt.RenderTransform is TranslateTransform))
+                errorLabel.Visibility = Visibility.Hidden;
+                if (mode == "encrypt")
                 {
-                    Border_decrypt.RenderTransform = new TranslateTransform();
+                    opacity_anim(Copy, 0.0, 1.0);
+                    opacity_anim(paste, 0.0, 1.0);
+                    opacity_anim(Save, 0.0, 1.0);
                 }
-                ;
-
-                if (!(File_input.RenderTransform is TranslateTransform))
+                else
                 {
-                    File_input.RenderTransform = new TranslateTransform();
+                    opacity_anim(Copy2, 0.0, 1.0);
+
+                    opacity_anim(paste2, 0.0, 1.0);
+
+                    opacity_anim(Save2, 0.0, 1.0);
+                    Copy2.Visibility = Visibility.Visible;
+                    paste2.Visibility = Visibility.Visible;
+                    Save2.Visibility = Visibility.Visible;
                 }
-                ;
+                encrypted_field.Text = "";
+
+                choice = "file";
+
+                Border_encrypt.Visibility = Visibility.Hidden;
+                Select_folder.Visibility = Visibility.Visible;
+                Select_file.Visibility = Visibility.Visible;
+                File_input.Visibility = Visibility.Visible;
+                if (mode == "decrypt")
+                {
+                    Select_folder.Visibility = Visibility.Hidden;
+                    if (!(Border_decrypt.RenderTransform is TranslateTransform))
+                    {
+                        Border_decrypt.RenderTransform = new TranslateTransform();
+                    }
+                    ;
+
+                    if (!(File_input.RenderTransform is TranslateTransform))
+                    {
+                        File_input.RenderTransform = new TranslateTransform();
+                    }
+                    ;
 
 
-                var transform = (TranslateTransform)Border_decrypt.RenderTransform;
-                transform.X = -405;
-                transform.Y = 0;
-                var group = (TransformGroup)Select_file.RenderTransform;
+                    var transform = (TranslateTransform)Border_decrypt.RenderTransform;
+                    transform.X = -405;
+                    transform.Y = 0;
+                    var group = (TransformGroup)Select_file.RenderTransform;
 
-                var transform2 = (TranslateTransform)group.Children[1];
-                transform2.X = 405;
-                transform2.Y = 0;
-                var transform3 = (TranslateTransform)File_input.RenderTransform;
-                transform3.X = 405;
-                transform3.Y = 0;
-                opacity_anim(Border_decrypt, 0.0, 1.0);
+                    var transform2 = (TranslateTransform)group.Children[1];
+                    transform2.X = 405;
+                    transform2.Y = 0;
+                    var transform3 = (TranslateTransform)File_input.RenderTransform;
+                    transform3.X = 405;
+                    transform3.Y = 0;
+                    opacity_anim(Border_decrypt, 0.0, 1.0);
+                    opacity_anim(Select_file, 0.0, 1.0);
+                    opacity_anim(File_input, 0.0, 1.0);
+                    Select_folder.Tag = "Blue";
+                    Select_file.Tag = "Blue";
+
+                }
+                opacity_anim(Select_folder, 0.0, 1.0);
                 opacity_anim(Select_file, 0.0, 1.0);
+                opacity_anim(Border_encrypt, 1.0, 0.0);
                 opacity_anim(File_input, 0.0, 1.0);
-                Select_folder.Tag = "Blue";
-                Select_file.Tag = "Blue";
+                Border border_files = (Border)button_files.Template.FindName("border_files", button_files);
+                Border border = (Border)Button_text.Template.FindName("border", Button_text);
+                Border border_learn = (Border)button_learn.Template.FindName("border_learn", button_learn);
+                border_learn.BorderThickness = new Thickness(1);
+                border_files.BorderThickness = new Thickness(3);
+                border.BorderThickness = new Thickness(1);
+                encrypted_field.IsReadOnly = true;
 
+                if (mode == "encrypt")
+                {
+                    Select_folder.Tag = "Green";
+                    Select_file.Tag = "Green";
+                }
             }
-            opacity_anim(Select_folder, 0.0, 1.0);
-            opacity_anim(Select_file, 0.0, 1.0);
-            opacity_anim(Border_encrypt, 1.0, 0.0);
-            opacity_anim(File_input, 0.0, 1.0);
-            Border border_files = (Border)button_files.Template.FindName("border_files", button_files);
-            Border border = (Border)Button_text.Template.FindName("border", Button_text);
-            border_files.BorderThickness = new Thickness(3);
-            border.BorderThickness = new Thickness(1);
-            encrypted_field.IsReadOnly = true;
-
-            if (mode == "encrypt")
+            
+        }
+        public void Lamp_clicked(object sender, EventArgs e)
+        {
+           if (choice != "learn")
             {
-                Select_folder.Tag = "Green";
-                Select_file.Tag = "Green";
+                errorLabel.Visibility = Visibility.Hidden;
+                encrypted_field.Text = "";
+                if (choice != "text")
+                {
+
+                    if (!(Border_decrypt.RenderTransform is TranslateTransform))
+                    {
+                        Border_decrypt.RenderTransform = new TranslateTransform();
+                    }
+                    ;
+
+
+                    if (!(File_input.RenderTransform is TranslateTransform))
+                    {
+                        File_input.RenderTransform = new TranslateTransform();
+                    }
+                    ;
+
+
+                    var transform4 = (TranslateTransform)Border_decrypt.RenderTransform;
+                    transform4.X = 1;
+                    transform4.Y = 0;
+                    var group = (TransformGroup)Select_file.RenderTransform;
+
+                    var transform42 = (TranslateTransform)group.Children[1];
+                    transform42.X = -1;
+                    transform42.Y = 0;
+                    var transform43 = (TranslateTransform)File_input.RenderTransform;
+                    transform43.X = -1;
+                    transform43.Y = 0;
+                    opacity_anim(Border_decrypt, 0.0, 1.0);
+
+
+                }
+                opacity_anim(Select_folder, 1.0, 0.0);
+                opacity_anim(Select_file, 1.0, 0.0);
+                opacity_anim(Border_encrypt, 0.0, 1.0);
+                opacity_anim(File_input, 1.0, 0.0);
+                choice = "learn";
+                encrypted_field.Text = "";
+                if (mode == "encrypt")
+                {
+                    input_field.IsReadOnly = false;
+                }
+
+                Border_encrypt.Visibility = Visibility.Visible;
+                Select_file.Visibility = Visibility.Hidden;
+                Select_folder.Visibility = Visibility.Hidden;
+                File_input.Visibility = Visibility.Hidden;
+                Border border_files = (Border)button_files.Template.FindName("border_files", button_files);
+                Border border = (Border)Button_text.Template.FindName("border", Button_text);
+                Border learn_one = (Border)button_learn.Template.FindName("border_learn", button_learn);
+                border_files.BorderThickness = new Thickness(1);
+                border.BorderThickness = new Thickness(1);
+                learn_one.BorderThickness = new Thickness(3);
+                if (mode == "encrypt")
+                {
+                    opacity_anim(Copy, 1.0, 0.0);
+                    opacity_anim(paste, 1.0, 0.0);
+                    opacity_anim(Save, 1.0, 0.0);
+                }
+                else
+                {
+                    opacity_anim(Copy2, 1.0, 0.0);
+
+                    opacity_anim(paste2, 1.0, 0.0);
+
+                    opacity_anim(Save2, 1.0, 0.0);
+                }
             }
+           
+            
+
+                
+
         }
         private void button_Text_Click(object sender, RoutedEventArgs e)
         {
-            encrypted_field.Text = "";
             if (choice != "text")
             {
-
-                if (!(Border_decrypt.RenderTransform is TranslateTransform))
+                errorLabel.Visibility = Visibility.Hidden;
+                if (mode == "encrypt")
                 {
-                    Border_decrypt.RenderTransform = new TranslateTransform();
+                    opacity_anim(Copy, 0.0, 1.0);
+                    opacity_anim(paste, 0.0, 1.0);
+                    opacity_anim(Save, 0.0, 1.0);
                 }
-                ;
-
-
-                if (!(File_input.RenderTransform is TranslateTransform))
+                else
                 {
-                    File_input.RenderTransform = new TranslateTransform();
+                    opacity_anim(Copy2, 0.0, 1.0);
+
+                    opacity_anim(paste2, 0.0, 1.0);
+
+                    opacity_anim(Save2, 0.0, 1.0);
                 }
-                ;
+                encrypted_field.Text = "";
+                if (choice != "text")
+                {
+
+                    if (!(Border_decrypt.RenderTransform is TranslateTransform))
+                    {
+                        Border_decrypt.RenderTransform = new TranslateTransform();
+                    }
+                    ;
 
 
-                var transform4 = (TranslateTransform)Border_decrypt.RenderTransform;
-                transform4.X = 1;
-                transform4.Y = 0;
-                var group = (TransformGroup)Select_file.RenderTransform;
-
-                var transform42 = (TranslateTransform)group.Children[1];
-                transform42.X = -1;
-                transform42.Y = 0;
-                var transform43 = (TranslateTransform)File_input.RenderTransform;
-                transform43.X = -1;
-                transform43.Y = 0;
-                opacity_anim(Border_decrypt, 0.0, 1.0);
+                    if (!(File_input.RenderTransform is TranslateTransform))
+                    {
+                        File_input.RenderTransform = new TranslateTransform();
+                    }
+                    ;
 
 
-            }
-            opacity_anim(Select_folder, 1.0, 0.0);
-            opacity_anim(Select_file, 1.0, 0.0);
-            opacity_anim(Border_encrypt, 0.0, 1.0);
-            opacity_anim(File_input, 1.0, 0.0);
-            choice = "text";
-            encrypted_field.Text = "";
-            if (mode == "encrypt")
-            {
-                input_field.IsReadOnly = false;
-            }
+                    var transform4 = (TranslateTransform)Border_decrypt.RenderTransform;
+                    transform4.X = 1;
+                    transform4.Y = 0;
+                    var group = (TransformGroup)Select_file.RenderTransform;
 
-            Border_encrypt.Visibility = Visibility.Visible;
-            Select_file.Visibility = Visibility.Hidden;
-            Select_folder.Visibility = Visibility.Hidden;
-            File_input.Visibility = Visibility.Hidden;
-            Border border_files = (Border)button_files.Template.FindName("border_files", button_files);
-            Border border = (Border)Button_text.Template.FindName("border", Button_text);
-            border_files.BorderThickness = new Thickness(1);
-            border.BorderThickness = new Thickness(3);
+                    var transform42 = (TranslateTransform)group.Children[1];
+                    transform42.X = -1;
+                    transform42.Y = 0;
+                    var transform43 = (TranslateTransform)File_input.RenderTransform;
+                    transform43.X = -1;
+                    transform43.Y = 0;
+                    opacity_anim(Border_decrypt, 0.0, 1.0);
 
-            if (mode == "decrypt")
-            {
 
-                encrypted_field.IsReadOnly = false;
-            }
+                }
+                opacity_anim(Select_folder, 1.0, 0.0);
+                opacity_anim(Select_file, 1.0, 0.0);
+                opacity_anim(Border_encrypt, 0.0, 1.0);
+                opacity_anim(File_input, 1.0, 0.0);
+                choice = "text";
+                encrypted_field.Text = "";
+                if (mode == "encrypt")
+                {
+                    input_field.IsReadOnly = false;
+                }
+
+                Border_encrypt.Visibility = Visibility.Visible;
+                Select_file.Visibility = Visibility.Hidden;
+                Select_folder.Visibility = Visibility.Hidden;
+                File_input.Visibility = Visibility.Hidden;
+                Border border_files = (Border)button_files.Template.FindName("border_files", button_files);
+                Border border = (Border)Button_text.Template.FindName("border", Button_text);
+                Border border_learn = (Border)button_learn.Template.FindName("border_learn", button_learn);
+                border_learn.BorderThickness = new Thickness(1);
+                border_files.BorderThickness = new Thickness(1);
+                border.BorderThickness = new Thickness(3);
+
+                if (mode == "decrypt")
+                {
+
+                    encrypted_field.IsReadOnly = false;
+                }
             ;
+            }
+            
 
         }
 
@@ -1680,7 +2123,7 @@ namespace EncodeX
 
                                     using var entryStream = entry.Open();
                                     using var fileStream = File.OpenRead(file);
-                                    byte[] buffer = new byte[8000];
+                                    byte[] buffer = new byte[200*1024*1024];
                                     int bytesRead;
                                     while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
                                     {
@@ -1756,7 +2199,8 @@ namespace EncodeX
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-
+            Instructions.Visibility = Visibility.Collapsed;
+            btn_lock.IsEnabled = false;
             DoubleAnimation opac = new DoubleAnimation
             {
                 From = 1.0,
@@ -1955,5 +2399,7 @@ namespace EncodeX
             }
             Instructions.Content = "Click to see the magic!";   
         }
+
+        
     }
 }
