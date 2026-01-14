@@ -51,7 +51,7 @@ namespace EncodeX
         Brush color = Brushes.Green;
         int skipping = 0;
 
-        
+
 
         public MainWindow()
         {
@@ -60,14 +60,14 @@ namespace EncodeX
 
             btn_lock.MouseEnter += (s, e) =>
             {
-                Lock_Hovered(s,e);
+                Lock_Hovered(s, e);
             };
             btn_lock.MouseLeave += (s, e) =>
             {
                 Lock_unHovered(s, e);
             };
 
-            
+
 
             Dictionary<Label, List<int>> dict = new Dictionary<Label, List<int>>{
     { first,        new List<int> { 206 - 400, 206 + 500, 1200} },
@@ -210,6 +210,7 @@ namespace EncodeX
             {
                 button_password.Foreground = color;
                 password_field.IsReadOnly = false;
+                
                 Border_pss.BorderBrush = color;
                 errorLabel.Visibility = Visibility.Hidden;
             }
@@ -218,6 +219,7 @@ namespace EncodeX
                 button_password.Foreground = Brushes.Gray;
                 password_field.Text = "";
                 password_field.IsReadOnly = true;
+                
                 Border_pss.BorderBrush = Brushes.Gray;
                 errorLabel.Visibility = Visibility.Hidden;
             }
@@ -239,7 +241,7 @@ namespace EncodeX
         }
         public void change_color(Label elem, string x, int duration)
         {
-            SolidColorBrush col = elem.Foreground as SolidColorBrush; 
+            SolidColorBrush col = elem.Foreground as SolidColorBrush;
             if (col == null || col.IsFrozen)
             {
                 col = new SolidColorBrush(((SolidColorBrush)elem.Foreground).Color);
@@ -250,7 +252,7 @@ namespace EncodeX
                 To = (Color)ColorConverter.ConvertFromString(x),
                 Duration = TimeSpan.FromMilliseconds(duration)
             };
-            col.BeginAnimation (SolidColorBrush.ColorProperty, chan);
+            col.BeginAnimation(SolidColorBrush.ColorProperty, chan);
         }
 
         public void action1()
@@ -291,7 +293,7 @@ namespace EncodeX
             {
                 it = 16;
             }
-            for (int i=0; i < it; i++)
+            for (int i = 0; i < it; i++)
             {
                 Rune c = runes[i];
                 labels_txt[i].Content = c;
@@ -304,30 +306,31 @@ namespace EncodeX
             for (int i = 0; i < it; i++)
             {
                 int index = i;
-                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => {
-                    System.Timers.Timer timer = new System.Timers.Timer(1500*(index+1));
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    System.Timers.Timer timer = new System.Timers.Timer(2000 * (index + 1));
                     timer.AutoReset = false;
                     activeTimers.Add(timer);
                     timer.Elapsed += (s, e) =>
                     {
                         System.Windows.Application.Current.Dispatcher.Invoke(() =>
                         {
-                        if (lbls.Contains(labels_b[index]))
+                            if (lbls.Contains(labels_b[index]))
                             {
                                 Arr.Visibility = Visibility.Collapsed;
 
                             }
                             else
                             {
-                                Arr.Visibility= Visibility.Visible;
+                                Arr.Visibility = Visibility.Visible;
                             }
 
 
-                                DoubleAnimation po = new DoubleAnimation
-                                {
-                                    To = Canvas.GetLeft(Arr) + 34,
-                                    Duration = TimeSpan.FromMilliseconds(1200)
-                                };
+                            DoubleAnimation po = new DoubleAnimation
+                            {
+                                To = Canvas.GetLeft(Arr) + 35,
+                                Duration = TimeSpan.FromMilliseconds(1200)
+                            };
 
                             string to_show = "";
                             Rune c = runes[index];
@@ -341,7 +344,7 @@ namespace EncodeX
                             labels_b[index].BeginAnimation(OpacityProperty, oopac);
                             labels_b[index].Visibility = Visibility.Visible;
 
-                            if (labels_b[index] != str_8_b && labels_b[index] != last) 
+                            if (labels_b[index] != str_8_b && labels_b[index] != last)
                             {
                                 Arr.BeginAnimation(Canvas.LeftProperty, po);
                             }
@@ -349,16 +352,17 @@ namespace EncodeX
                             {
                                 Arr.BeginAnimation(OpacityProperty, oopac2);
                             }
-                            
+
                         });
                     };
                     timer.Start();
 
-                })); }
+                }));
+            }
         }
         public void action2()
         {
-            
+
             foreach (var timer in activeTimers)
             {
                 timer.Stop();
@@ -368,7 +372,7 @@ namespace EncodeX
             Arr.Visibility = Visibility.Hidden;
             List<Label> labels_txt = new List<Label> { str_1, str_2, str_3, str_4, str_5, str_6, str_7, str_8, str_9, str_10, str_11, str_12, str_13, str_14, str_15, str_16 };
             List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
-            foreach (Label label in labels_txt) 
+            foreach (Label label in labels_txt)
             {
                 label.Visibility = Visibility.Hidden;
 
@@ -405,6 +409,11 @@ namespace EncodeX
 
         public void actions3()
         {
+            foreach (var timer in activeTimers)
+            {
+                timer.Stop();
+                timer.Dispose();
+            }
             String txt = input_field.Text;
             byte[] c = Encoding.UTF8.GetBytes(txt);
             opacity_anim(info, 1.0, 0.0);
@@ -430,7 +439,7 @@ namespace EncodeX
     "5. **Space Padding**:\n" +
     "   - Fills remaining bytes with ASCII spaces = 0x20 (32 dec).\n" +
     "   - Only suitable if plaintext doesn’t end with spaces.\n"
-             
+
     ;
             String last16;
             if (txt.Length >= 16)
@@ -439,12 +448,12 @@ namespace EncodeX
                 last16 = txt.Substring(start);
                 if (last16 == "")
                 {
-                    last16 = txt.Substring(txt.Length-16);
+                    last16 = txt.Substring(txt.Length - 16);
                 }
             }
             else
             {
-                last16 = txt; 
+                last16 = txt;
             }
 
 
@@ -455,22 +464,22 @@ namespace EncodeX
             byte[] ss = pad1(bytes_last16);
             if (ss.Length == 16)
             {
-                pad_info1_Copy.Content = "Last Block : " + last16 ;
-                pad_info1.Content = "Padding needed : "+(16-bytes_last16.Length).ToString();
-                pad_info2.Content = "Number of Bytes : "+ (bytes_last16.Length).ToString();
+                pad_info1_Copy.Content = "Last Block : " + last16;
+                pad_info1.Content = "Padding needed : " + (16 - bytes_last16.Length).ToString();
+                pad_info2.Content = "Number of Bytes : " + (bytes_last16.Length).ToString();
                 str_to_show += "[";
-                str_to_show += string.Join(", ",ss);
+                str_to_show += string.Join(", ", ss);
                 str_to_show += "]";
             }
             else
             {
-                pad_info1_Copy.Content = "Last Block : "+last16;
-                pad_info1.Content = "Padding needed : "+ "16";
+                pad_info1_Copy.Content = "Last Block : " + last16;
+                pad_info1.Content = "Padding needed : " + "16";
                 pad_info2.Content = "Number of Bytes : " + (bytes_last16.Length).ToString();
                 byte[] first = new byte[16];
                 byte[] second = new byte[16];
                 Array.Copy(ss, 0, first, 0, 16);
-                Array.Copy(ss,16, second, 0, 16);
+                Array.Copy(ss, 16, second, 0, 16);
                 str_to_show += "[";
                 str_to_show += string.Join(", ", first);
                 str_to_show += "]\n";
@@ -480,7 +489,7 @@ namespace EncodeX
 
             }
 
-                System.Timers.Timer timing = new System.Timers.Timer(400);
+            System.Timers.Timer timing = new System.Timers.Timer(900);
             timing.AutoReset = false;
             timing.Elapsed += (s, e) =>
             {
@@ -520,154 +529,154 @@ namespace EncodeX
                         str_to_show_2 += "]";
                     }
 
-                        System.Timers.Timer timing2 = new System.Timers.Timer(5000);
-                        timing2.AutoReset = false;
-                        timing2.Elapsed += (s, e) =>
+                    System.Timers.Timer timing2 = new System.Timers.Timer(5000);
+                    timing2.AutoReset = false;
+                    timing2.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
                         {
+                            pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
+                            pad_show.Content = str_to_show_2;
+                            opacity_anim(pad_show, 0.0, 1.0);
+
+                            pad_show.Visibility = Visibility.Visible;
+
                             System.Windows.Application.Current.Dispatcher.Invoke(() =>
                             {
-                                pad_show.Margin = new Thickness(pad_show.Margin.Left ,pad_show.Margin.Top+90, pad_show.Margin.Right, pad_show.Margin.Bottom-90);
                                 pad_show.Content = str_to_show_2;
                                 opacity_anim(pad_show, 0.0, 1.0);
-                                
+
                                 pad_show.Visibility = Visibility.Visible;
 
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+
+                                String str_to_show_3 = "";
+                                byte[] ss3 = pad3(bytes_last16);
+                                if (ss3.Length == 16)
                                 {
-                                    pad_show.Content = str_to_show_2;
-                                    opacity_anim(pad_show, 0.0, 1.0);
-                                    
-                                    pad_show.Visibility = Visibility.Visible;
-                                    
 
-                                    String str_to_show_3 = "";
-                                    byte[] ss3 = pad3(bytes_last16);
-                                    if (ss3.Length == 16)
+                                    str_to_show_3 += "[";
+                                    str_to_show_3 += string.Join(", ", ss3);
+                                    str_to_show_3 += "]";
+                                }
+                                else
+                                {
+
+                                    byte[] first = new byte[16];
+                                    byte[] second = new byte[16];
+                                    Array.Copy(ss3, 0, first, 0, 16);
+                                    Array.Copy(ss3, 16, second, 0, 16);
+                                    str_to_show_3 += "[";
+                                    str_to_show_3 += string.Join(", ", first);
+                                    str_to_show_3 += "]\n";
+                                    str_to_show_3 += "[";
+                                    str_to_show_3 += string.Join(", ", second);
+                                    str_to_show_3 += "]";
+                                }
+
+                                System.Timers.Timer timing22 = new System.Timers.Timer(5000);
+                                timing22.AutoReset = false;
+                                timing22.Elapsed += (s, e) =>
+                                {
+                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
                                     {
+                                        pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
+                                        pad_show.Content = str_to_show_3;
+                                        opacity_anim(pad_show, 0.0, 1.0);
 
-                                        str_to_show_3 += "[";
-                                        str_to_show_3 += string.Join(", ", ss3);
-                                        str_to_show_3 += "]";
-                                    }
-                                    else
-                                    {
+                                        pad_show.Visibility = Visibility.Visible;
 
-                                        byte[] first = new byte[16];
-                                        byte[] second = new byte[16];
-                                        Array.Copy(ss3, 0, first, 0, 16);
-                                        Array.Copy(ss3, 16, second, 0, 16);
-                                        str_to_show_3 += "[";
-                                        str_to_show_3 += string.Join(", ", first);
-                                        str_to_show_3 += "]\n";
-                                        str_to_show_3 += "[";
-                                        str_to_show_3 += string.Join(", ", second);
-                                        str_to_show_3 += "]";
-                                    }
 
-                                    System.Timers.Timer timing22 = new System.Timers.Timer(5000);
-                                    timing22.AutoReset = false;
-                                    timing22.Elapsed += (s, e) =>
-                                    {
-                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                        String str_to_show_4 = "";
+                                        byte[] ss4 = pad4(bytes_last16);
+                                        if (ss4.Length == 16)
                                         {
-                                            pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
-                                            pad_show.Content = str_to_show_3;
-                                            opacity_anim(pad_show, 0.0, 1.0);
 
-                                            pad_show.Visibility = Visibility.Visible;
+                                            str_to_show_4 += "[";
+                                            str_to_show_4 += string.Join(", ", ss4);
+                                            str_to_show_4 += "]";
+                                        }
+                                        else
+                                        {
 
-
-                                            String str_to_show_4 = "";
-                                            byte[] ss4 = pad4(bytes_last16);
-                                            if (ss4.Length == 16)
-                                            {
-
-                                                str_to_show_4 += "[";
-                                                str_to_show_4 += string.Join(", ", ss4);
-                                                str_to_show_4 += "]";
-                                            }
-                                            else
-                                            {
-
-                                                byte[] first = new byte[16];
-                                                byte[] second = new byte[16];
-                                                Array.Copy(ss4, 0, first, 0, 16);
-                                                Array.Copy(ss4, 16, second, 0, 16);
-                                                str_to_show_4 += "[";
-                                                str_to_show_4 += string.Join(", ", first);
-                                                str_to_show_4 += "]\n";
-                                                str_to_show_4 += "[";
-                                                str_to_show_4 += string.Join(", ", second);
-                                                str_to_show_4 += "]";
-                                            }
+                                            byte[] first = new byte[16];
+                                            byte[] second = new byte[16];
+                                            Array.Copy(ss4, 0, first, 0, 16);
+                                            Array.Copy(ss4, 16, second, 0, 16);
+                                            str_to_show_4 += "[";
+                                            str_to_show_4 += string.Join(", ", first);
+                                            str_to_show_4 += "]\n";
+                                            str_to_show_4 += "[";
+                                            str_to_show_4 += string.Join(", ", second);
+                                            str_to_show_4 += "]";
+                                        }
                                         System.Timers.Timer timing222 = new System.Timers.Timer(5000);
                                         timing222.AutoReset = false;
-                                            timing222.Elapsed += (s, e) =>
+                                        timing222.Elapsed += (s, e) =>
+                                        {
+                                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
                                             {
-                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 80, pad_show.Margin.Right, pad_show.Margin.Bottom - 80);
+                                                pad_show.Content = str_to_show_4;
+                                                opacity_anim(pad_show, 0.0, 1.0);
+
+                                                pad_show.Visibility = Visibility.Visible;
+
+
+                                                String str_to_show_5 = "";
+                                                byte[] ss5 = pad5(bytes_last16);
+                                                if (ss5.Length == 16)
                                                 {
-                                                    pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 80, pad_show.Margin.Right, pad_show.Margin.Bottom - 80);
-                                                    pad_show.Content = str_to_show_4;
-                                                    opacity_anim(pad_show, 0.0, 1.0);
 
-                                                    pad_show.Visibility = Visibility.Visible;
+                                                    str_to_show_5 += "[";
+                                                    str_to_show_5 += string.Join(", ", ss5);
+                                                    str_to_show_5 += "]";
+                                                }
+                                                else
+                                                {
 
-
-                                                    String str_to_show_5 = "";
-                                                    byte[] ss5 = pad5(bytes_last16);
-                                                    if (ss5.Length == 16)
+                                                    byte[] first = new byte[16];
+                                                    byte[] second = new byte[16];
+                                                    Array.Copy(ss5, 0, first, 0, 16);
+                                                    Array.Copy(ss5, 16, second, 0, 16);
+                                                    str_to_show_5 += "[";
+                                                    str_to_show_5 += string.Join(", ", first);
+                                                    str_to_show_5 += "]\n";
+                                                    str_to_show_5 += "[";
+                                                    str_to_show_5 += string.Join(", ", second);
+                                                    str_to_show_5 += "]";
+                                                }
+                                                System.Timers.Timer timing2222 = new System.Timers.Timer(5000);
+                                                timing2222.AutoReset = false;
+                                                timing2222.Elapsed += (s, e) =>
+                                                {
+                                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
                                                     {
+                                                        pad_show.Margin = new Thickness(pad_show.Margin.Left, 206, pad_show.Margin.Right, 0);
+                                                        pad_show.Content = str_to_show_5;
+                                                        opacity_anim(pad_show, 0.0, 1.0);
+                                                        opacity_anim(info, 0.0, 1.0);
+                                                        info.Content = "6. **Random Padding**:\n- Fills remaining bytes with random values.\n- Often combined with other encryption modes to add \nextra randomness.\n \n \nAfter padding, AES can safely encrypt the full 16-byte blocks, \nand the ciphertext can later be decrypted correctly, \nremoving the padding automatically.";
+                                                    });
+                                                }; timing2222.Start();
+                                                activeTimers.Add(timing2222);
+                                            });
 
-                                                        str_to_show_5 += "[";
-                                                        str_to_show_5 += string.Join(", ", ss5);
-                                                        str_to_show_5 += "]";
-                                                    }
-                                                    else
-                                                    {
-
-                                                        byte[] first = new byte[16];
-                                                        byte[] second = new byte[16];
-                                                        Array.Copy(ss5, 0, first, 0, 16);
-                                                        Array.Copy(ss5, 16, second, 0, 16);
-                                                        str_to_show_5 += "[";
-                                                        str_to_show_5 += string.Join(", ", first);
-                                                        str_to_show_5 += "]\n";
-                                                        str_to_show_5 += "[";
-                                                        str_to_show_5 += string.Join(", ", second);
-                                                        str_to_show_5 += "]";
-                                                    }
-                                                    System.Timers.Timer timing2222 = new System.Timers.Timer(5000);
-                                                    timing2222.AutoReset = false;
-                                                    timing2222.Elapsed += (s, e) =>
-                                                    {
-                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                        {
-                                                            pad_show.Margin = new Thickness(pad_show.Margin.Left, 206, pad_show.Margin.Right, 0);
-                                                            pad_show.Content = str_to_show_5;
-                                                            opacity_anim(pad_show, 0.0, 1.0);
-                                                            opacity_anim(info,0.0,1.0);
-                                                            info.Content = "6. **Random Padding**:\n- Fills remaining bytes with random values.\n- Often combined with other encryption modes to add \nextra randomness.\n \n \nAfter padding, AES can safely encrypt the full 16-byte blocks, \nand the ciphertext can later be decrypted correctly, \nremoving the padding automatically.";
-                                                        });
-                                                    }; timing2222.Start();
-                                                    activeTimers.Add(timing2222);
-                                                });
-                                                
-                                            };timing222.Start();
-                                            activeTimers.Add(timing222);
-                                        });
-                                    };
-                                    timing22.Start();
-                                    activeTimers.Add(timing22);
-
-                                });
+                                        }; timing222.Start();
+                                        activeTimers.Add(timing222);
+                                    });
+                                };
+                                timing22.Start();
+                                activeTimers.Add(timing22);
 
                             });
-                        };
+
+                        });
+                    };
                     timing2.Start();
                     activeTimers.Add(timing2);
 
                 });
-                };
+            };
             timing.Start();
             activeTimers.Add(timing);
 
@@ -675,6 +684,60 @@ namespace EncodeX
 
         }
 
+        public void action4()
+        {
+            string password;
+            if (password_field.Text == "")
+            {
+                password = "password@1010^";
+            }
+            else
+            {
+                password = password_field.Text;
+            }
+            foreach (var timer in activeTimers)
+            {
+                timer.Stop();
+                timer.Dispose();
+            }
+            DoubleAnimation oopac = new DoubleAnimation
+            {
+
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(800)
+            };
+            DoubleAnimation oopac2 = new DoubleAnimation
+            {
+
+                To = 0.0,
+                Duration = TimeSpan.FromMilliseconds(800)
+            };
+            encr_steps_Copy4.BeginAnimation(OpacityProperty, oopac);
+            move(encr_steps_Copy4, "0,161,0,0", "0,54,0,0", 1000);
+            move(encr_steps, "0,54,0,0", "0,-54,0,0", 1000);
+            change_color(encr_steps_Copy4, "#22C55E", 1100);
+            title.BeginAnimation(OpacityProperty, oopac2);
+            info.BeginAnimation(OpacityProperty, oopac2);
+            pad_show.BeginAnimation(OpacityProperty, oopac2);
+            pad_info1.BeginAnimation(OpacityProperty, oopac2);
+            pad_info2.BeginAnimation(OpacityProperty, oopac2);
+            pad_info1_Copy.BeginAnimation(OpacityProperty, oopac2);
+            info.Content = "Passwords cannot be used directly as AES keys. \n" +
+                "AES requires a fixed-length, random-looking key.\n" +
+                "A Key Derivation Function (KDF) is used to transform your \n" +
+                "password into a secure key.\n" +
+                "The password is combined with a random salt and processed\n" +
+                "through many hash iterations.\n" +
+                "The salt is public and ensures identical passwords produce \n" +
+                "different keys.\n" +
+                "Each iteration depends on the previous one.\n" +
+                "------------\n" +
+                "U1 = HMAC(password, salt || blockIndex)\r\nU2 = HMAC(password, U1)\r\nU3 = HMAC(password, U2)\r\n...\r\nUc = HMAC(password, Uc-1)\n" +
+                "------------\n" +
+                "*HMAC: a secure way to hash data using a secret key.\n" +
+                "";
+            info.BeginAnimation(OpacityProperty, oopac);
+        }
         public byte[] pad1(byte[] c)
         {
             byte[] result;
@@ -682,9 +745,9 @@ namespace EncodeX
             {
                 result = new byte[32];
                 byte[] arr = new byte[16];
-                
+
                 Array.Copy(c, 0, arr, 0, c.Length);
-                for(int i =0; i < 16; i++)
+                for (int i = 0; i < 16; i++)
                 {
                     result[i] = (byte)(arr[i]);
                 }
@@ -697,10 +760,10 @@ namespace EncodeX
             else
             {
                 result = new byte[16];
-                Array.Copy(c,0, result, 0, c.Length);
-                for(int i = c.Length;i<16;i++)
+                Array.Copy(c, 0, result, 0, c.Length);
+                for (int i = c.Length; i < 16; i++)
                 {
-                    result[i] = (byte)(16-c.Length);
+                    result[i] = (byte)(16 - c.Length);
                 }
             }
             return result;
@@ -762,7 +825,7 @@ namespace EncodeX
                 result = new byte[16];
                 Array.Copy(c, 0, result, 0, c.Length);
                 result[c.Length] = 80;
-                for (int i = c.Length+1; i < 16; i++)
+                for (int i = c.Length + 1; i < 16; i++)
                 {
                     result[i] = (byte)(0);
                 }
@@ -817,7 +880,7 @@ namespace EncodeX
                 for (int i = 16; i < 32; i++)
                 {
                     Random n = new Random();
-                    int next = n.Next(0,256);
+                    int next = n.Next(0, 256);
                     result[i] = (byte)(next);
                 }
 
@@ -969,19 +1032,19 @@ namespace EncodeX
                 {
                     errorLabel.Content = "Encryption failed ";
                     errorLabel.Visibility = Visibility.Visible;
-                    
-                        button_Encrypt.IsEnabled = true;
-                        button_Decrypt.IsEnabled = true;
-                        encrypt_btn.IsEnabled = true;
-                        Select_file.IsEnabled = true;
-                        Select_folder.IsEnabled = true;
-                        Copy.IsEnabled = true;
-                        paste.IsEnabled = true;
-                        Save.IsEnabled = true;
-                        Button_text.IsEnabled = true;
-                        button_files.IsEnabled = true;
-                        button_password.IsEnabled = true;
-                    
+
+                    button_Encrypt.IsEnabled = true;
+                    button_Decrypt.IsEnabled = true;
+                    encrypt_btn.IsEnabled = true;
+                    Select_file.IsEnabled = true;
+                    Select_folder.IsEnabled = true;
+                    Copy.IsEnabled = true;
+                    paste.IsEnabled = true;
+                    Save.IsEnabled = true;
+                    Button_text.IsEnabled = true;
+                    button_files.IsEnabled = true;
+                    button_password.IsEnabled = true;
+
                 }
                 progress1.Visibility = Visibility.Hidden;
             }
@@ -1007,19 +1070,19 @@ namespace EncodeX
                     {
                         errorLabel.Content = "Error saving file";
                         errorLabel.Visibility = Visibility.Visible;
-                        
-                            button_Encrypt.IsEnabled = true;
-                            button_Decrypt.IsEnabled = true;
-                            encrypt_btn.IsEnabled = true;
-                            Select_file.IsEnabled = true;
-                            Select_folder.IsEnabled = true;
-                            Copy.IsEnabled = true;
-                            paste.IsEnabled = true;
-                            Save.IsEnabled = true;
-                            Button_text.IsEnabled = true;
-                            button_files.IsEnabled = true;
-                            button_password.IsEnabled = true;
-                       
+
+                        button_Encrypt.IsEnabled = true;
+                        button_Decrypt.IsEnabled = true;
+                        encrypt_btn.IsEnabled = true;
+                        Select_file.IsEnabled = true;
+                        Select_folder.IsEnabled = true;
+                        Copy.IsEnabled = true;
+                        paste.IsEnabled = true;
+                        Save.IsEnabled = true;
+                        Button_text.IsEnabled = true;
+                        button_files.IsEnabled = true;
+                        button_password.IsEnabled = true;
+
                     }
                 }
 
@@ -1051,7 +1114,7 @@ namespace EncodeX
                 group.Children.Add(rotate);
 
                 arrow.RenderTransform = group;
-                
+
 
                 DoubleAnimation scaleAnim = new DoubleAnimation
                 {
@@ -1068,10 +1131,11 @@ namespace EncodeX
                     FillBehavior = FillBehavior.HoldEnd
                 };
 
-                
 
-               
-                scaleAnim.Completed += (s, e) =>{
+
+
+                scaleAnim.Completed += (s, e) =>
+                {
                     Entry.Visibility = Visibility.Visible;
                     DoubleAnimation oopac = new DoubleAnimation
                     {
@@ -1101,7 +1165,7 @@ namespace EncodeX
                             {
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
                                 {
-                                    
+
 
                                     enc_steps.BeginAnimation(OpacityProperty, oopac);
                                     encr_steps_Copy.BeginAnimation(OpacityProperty, oopac);
@@ -1129,11 +1193,11 @@ namespace EncodeX
                                             timing4.AutoReset = false;
                                             timing4.Elapsed += (s, e) =>
                                             {
-                                                System.Windows.Application.Current.Dispatcher.Invoke(() => 
+                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
                                                 {
                                                     skipping += 1;
                                                     action2();
-                                                    timing5 = new System.Timers.Timer(10000);
+                                                    timing5 = new System.Timers.Timer(15000);
                                                     timing5.AutoReset = false;
                                                     timing5.Elapsed += (s, e) =>
                                                     {
@@ -1141,10 +1205,20 @@ namespace EncodeX
                                                         {
                                                             skipping += 1;
                                                             actions3();
+                                                            timing6 = new System.Timers.Timer(30000);
+                                                            timing6.AutoReset = false;
+                                                            timing6.Elapsed += (s, e) =>
+                                                            {
+                                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                                {
+                                                                    skipping += 1;
+                                                                    action4();
+                                                                });
+                                                            }; timing6.Start();
                                                         });
-                                                    };timing5.Start();
-                                                } );
-                                            };timing4.Start();
+                                                    }; timing5.Start();
+                                                });
+                                            }; timing4.Start();
                                         });
                                     };
                                     timing3.Start();
@@ -1157,7 +1231,7 @@ namespace EncodeX
                         });
                     };
                     timing.Start();
-                    
+
 
                 };
 
@@ -1168,7 +1242,7 @@ namespace EncodeX
             }
         }
 
-        
+
         public void Skipping_btn(object sender, EventArgs e)
         {
             if (skipping == 0)
@@ -1209,11 +1283,11 @@ namespace EncodeX
                     timing3_1.Dispose();
 
                 }
-                else if ( timing3 != null)
+                else if (timing3 != null)
                 {
                     skipping += 1;
                     timing3.Stop();
-                    
+
                 }
                 action1();
                 timing3_1 = new System.Timers.Timer(25000);
@@ -1226,7 +1300,8 @@ namespace EncodeX
                     }));
                 };
                 timing3_1.Start();
-            }else if (skipping == 2)
+            }
+            else if (skipping == 2)
             {
                 if (timing3_1 != null)
                 {
@@ -1252,7 +1327,8 @@ namespace EncodeX
                     }));
                 };
                 timing3_1.Start();
-            }else if (skipping == 3)
+            }
+            else if (skipping == 3)
             {
                 if (timing3_1 != null)
                 {
@@ -1268,13 +1344,51 @@ namespace EncodeX
 
                 }
                 actions3();
-                
+                timing3_1 = new System.Timers.Timer(15000);
+                timing3_1.AutoReset = false;
+                timing3_1.Elapsed += (s, e) =>
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        action4();
+                    }));
+                };
+                timing3_1.Start();
+
+            }
+            else if (skipping == 4)
+            {
+
+                if (timing3_1 != null)
+                {
+                    skipping += 1;
+                    timing3_1.Stop();
+                    timing3_1.Dispose();
+
+                }
+                else if (timing6 != null)
+                {
+                    skipping += 1;
+                    timing6.Stop();
+
+                }
+                action4();
+                timing3_1 = new System.Timers.Timer(15000);
+                timing3_1.AutoReset = false;
+                timing3_1.Elapsed += (s, e) =>
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                    }));
+                };
+                timing3_1.Start();
+
             }
 
-            
+
         }
 
-        
+
         private async void decrypt_txt(object sender, RoutedEventArgs e)
         {
 
@@ -1465,7 +1579,7 @@ namespace EncodeX
                         using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
                         {
                             cs.Write(fileNameBytes, 0, fileNameBytes.Length);
-                            byte[] buffer = new byte[200*1024*1024];
+                            byte[] buffer = new byte[200 * 1024 * 1024];
                             long totalbytes = fs.Length;
                             long bytesread = 0;
                             int bytesRead;
@@ -1864,7 +1978,7 @@ namespace EncodeX
                 Save2.Visibility = Visibility.Visible;
                 paste2.Visibility = Visibility.Visible;
             }
-            
+
 
             button_Decrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
             button_Encrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
@@ -1983,7 +2097,7 @@ namespace EncodeX
             }
             input_field1.Text = "";
             mode = "encrypt";
-            if (choice != "text" && choice !="learn")
+            if (choice != "text" && choice != "learn")
             {
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
                 {
@@ -2051,7 +2165,7 @@ namespace EncodeX
                 Save.Visibility = Visibility.Visible;
                 paste.Visibility = Visibility.Visible;
             }
-            
+
             button_Decrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
             button_Encrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
             Border_encrypt.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
@@ -2118,7 +2232,7 @@ namespace EncodeX
         }
         private void button_files_Click(object sender, RoutedEventArgs e)
         {
-            if(choice!="file" && choice != "folder")
+            if (choice != "file" && choice != "folder")
             {
                 errorLabel.Visibility = Visibility.Hidden;
                 if (mode == "encrypt")
@@ -2198,11 +2312,11 @@ namespace EncodeX
                     Select_file.Tag = "Green";
                 }
             }
-            
+
         }
         public void Lamp_clicked(object sender, EventArgs e)
         {
-           if (choice != "learn")
+            if (choice != "learn")
             {
                 errorLabel.Visibility = Visibility.Hidden;
                 encrypted_field.Text = "";
@@ -2274,10 +2388,10 @@ namespace EncodeX
                     opacity_anim(Save2, 1.0, 0.0);
                 }
             }
-           
-            
 
-                
+
+
+
 
         }
         private void button_Text_Click(object sender, RoutedEventArgs e)
@@ -2361,7 +2475,7 @@ namespace EncodeX
                 }
             ;
             }
-            
+
 
         }
 
@@ -2688,7 +2802,7 @@ namespace EncodeX
 
                                     using var entryStream = entry.Open();
                                     using var fileStream = File.OpenRead(file);
-                                    byte[] buffer = new byte[200*1024*1024];
+                                    byte[] buffer = new byte[200 * 1024 * 1024];
                                     int bytesRead;
                                     while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
                                     {
@@ -2801,6 +2915,7 @@ namespace EncodeX
             MainFrame.BeginAnimation(OpacityProperty, opac);
             Lock.BeginAnimation(OpacityProperty, opac);
             First.BeginAnimation(OpacityProperty, opac);
+            btn_lock.Margin = new Thickness(Lock.Margin.Left, Lock.Margin.Top + 800, Lock.Margin.Right, Lock.Margin.Bottom - 800);
 
         }
 
@@ -2842,7 +2957,7 @@ namespace EncodeX
             Lock.RenderTransform = new ScaleTransform(1, 1);
             DoubleAnimation scale = new DoubleAnimation
             {
-                
+
                 To = 1.3,
                 Duration = TimeSpan.FromMilliseconds(400)
             };
@@ -2875,8 +2990,8 @@ namespace EncodeX
             {
                 To = 0.0,
                 Duration = TimeSpan.FromMilliseconds(400)
-            }; 
-            foreach(KeyValuePair<Button,List<String>> k in dict)
+            };
+            foreach (KeyValuePair<Button, List<String>> k in dict)
             {
                 k.Key.BeginAnimation(OpacityProperty, opac);
                 opac.Completed += (sender, e) =>
@@ -2885,11 +3000,11 @@ namespace EncodeX
                 };
             }
             Encrypted.BeginAnimation(OpacityProperty, opac);
-            
+
             Decrypted.Visibility = Visibility.Visible;
             Instructions.BeginAnimation(OpacityProperty, opac);
         }
-        public void get_key(object sender, RoutedEventArgs e) 
+        public void get_key(object sender, RoutedEventArgs e)
         {
             Dictionary<Button, List<String>> text_dict = new Dictionary<Button, List<String>>
             {
@@ -2962,9 +3077,8 @@ namespace EncodeX
             {
                 k.Key.Cursor = new Cursor(cursorPath);
             }
-            Instructions.Content = "Click to see the magic!";   
+            Instructions.Content = "Click to see the magic!";
         }
 
-        
     }
 }
