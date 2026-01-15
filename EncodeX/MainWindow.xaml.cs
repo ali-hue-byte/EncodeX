@@ -1328,7 +1328,7 @@ namespace EncodeX
                                                     }
                                                     info.BeginAnimation(OpacityProperty, oopac2);
                                                     info.Content = "   ____Step 3: Generate a New Word W[i]____\r\n\r\n" +
-                                                    "Rule for each new word in the AES-256 key schedule:\r\n\r\n\n\n\n" +
+                                                    "Rule for each new word in the AES-256 key schedule:\r\n\r\n\n\n\n\n\n" +
                                                     
                                                     "W[i] =";
                                                     
@@ -3792,3 +3792,4 @@ namespace EncodeX
 
     }
 }
+
