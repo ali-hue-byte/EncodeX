@@ -1,13 +1,19 @@
 using System;
+using System.CodeDom;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
+
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Compression;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,10 +28,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using static System.Net.Mime.MediaTypeNames;
-using System.Timers;
-using System.CodeDom;
-using System.Text;
+
 
 namespace EncodeX
 {
@@ -1070,15 +1073,48 @@ namespace EncodeX
 
         public void action5()
         {
-            foreach (var timer in activeTimers)
+            string password;
+            
+            if (password_field.Text == "")
             {
-                timer.Stop();
-                timer.Dispose();
+                password = "password@1010^";
+                
+
+            }
+            else
+            {
+                password = password_field.Text;
+                
+            }
+
+            foreach (var time in activeTimers)
+            {
+                time.Stop();
+                time.Dispose();
             }
             activeTimers.Clear();
+            byte[] salt = new byte[16];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
+            using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA256);
+
+            byte[] key = pbkdf2.GetBytes(32);
+
+            string key_str = string.Join(", ",key);
+            string to_show = "Key: [ "+ key_str.Substring(0,40)+" ... "+key_str.Substring(key_str.Length-9)+" ]";
+            List<byte[]> lst = new List<byte[]> { };
+            for (int i = 0; i < 32; i += 4)
+            {
+                byte[] slice = new byte[4];
+                Array.Copy(key,i,slice,0,4);
+                lst.Add(slice);
+            };
+
             DoubleAnimation oopac = new DoubleAnimation
             {
-
+                From = 0.0,
                 To = 1.0,
                 Duration = TimeSpan.FromMilliseconds(1200)
             };
@@ -1098,7 +1134,7 @@ namespace EncodeX
             move(encr_steps_Copy3, "0,161,0,0", "0,54,0,0", 1000);
             move(encr_steps_Copy4, "0,54,0,0", "0,-54,0,0", 1000);
             change_color(encr_steps_Copy3, "#22C55E", 1100);
-            info.BeginAnimation(OpacityProperty,oopac2);
+            
             U1_show.BeginAnimation(OpacityProperty,oopac2);
             pad_info1.BeginAnimation(OpacityProperty, oopac2);
             pad_info1_Copy.BeginAnimation(OpacityProperty, oopac2);
@@ -1107,17 +1143,233 @@ namespace EncodeX
                 "is mixed with the secret key to inject the password into the \n" +
                 "encryption. \n\n" +
                 "- The AES key (From Step 2) is then expanded into a series of \n16-byte" +
-                "round keys using the AES key schedule.\n" +
+                "round keys using the AES key schedule (== AES key expansion).\n" +
                 "- The number of round keys depends on the AES variant:\r\n\r\n   " +
                 "• AES-128 => 16-byte key => 10 rounds => 11 round keys  \r\n   " +
                 "• AES-192 => 24-byte key => 12 rounds => 13 round keys  \r\n   " +
                 "• AES-256 => 32-byte key => 14 rounds => 15 round keys  \r\n\n" +
-                "- Step 3 uses only the **first round key** (16 bytes) to \nXOR with" +
+                "- Step 3 uses only the first round key (16 bytes) to \nXOR with " +
                 "the 16-byte data block. \r\n" +
                 "- This ensures that the encryption immediately depends on the \n" +
                 "user’s password, and all later rounds continue to mix the \n" +
                 "remaining round keys into the data.";
             info.BeginAnimation(OpacityProperty, oopac);
+
+            System.Timers.Timer timer = new System.Timers.Timer(16000);
+            timer.AutoReset = false;
+            timer.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+
+
+                    title.Content = "AES Key Expansion. How does it work ?";
+                    
+                    info.Content =
+                                    "1.Start with the master key derived from the password.\n" +
+                                    "   -The key is divided into fixed-size words (4 bytes).\n\n" +
+                                    "2.The key expansion algorithm generates a sequence of words \nto form all round keys:\n" +
+                                    "   -Each new word is computed from previous words using \n    transformations:\n" +
+                                    "         a) A rotation operation(RotWord) that cyclically shifts \n            bytes.\n" +
+                                    "         b) A substitution operation(SubWord) that applies a \n            non-linear mapping.\n" +
+                                    "         c) A round constant(Rcon) is optionally added to certain \n            words to ensure uniqueness.\n" +
+                                    "   -The new word is combined with an earlier word in the \n    sequence using XOR to produce the next word.\n" +
+                                    "   -This process is repeated until enough words are generated \n    for all round keys.\n\n";
+                                    
+                    info.BeginAnimation(OpacityProperty, oopac);
+                    title.BeginAnimation(OpacityProperty, oopac);
+                    System.Timers.Timer timer2 = new System.Timers.Timer(16000);
+                    timer2.AutoReset = false;
+                    timer2.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+
+
+                           
+                            
+                            info.Content = "3.All words are stored sequentially in a key schedule array.\n" +
+                                           "   - Consecutive words are grouped to form round keys.\n\n" +
+                                           "4.Outcome:\n" +
+                                           "   -The master key is expanded into a complete set of \n    round keys.\n" +
+                                           "   - These round keys will be used in order during the\n    AES encryption rounds.";
+                            info.BeginAnimation(OpacityProperty, oopac);
+                            System.Timers.Timer timer3 = new System.Timers.Timer(16000);
+                            timer3.AutoReset = false;
+                            timer3.Elapsed += (s, e) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+
+
+                                    title.Content = "AES Key Schedule – Number of Words";
+                                    title.BeginAnimation(OpacityProperty, oopac);
+                                    info.Content =
+                                    "- AES divides the key into 4-byte words.\r\n" +
+                                    "- The total number of words required depends on the AES \nvariant and the number of rounds.\n" +
+                                    "1. AES-128:\r\n   " +
+                                    "- Master key: 16 bytes → 4 words\r\n" +
+                                    "   - Number of rounds: 10\r\n" +
+                                    "   - Round keys: 11 (1 extra for initial AddRoundKey)\r\n" +
+                                    "   - Total words needed: 11 × 4 = 44 words\r\n" +
+                                    "   - Words to generate: 44 − 4 = 40\r\n\r\n" +
+                                    "2. AES-192:\r\n" +
+                                    "   - Master key: 24 bytes → 6 words\r\n" +
+                                    "   - Number of rounds: 12\r\n" +
+                                    "   - Round keys: 13\r\n" +
+                                    "   - Total words needed: 13 × 4 = 52 words\r\n" +
+                                    "   - Words to generate: 52 − 6 = 46\r\n\r\n";
+                                    
+                                    info.BeginAnimation(OpacityProperty, oopac);
+
+                                    
+                                });
+                            }; timer3.Start();
+                            activeTimers.Add(timer3);
+
+
+                        });
+                    }; timer2.Start();
+                    activeTimers.Add(timer2);
+
+                });
+            };timer.Start();
+            activeTimers.Add(timer);
+
+            System.Timers.Timer timer4 = new System.Timers.Timer(60000);
+            timer4.AutoReset = false;
+            timer4.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    info.Content = "3. AES-256:\r\n" +
+            "   - Master key: 32 bytes → 8 words\r\n" +
+            "   - Number of rounds: 14\r\n" +
+            "   - Round keys: 15\r\n" +
+            "   - Total words needed: 15 × 4 = 60 words\r\n" +
+            "   - Words to generate: 60 − 8 = 52\r\n";
+                    info.BeginAnimation(OpacityProperty, oopac);
+                });
+                
+            }; timer4.Start();
+            activeTimers.Add(timer4);
+            System.Timers.Timer timer1 = new System.Timers.Timer(70000);
+            timer1.AutoReset = false;
+            timer1.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    title.Content = "Example of AES-256 Key Expansion";
+                    title.BeginAnimation(OpacityProperty, oopac);
+
+                    info.Content = "   ____Step 0: Definitions____\r\n\r\n" +
+                    "W[i] = i-th word (4 bytes / 32 bits) in the key schedule array." +
+                    "\r\n\r\nNk = number of words in master key = 8 for AES-256." +
+                    "\r\n\r\nNr = number of rounds = 14 for AES-256.\r\n\r\n" +
+                    "Rcon[j] = round constant for the j-th key (32 bits).\r\n\r\n" +
+                    "RotWord(x) = rotate 4-byte word x left by 1 byte.\r\n\r\n" +
+                    "SubWord(x) = apply AES S-box to each byte.\r\n\r\n" +
+                    "⊕ = bitwise XOR of bytes.";
+                    info.BeginAnimation(OpacityProperty, oopac);
+                    System.Timers.Timer timer1_1 = new System.Timers.Timer(6000);
+                    timer1_1.AutoReset = false;
+                    timer1_1.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            
+
+                            info.Content = "\n\n\n\nGoal: Expand the 32-byte master key into 60 words → 15 round keys \n(4 words each, 16 bytes).";
+                            info.BeginAnimation(OpacityProperty, oopac);
+                            System.Timers.Timer timer1_2 = new System.Timers.Timer(6000);
+                            timer1_2.AutoReset = false;
+                            timer1_2.Elapsed += (s, e) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    U1_show.Margin = new Thickness(490, 170, 0, 0);
+                                    U1_show.Content = to_show;
+                                    info.Content = "\n\n\n\n   ____Step 1: Split Master Key into Words____\n" +
+                                    "";
+                                    info.BeginAnimation(OpacityProperty, oopac);
+                                    U1_show.Visibility = Visibility.Visible;
+                                    U1_show.BeginAnimation(OpacityProperty, oopac);
+                                    System.Timers.Timer timer1_3 = new System.Timers.Timer(4000);
+                                    timer1_3.AutoReset = false;
+                                    timer1_3.Elapsed += (s, e) =>
+                                    {
+                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            W0.Content += "[ "+string.Join(", ",lst[0]) +" ]" ;
+                                            W1.Content += "[ " + string.Join(", ", lst[1]) + " ]";
+                                            W2.Content += "[ " + string.Join(", ", lst[2]) + " ]";
+                                            W3.Content += "[ " + string.Join(", ", lst[3]) + " ]";
+                                            W4.Content += "[ " + string.Join(", ", lst[4]) + " ]";
+                                            W5.Content += "[ " + string.Join(", ", lst[5]) + " ]";
+                                            W6.Content += "[ " + string.Join(", ", lst[6]) + " ]";
+                                            W7.Content += "[ " + string.Join(", ", lst[7]) + " ]";
+                                            List<Label> li = new List<Label> {W0,W1,W2,W3,W4,W5,W6,W7 };
+                                            List<Label> l2 = new List<Label> { rule1,if1,rule2,if2,rule3,if3};
+                                            foreach (Label i in li)
+                                            {
+                                                i.BeginAnimation(OpacityProperty, oopac);
+                                                i.Visibility = Visibility.Visible;
+                                            }
+                                            System.Timers.Timer timer1_4 = new System.Timers.Timer(4000);
+                                            timer1_4.AutoReset = false;
+                                            timer1_4.Elapsed += (s, e) =>
+                                            {
+                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                {
+                                                    foreach (Label i in li)
+                                                    {
+                                                        i.BeginAnimation(OpacityProperty, oopac2);
+                                                        
+                                                    }
+                                                    info.BeginAnimation(OpacityProperty, oopac2);
+                                                    info.Content = "   ____Step 3: Generate a New Word W[i]____\r\n\r\n" +
+                                                    "Rule for each new word in the AES-256 key schedule:\r\n\r\n\n\n\n" +
+                                                    
+                                                    "W[i] =";
+                                                    
+                                                    
+                                                    info.BeginAnimation(OpacityProperty,oopac);
+                                                    foreach (Label i in l2)
+                                                    {
+                                                        i.BeginAnimation(OpacityProperty, oopac);
+                                                        i.Visibility = Visibility.Visible;
+                                                    }
+                                                });
+
+
+                                            };
+                                            timer1_4.Start();
+                                            activeTimers.Add(timer1_4);
+                                        });
+
+
+                                    };
+                                    timer1_3.Start();
+                                    activeTimers.Add(timer1_3);
+                                });
+
+
+                            };
+                            timer1_2.Start();
+                            activeTimers.Add(timer1_2);
+                        });
+
+
+                    };
+                    timer1_1.Start();
+                    activeTimers.Add(timer1_1);
+                });
+
+                
+
+            };
+            timer1.Start();
+            activeTimers.Add(timer1);
         }
         public void vibrate()
         {
@@ -1801,7 +2053,7 @@ namespace EncodeX
 
                 }
                 action4();
-                timing3_1 = new System.Timers.Timer(15000);
+                timing3_1 = new System.Timers.Timer(150000);
                 timing3_1.AutoReset = false;
                 timing3_1.Elapsed += (s, e) =>
                 {
@@ -1830,7 +2082,7 @@ namespace EncodeX
 
                 }
                 action5();
-                timing3_1 = new System.Timers.Timer(15000);
+                timing3_1 = new System.Timers.Timer(150000);
                 timing3_1.AutoReset = false;
                 timing3_1.Elapsed += (s, e) =>
                 {
