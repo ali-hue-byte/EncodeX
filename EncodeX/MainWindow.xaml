@@ -187,12 +187,12 @@
         </Border>
 
         <Border x:Name ="Border_pss" Grid.Column="1" CornerRadius="10" Background="#1A1E28" BorderBrush="#7F7F7F" BorderThickness="2" VerticalAlignment="Top" Height="48" Grid.Row="1" Grid.ColumnSpan="2" Margin="296,24,48,0">
-            
-                <TextBox x:Name ="password_field"  IsReadOnly="True" Background="#1A1E28"   BorderThickness="0"  Margin="5,6,5,6"  Foreground="White" FontSize="12"/>
 
-            
+            <TextBox x:Name ="password_field"  IsReadOnly="True" Background="#1A1E28"   BorderThickness="0"  Margin="5,6,5,6"  Foreground="White" FontSize="12"/>
+
+
         </Border>
-        
+
         <Button x:Name ="encrypt_btn" Grid.Row="3" Grid.Column="1" Content="Encrypt" Margin="319,223,71,66" Background="#149414" FontSize="14" FontFamily="Segoe UI" FontWeight="Bold" Click="Button_Click" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2">
             <Button.RenderTransform>
                 <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
@@ -1321,7 +1321,7 @@ Padding="18,14" Margin="386,368,349,170" Grid.ColumnSpan="2" Visibility="Hidden"
         <Label x:Name="Instructions" Opacity="0.4" Content="Find the key and decrypt the text!" 
        FontSize="18" Foreground="White" 
        HorizontalContentAlignment="Center" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="3" Margin="186,35,294,0" Grid.Row="3" />
-        <Grid x:Name="Entry"  Visibility="Hidden"  Grid.ColumnSpan="4" Margin="0,0,-48,10" Grid.RowSpan="4" Background="Black">
+        <Grid x:Name="Entry" Visibility="Hidden"  Grid.ColumnSpan="4" Margin="0,0,-48,10" Grid.RowSpan="4" Background="Black">
             <Label x:Name="intro" Visibility="Hidden"  Content="Encryption is a mathematical way of protecting data .&#xD;&#xA;It takes your readable information (text, Image, video...) and scrambles&#xD;&#xA;it so that nobody can read it without the correct secret key.&#xD;&#xA;&#xD;&#xA;Think of it as locking your data inside a safe, where only the correct&#xD;&#xA;key can open it.&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;*Note: Encryption ALWAYS requires a key. If no key is set this app will&#xD;&#xA;use a default key.&#xD;&#xA;This is VERY dangerous, because anyone who knows the default key&#xD;&#xA;can access your data. Using a personnal key is Strongly recommended .&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" Width="962" Height="494" FontSize="30" Foreground="AliceBlue"/>
             <Label x:Name="enc_steps"   Content="Encryption Steps" Visibility="Hidden" Foreground="LawnGreen" FontSize="46" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" Width="1050" Height="73"/>
             <Label x:Name="encr_steps" HorizontalContentAlignment="Center" Visibility="Hidden"  Content="1. Text → Bytes &amp; Padding: Convert text to bytes and pad to 16-byte blocks.&#xD;&#xA;" FontSize="25" Foreground="AliceBlue" FontFamily="Candara Light" HorizontalAlignment="Center"  Margin="0,161,0,0" VerticalAlignment="Top" Height="54" Width="962"/>
@@ -1405,11 +1405,28 @@ Padding="18,14" Margin="386,368,349,170" Grid.ColumnSpan="2" Visibility="Hidden"
                         </TransformGroup>
                     </Image.RenderTransform>
                 </Image>
+                <Image x:Name="Hmac_im_arr" Visibility="Hidden" Source="/icons/sim_arrow.png" Stretch="Fill" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" Height="49" Canvas.Left="793" Canvas.Top="281" VerticalAlignment="Top" Width="49">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="-89.7"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
             </Canvas>
             <Label x:Name="pad_show" Visibility="Hidden"  BorderBrush="Gray" BorderThickness="1" Foreground="AntiqueWhite" FontSize="15" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,206,0,0" VerticalAlignment="Top" Width="530" Height="63"/>
             <Label x:Name="pad_info1" Visibility="Hidden"  Content="Padding needed : " Foreground="Red" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,161,0,0" VerticalAlignment="Top" Width="282" Height="40" FontSize="18"/>
-            <Label x:Name="pad_info2" Visibility="Hidden" Content="Number of Bytes : " Foreground="OrangeRed" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="737,136,0,0" VerticalAlignment="Top" Width="282" Height="66" FontSize="18"/>
-            <Label x:Name="pad_info1_Copy" Visibility="Hidden"  Content="Last Block : " Foreground="#1AAE1A" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,136,0,0" VerticalAlignment="Top" Width="282" Height="33" FontSize="18"/>
+            <Label x:Name="pad_info2" Visibility="Hidden" Content="Number of bytes: " Foreground="OrangeRed" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="737,136,0,0" VerticalAlignment="Top" Width="282" Height="66" FontSize="18"/>
+            <Label x:Name="pad_info1_Copy" Visibility="Hidden"  Content="Last Block: " Foreground="#1AAE1A" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,136,0,0" VerticalAlignment="Top" Width="282" Height="33" FontSize="18"/>
+            <Label x:Name="salt_anim" Visibility="Hidden" Content="Salt" Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="737,136,0,0" VerticalAlignment="Top" Width="70" Height="41" FontSize="18"/>
+            <Label x:Name="pss_anim"  Visibility="Hidden" Content="*********" Foreground="#1AAE1A" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="574,136,0,0" VerticalAlignment="Top" Width="198" Height="33" FontSize="18"/>
+            <Label x:Name="indx_anim" Visibility="Hidden" Content="1st Block" Foreground="#1ACAF5"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="667,280,0,0" VerticalAlignment="Top" Width="157" Height="43" FontSize="20" FontFamily="Ebrima" FontWeight="ExtraBold"/>
+            <Label x:Name="U1_info" Visibility="Hidden"  Content="32 Bytes" Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="829,0,0,0" VerticalAlignment="Center" Width="105" Height="42" FontSize="18"/>
+
+            <Label x:Name="HMAC" Visibility="Hidden" BorderBrush="Gray" BorderThickness="3" Foreground="Black" FontSize="23" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="DemiBold" FontStyle="Normal" FontFamily="Calibri" Background="LightGray" Content="HMAC" HorizontalAlignment="Left" Margin="667,334,0,0" VerticalAlignment="Top" Height="82" Width="157"/>
+            <Label x:Name="U1_show" Visibility="Hidden"  BorderBrush="Gray" BorderThickness="1" Foreground="AntiqueWhite" FontSize="18" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,435,0,0" VerticalAlignment="Top" Width="530" Height="63"/>
 
         </Grid>
 
