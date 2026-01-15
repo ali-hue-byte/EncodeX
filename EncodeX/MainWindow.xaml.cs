@@ -686,31 +686,62 @@ namespace EncodeX
 
         public void action4()
         {
-            string password;
-            if (password_field.Text == "")
-            {
-                password = "password@1010^";
-            }
-            else
-            {
-                password = password_field.Text;
-            }
             foreach (var timer in activeTimers)
             {
                 timer.Stop();
                 timer.Dispose();
             }
+            activeTimers.Clear();
+            string password;
+            string mss;
+            if (password_field.Text == "")
+            {
+                password = "password@1010^";
+                mss = "(Use Your own password !)";
+                
+            }
+            else
+            {
+                password = password_field.Text;
+                mss = "(Keep your passwords secret !)";
+            }
+
+            if (password.Length > 14)
+            {
+                password = password.Substring(0, 12) + "...";
+            }
+            
+            byte[] bytes_index = BitConverter.GetBytes(1);
+            byte[] salt = new byte[16];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);  
+            }
+            byte[] msg = salt.Concat(bytes_index).ToArray();
+            String U1;
+            using (var smh = new HMACSHA256(Encoding.UTF8.GetBytes(password)))
+            {
+                byte[] u1 = smh.ComputeHash(msg);
+                U1 = string.Join(", ", u1);
+            }
+            
             DoubleAnimation oopac = new DoubleAnimation
             {
 
                 To = 1.0,
-                Duration = TimeSpan.FromMilliseconds(800)
+                Duration = TimeSpan.FromMilliseconds(1200)
             };
             DoubleAnimation oopac2 = new DoubleAnimation
             {
 
                 To = 0.0,
-                Duration = TimeSpan.FromMilliseconds(800)
+                Duration = TimeSpan.FromMilliseconds(1200)
+            };
+            DoubleAnimation oopac_h = new DoubleAnimation
+            {
+                From= 0.0,
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(1800)
             };
             encr_steps_Copy4.BeginAnimation(OpacityProperty, oopac);
             move(encr_steps_Copy4, "0,161,0,0", "0,54,0,0", 1000);
@@ -722,21 +753,408 @@ namespace EncodeX
             pad_info1.BeginAnimation(OpacityProperty, oopac2);
             pad_info2.BeginAnimation(OpacityProperty, oopac2);
             pad_info1_Copy.BeginAnimation(OpacityProperty, oopac2);
-            info.Content = "Passwords cannot be used directly as AES keys. \n" +
-                "AES requires a fixed-length, random-looking key.\n" +
-                "A Key Derivation Function (KDF) is used to transform your \n" +
-                "password into a secure key.\n" +
-                "The password is combined with a random salt and processed\n" +
-                "through many hash iterations.\n" +
-                "The salt is public and ensures identical passwords produce \n" +
-                "different keys.\n" +
-                "Each iteration depends on the previous one.\n" +
-                "------------\n" +
-                "U1 = HMAC(password, salt || blockIndex)\r\nU2 = HMAC(password, U1)\r\nU3 = HMAC(password, U2)\r\n...\r\nUc = HMAC(password, Uc-1)\n" +
-                "------------\n" +
-                "*HMAC: a secure way to hash data using a secret key.\n" +
-                "";
+            info.Content =
+"Passwords cannot be used directly as AES keys.\n" +
+"AES requires a fixed-length, random-looking key.\n" +
+"A Key Derivation Function (KDF) transforms your password\n" +
+"into a secure key.\n" +
+"One common KDF is PBKDF2 (Password-Based Key Derivation \n" +
+"Function 2).\n" +
+
+"The password is combined with a random salt and processed\n" +
+"through many hash iterations.\n" +
+"The salt is public and ensures identical passwords produce\n" +
+"different keys.\n" +
+"Each iteration depends on the previous one, creating a \n" +
+"chain of hashes.\n" +
+
+"PBKDF2 produces the final key in blocks (only if \n" +
+"more bytes are required !!!).\n" +
+"PBKDF2 can derive a key of any length. You specify how many\nbytes you want.\r\n" +
+"Each block has a unique number called the block index.";
+
+
             info.BeginAnimation(OpacityProperty, oopac);
+            System.Timers.Timer tio = new System.Timers.Timer(3000);
+            tio.AutoReset = false;
+            tio.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    pad_info1_Copy.Foreground = (Brush)new BrushConverter().ConvertFromString("#22C55E");
+                    pad_info1.Foreground = (Brush)new BrushConverter().ConvertFromString("#F59E0B");
+                    pad_info2.Foreground = (Brush)new BrushConverter().ConvertFromString("#38BDF8");
+                    pad_info2.Content = "   Salt: **Some Random 16 Bytes** \n     (128bits => 2¹²⁸ possibilities!)";
+                    pad_info1_Copy.Content = "Password: "+password;
+                    pad_info1.Content = mss;
+                    pad_info2.BeginAnimation(OpacityProperty, oopac);
+                    pad_info1_Copy.BeginAnimation(OpacityProperty, oopac);
+                    pad_info1.BeginAnimation(OpacityProperty, oopac);
+                    pad_info2.Visibility= Visibility.Visible;
+                    pad_info1.Visibility = Visibility.Visible;
+                    pad_info1_Copy.Visibility = Visibility.Visible;
+                });
+            };tio.Start();
+            activeTimers.Add(tio);
+            System.Timers.Timer gg = new System.Timers.Timer(18000);
+            gg.AutoReset = false;
+            gg.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    info.BeginAnimation(OpacityProperty, oopac2);
+                    info.Content = "Each block is computed like this:\n" +
+"U1 = HMAC(password, salt || blockIndex)\r\n" +
+"U2 = HMAC(password, U1)\r\n" +
+"U3 = HMAC(password, U2)\r\n" +
+"...\r\n" +
+"Uc = HMAC(password, Uc-1)\n" +
+"\n" +
+"*HMAC: a secure way to hash data using a secret key.\n" +
+"*PBKDF2 combines all the U-values (usually via XOR) \n" +
+"to produce each block of the final key.\n" +
+"*The block index ensures that each block is unique, even\n" +
+"if the password and salt are the same.\n" +
+"*AES-256 requires a 32-byte key, so only one PBKDF2 block \nis needed.(AES-192 => 24-bytes // AES-128 => 16-bytes)\nEven with long key provided, AES takes only the number \nof bytes needed"
+
+;
+                    info.BeginAnimation(OpacityProperty, oopac_h);
+                    
+                    HMAC.BeginAnimation(OpacityProperty, oopac_h);
+                    HMAC.Visibility = Visibility.Visible;
+                    System.Timers.Timer timing_s = new System.Timers.Timer(2000);
+                    timing_s.AutoReset = false;
+                    timing_s.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            DoubleAnimation o = new DoubleAnimation
+                            {
+                                From = 0.0,
+                                To = 1.0,
+                                Duration = TimeSpan.FromMilliseconds(800),
+                                AutoReverse = false
+                            };
+                            o.Completed += (s, e) =>
+                            {
+                                opacity_anim(indx_anim, 1.0, 0.0);
+                                
+                            };
+                            indx_anim.BeginAnimation(OpacityProperty, o);
+                            indx_anim.Visibility = Visibility.Visible;
+                            pss_anim.Visibility = Visibility.Visible;
+                            salt_anim.Content += " || 1" ;
+                            salt_anim.Visibility= Visibility.Visible;
+                            move(salt_anim, "737,136,0,0", "690,334,0,0",3000);
+                            move(pss_anim, "574,136,0,0", "690,334,0,0", 3000);
+                            System.Timers.Timer timing_s2 = new System.Timers.Timer(3300);
+                            timing_s2.AutoReset = false;
+                            timing_s2.Elapsed += (s, e) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    pss_anim.Visibility = Visibility.Hidden;
+                                    salt_anim.Visibility = Visibility.Hidden;
+                                    pss_anim.Margin = new Thickness(574,136,0,0);
+                                    
+                                    
+                                   
+                                });
+                            }; timing_s2.Start();
+                            activeTimers.Add(timing_s2);
+
+
+                            vibrate();
+                            System.Timers.Timer timing_s21 = new System.Timers.Timer(9000);
+                            timing_s21.AutoReset = false;
+                            timing_s21.Elapsed += (s, e) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    salt_anim.Foreground = (Brush)new BrushConverter().ConvertFromString("#00CC99");
+                                    salt_anim.Content = "U1";
+                                    salt_anim.Visibility = Visibility.Visible;
+                                    move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
+                                    System.Timers.Timer timing_s211 = new System.Timers.Timer(1000);
+                                    timing_s211.AutoReset = false;
+                                    timing_s211.Elapsed += (s, e) =>
+                                    {
+                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            
+                                            
+                                            opacity_anim(Hmac_im_arr, 0.0, 1.0);
+                                            Hmac_im_arr.Visibility = Visibility.Visible;
+                                            opacity_anim(U1_info, 0.0, 1.0);
+                                            U1_info.Visibility = Visibility.Visible;
+                                            U1_show.Content = "U1: [ " + U1.Substring(0,40) + "..." + U1.Substring(U1.Length-3)+" ]";
+                                            opacity_anim(U1_show, 0.0, 1.0);
+                                            U1_show.Visibility = Visibility.Visible;
+
+                                            System.Timers.Timer timing_s2111 = new System.Timers.Timer(8500);
+                                            timing_s2111.AutoReset = false;
+                                            timing_s2111.Elapsed += (s, e) =>
+                                            {
+                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                {
+
+
+                                                    opacity_anim(Hmac_im_arr, 1.0, 0.0);
+                                                  
+                                                    opacity_anim(U1_info, 1.0, 0.0);
+                                                    pss_anim.Visibility = Visibility.Visible;
+                                                    move(pss_anim, "574,136,0,0", "690,334,0,0", 1000);
+                                                    move(salt_anim, "710, 284, 0, 0", "710,334,0,0", 2000);
+
+                                                    opacity_anim(U1_show, 1.0, 0.0);
+                                                    System.Timers.Timer timing_s2 = new System.Timers.Timer(2300);
+                                                    timing_s2.AutoReset = false;
+                                                    timing_s2.Elapsed += (s, e) =>
+                                                    {
+                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                        {
+                                                            pss_anim.Visibility = Visibility.Hidden;
+                                                            salt_anim.Visibility = Visibility.Hidden;
+                                                            pss_anim.Margin = new Thickness(574, 136, 0, 0);
+                                                            System.Timers.Timer timing_ez= new System.Timers.Timer(7300);
+
+                                                            timing_ez.AutoReset = false;
+                                                            timing_ez.Elapsed += (s, e) =>
+                                                            {
+                                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                                {
+                                                                    salt_anim.Content = "U2";
+                                                                    salt_anim.Visibility = Visibility.Visible;
+                                                                    move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
+                                                                    System.Timers.Timer timing_ez1 = new System.Timers.Timer(3300);
+                                                                    timing_ez1.AutoReset = false;
+                                                                    timing_ez1.Elapsed += (s, e) =>
+                                                                    {
+                                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                                        {
+                                                                            pss_anim.Margin = new Thickness(574, 136, 0, 0);
+                                                                            pss_anim.Visibility = Visibility.Visible;
+                                                                            move(pss_anim, "574,136,0,0", "690,334,0,0", 1000);
+                                                                            move(salt_anim, "710, 284, 0, 0", "710,334,0,0", 2000);
+                                                                            System.Timers.Timer tim = new System.Timers.Timer(1300);
+                                                                        
+                                                                        tim.AutoReset = false;
+                                                                        tim.Elapsed += (s, e) =>
+                                                                        {
+
+                                                                            vibrate();
+                                                                           
+                                                                        };tim.Start();
+                                                                          activeTimers.Add(tim);
+
+                                                                        });
+                                                                    }; timing_ez1.Start();
+                                                                    activeTimers.Add(timing_ez1);
+                                                                });
+                                                            };timing_ez.Start();
+                                                            activeTimers.Add(timing_ez);
+
+
+                                                                });
+                                                    }; timing_s2.Start();
+                                                    activeTimers.Add(timing_s2);
+                                                    vibrate();
+
+
+                                                });
+                                            }; timing_s2111.Start();
+                                            activeTimers.Add(timing_s2111);
+
+
+                                        });
+                                    }; timing_s211.Start();
+                                    activeTimers.Add(timing_s211);
+
+
+                                });
+                            }; timing_s21.Start();
+                            activeTimers.Add(timing_s21);
+                        });
+                    };timing_s.Start();
+                    activeTimers.Add(timing_s);
+                });
+            };gg.Start();
+            activeTimers.Add(gg);
+
+            System.Timers.Timer timing_ez7 = new System.Timers.Timer(62300);
+
+            timing_ez7.AutoReset = false;
+            timing_ez7.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    pss_anim.Visibility = Visibility.Hidden;
+                    salt_anim.Content = "U3";
+                    salt_anim.Visibility = Visibility.Visible;
+                    move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
+                    
+                });
+            };
+            timing_ez7.Start();
+            activeTimers.Add(timing_ez7);
+
+            System.Timers.Timer timing_ = new System.Timers.Timer(66300);
+
+            timing_.AutoReset = false;
+            timing_.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    U1_show.Content = "Block = U1 ⊕ U2 ⊕ U3 ⊕ ... ⊕ Uc";
+                    info.Content = "⊕ => XOR (exclusive OR) is a bitwise operation.\r\n\r\n" +
+                    "For two bits:\r\n" +
+                    "- The result is 1 if the bits are different\r\n" +
+                    "- The result is 0 if the bits are the same\r\n\r\n" +
+                    "Truth table:\r\n" +
+                    "0 ⊕ 0 = 0" +
+                    "\r\n" +
+                    "0 ⊕ 1 = 1\r\n" +
+                    "1 ⊕ 0 = 1\r\n" +
+                    "1 ⊕ 1 = 0\r\n\r\n" +
+                    "When applied to bytes, XOR is performed bit by bit.\r\n" +
+                    "When applied to byte arrays, XOR is performed byte by \n" +
+                    "byte at the same index.\r\n\r\n";
+                    
+                    U1_show.Margin = new Thickness(490,330,0,0);
+                    opacity_anim(U1_show, 0.0, 1.0,null, 1200);
+                    opacity_anim(info, 0.0, 1.0, null, 1200);
+                    U1_show.Visibility = Visibility.Visible;
+                    info.Visibility = Visibility.Visible;
+                    opacity_anim(HMAC,1.0,0.0,null,700);
+                    opacity_anim(salt_anim, 1.0, 0.0, null, 700);
+
+                    System.Timers.Timer ne = new System.Timers.Timer(9000);
+                    ne.AutoReset = false;
+                    ne.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                           
+                            opacity_anim(info, 1.0, 0.0, null, 800);
+                            opacity_anim(info, 0.0, 1.0, null, 800);
+                            info.Content = "Example: XOR of two bytes\r\n\r\nNumber A = 172  (binary: 10101100)\r\nNumber B = 197  (binary: 11000101)\r\n\r\nCompute XOR (A ⊕ B) bit by bit:\r\n\r\n  1 0 1 0 1 1 0 0   (A)\r\n⊕ 1 1 0 0 0 1 0 1   (B)\r\n-------------------\r\n  0 1 1 0 1 0 0 1   (Result)\r\n\r\nResult in decimal = 105\r\n\r\nSo:\r\n172 ⊕ 197 = 105\r\n";
+                            
+                            System.Timers.Timer ne = new System.Timers.Timer(9000);
+                            ne.AutoReset = false;
+                            ne.Elapsed += (s, e) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+
+                                    opacity_anim(info, 1.0, 0.0, null, 800);
+                                    opacity_anim(info, 0.0, 1.0, null, 800);
+                                    info.Content =
+                                     "In PBKDF2, all intermediate results (U1, U2, U3, …) have the \n" +
+                            "same length. The final block is computed by XORing all these \nvalues:\r\n\r\n" +
+                            "Block = U1 ⊕ U2 ⊕ U3 ⊕ … ⊕ Uc\r\n\r\n" +
+                            "XOR is used because it combines all iterations, preserves \nentropy, " +
+                            "and ensures that every iteration influences the \nfinal derived key.\r\n";
+                                });
+                            }; ne.Start();
+                            activeTimers.Add(ne);
+                        });
+                    };ne.Start();
+                    activeTimers.Add(ne);
+
+
+                });
+            };
+            timing_.Start();
+            activeTimers.Add(timing_);
+        }
+
+        public void action5()
+        {
+            foreach (var timer in activeTimers)
+            {
+                timer.Stop();
+                timer.Dispose();
+            }
+            activeTimers.Clear();
+            DoubleAnimation oopac = new DoubleAnimation
+            {
+
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(1200)
+            };
+            DoubleAnimation oopac2 = new DoubleAnimation
+            {
+
+                To = 0.0,
+                Duration = TimeSpan.FromMilliseconds(1200)
+            };
+            DoubleAnimation oopac_h = new DoubleAnimation
+            {
+                From = 0.0,
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(1800)
+            };
+            encr_steps_Copy3.BeginAnimation(OpacityProperty, oopac);
+            move(encr_steps_Copy3, "0,161,0,0", "0,54,0,0", 1000);
+            move(encr_steps_Copy4, "0,54,0,0", "0,-54,0,0", 1000);
+            change_color(encr_steps_Copy3, "#22C55E", 1100);
+            info.BeginAnimation(OpacityProperty,oopac2);
+            U1_show.BeginAnimation(OpacityProperty,oopac2);
+            pad_info1.BeginAnimation(OpacityProperty, oopac2);
+            pad_info1_Copy.BeginAnimation(OpacityProperty, oopac2);
+            pad_info2.BeginAnimation(OpacityProperty, oopac2);
+            info.Content = "Before AES rounds begin, the first 16-byte data block \n" +
+                "is mixed with the secret key to inject the password into the \n" +
+                "encryption. \n\n" +
+                "- The AES key (From Step 2) is then expanded into a series of \n16-byte" +
+                "round keys using the AES key schedule.\n" +
+                "- The number of round keys depends on the AES variant:\r\n\r\n   " +
+                "• AES-128 => 16-byte key => 10 rounds => 11 round keys  \r\n   " +
+                "• AES-192 => 24-byte key => 12 rounds => 13 round keys  \r\n   " +
+                "• AES-256 => 32-byte key => 14 rounds => 15 round keys  \r\n\n" +
+                "- Step 3 uses only the **first round key** (16 bytes) to \nXOR with" +
+                "the 16-byte data block. \r\n" +
+                "- This ensures that the encryption immediately depends on the \n" +
+                "user’s password, and all later rounds continue to mix the \n" +
+                "remaining round keys into the data.";
+            info.BeginAnimation(OpacityProperty, oopac);
+        }
+        public void vibrate()
+        {
+            Thickness start = new Thickness(667, 334, 0, 0);
+            System.Timers.Timer timing_s = new System.Timers.Timer(4000);
+            timing_s.AutoReset = false;
+            timing_s.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ThicknessAnimation anim = new ThicknessAnimation
+                    {
+                        From = HMAC.Margin,
+                        To = new Thickness(HMAC.Margin.Left + 20, HMAC.Margin.Top, HMAC.Margin.Right - 20, HMAC.Margin.Bottom),
+                        Duration = TimeSpan.FromMilliseconds(50),
+                        AutoReverse = true,
+                        RepeatBehavior = new RepeatBehavior(20)
+                    };
+                    anim.Completed += (s, e) =>
+                    {
+                        ThicknessAnimation anim2 = new ThicknessAnimation
+                        {
+                            From = HMAC.Margin,
+                            To = new Thickness(HMAC.Margin.Left - 20, HMAC.Margin.Top, HMAC.Margin.Right + 20, HMAC.Margin.Bottom),
+                            Duration = TimeSpan.FromMilliseconds(50)
+                        };
+                      
+                        
+
+                    };
+                    HMAC.BeginAnimation(MarginProperty, anim);
+                });
+            }; timing_s.Start();
+            activeTimers.Add(timing_s);
+            HMAC.Margin = start;
+
+
         }
         public byte[] pad1(byte[] c)
         {
@@ -1151,7 +1569,7 @@ namespace EncodeX
                     };
                     intro.BeginAnimation(OpacityProperty, oopac);
                     intro.Visibility = Visibility.Visible;
-                    timing = new System.Timers.Timer(10000);
+                    timing = new System.Timers.Timer(17000);
                     timing.AutoReset = false;
                     timing.Elapsed += (s, e) =>
                     {
@@ -1189,7 +1607,7 @@ namespace EncodeX
                                         {
                                             skipping += 1;
                                             action1();
-                                            timing4 = new System.Timers.Timer(25000);
+                                            timing4 = new System.Timers.Timer(31000);
                                             timing4.AutoReset = false;
                                             timing4.Elapsed += (s, e) =>
                                             {
@@ -1213,6 +1631,16 @@ namespace EncodeX
                                                                 {
                                                                     skipping += 1;
                                                                     action4();
+                                                                    timing7 = new System.Timers.Timer(100000);
+                                                                    timing7.AutoReset = false;
+                                                                    timing7.Elapsed += (s, e) =>
+                                                                    {
+                                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                                        {
+                                                                            skipping += 1;
+                                                                            action5();
+                                                                        });
+                                                                    }; timing7.Start();
                                                                 });
                                                             }; timing6.Start();
                                                         });
@@ -1379,6 +1807,36 @@ namespace EncodeX
                 {
                     System.Windows.Application.Current.Dispatcher.Invoke((() =>
                     {
+                        action5();
+                    }));
+                };
+                timing3_1.Start();
+
+            }
+            else if (skipping == 5)
+            {
+
+                if (timing3_1 != null)
+                {
+                    skipping += 1;
+                    timing3_1.Stop();
+                    timing3_1.Dispose();
+
+                }
+                else if (timing7 != null)
+                {
+                    skipping += 1;
+                    timing7.Stop();
+
+                }
+                action5();
+                timing3_1 = new System.Timers.Timer(15000);
+                timing3_1.AutoReset = false;
+                timing3_1.Elapsed += (s, e) =>
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        
                     }));
                 };
                 timing3_1.Start();
@@ -1873,7 +2331,7 @@ namespace EncodeX
 
             return decrypted;
         }
-        public void opacity_anim(FrameworkElement button, double x, double y, Button btn = null)
+        public void opacity_anim(FrameworkElement button, double x, double y, Button btn = null, int d =400)
         {
             ToolTip tt = null;
 
@@ -1889,7 +2347,7 @@ namespace EncodeX
             {
                 From = x,
                 To = y,
-                Duration = TimeSpan.FromMilliseconds(400)
+                Duration = TimeSpan.FromMilliseconds(d)
             };
             button.BeginAnimation(FrameworkElement.OpacityProperty, opacity);
 
