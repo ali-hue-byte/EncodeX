@@ -1331,6 +1331,22 @@ Padding="18,14" Margin="386,368,349,170" Grid.ColumnSpan="2" Visibility="Hidden"
             <Label x:Name="encr_steps_Copy3" HorizontalContentAlignment="Center" Visibility="Hidden"  Content="3. Initial Key Mixing: XOR the first round key with the data.&#xD;&#xA;" FontSize="25" Foreground="AliceBlue" FontFamily="Candara Light" HorizontalAlignment="Center"  Margin="0,269,0,0" VerticalAlignment="Top" Height="54" Width="962"/>
             <Label x:Name="encr_steps_Copy4" HorizontalContentAlignment="Center" Visibility="Hidden"  Content="2. Password → AES Key: Transform your password into a fixed-length AES key." FontSize="25" Foreground="AliceBlue" FontFamily="Candara Light" HorizontalAlignment="Center"  Margin="0,215,0,0" VerticalAlignment="Top" Height="54" Width="962"/>
             <Label x:Name="info" Visibility="Hidden" Content="AES cannot work with letters or symbols directly.&#xA;The text you enter is first converted into bytes — numeric &#xD;&#xA;values between 0 and 255 — which AES can process.&#xA;Each character becomes a byte or multiple bytes if using UTF-8) &#xD;&#xA;forming a byte array that represents your text in a&#xD;&#xA;machine-readable format.&#xA;&#xA;Important: AES processes the data in 16-byte chunks, not 16 &#xD;&#xA;characters.&#xA;If a character takes more than one byte (like é in UTF-8), all its &#xD;&#xA;bytes count toward the 16-byte block.&#xA;The first 16 bytes make the first block, and any remaining byte&#xD;&#xA;s will be handled in the following blocks.&#xA;" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Width="515" Height="418" FontSize="18" Foreground="AliceBlue"/>
+            <Label x:Name="rule1" Visibility="Hidden" Content=" { W[i-Nk] ⊕ SubWord(RotWord(W[i-1])) ⊕ Rcon[i/Nk]" HorizontalAlignment="Left" Margin="78,282,0,0" VerticalAlignment="Top" Width="447" Height="42" FontSize="18" Foreground="AliceBlue"/>
+            <Label x:Name="if1" Visibility="Hidden" Content="if i mod Nk = 0" HorizontalAlignment="Left" Margin="120,310,0,0" VerticalAlignment="Top" Width="148" Height="39" FontSize="16" Foreground="#FACC15" RenderTransformOrigin="0.5,0.5">
+                <Label.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="1"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Label.RenderTransform>
+            </Label>
+            <Label x:Name="rule2" Visibility="Hidden"  Content=" { W[i-Nk] ⊕ SubWord(W[i-1])" HorizontalAlignment="Left" Margin="78,365,0,0" VerticalAlignment="Top" Width="258" Height="33" FontSize="18" Foreground="AliceBlue"/>
+            <Label x:Name="if2" Visibility="Hidden" Content="if Nk > 6 and i mod Nk = 4" HorizontalAlignment="Left" Margin="120,399,0,0" VerticalAlignment="Top" Width="233" Height="40" FontSize="16" Foreground="#FACC15"/>
+            <Label x:Name="if3" Visibility="Hidden" Content="otherwise" HorizontalAlignment="Left" Margin="120,476,0,0" VerticalAlignment="Top" Width="103" Height="41" FontSize="16" Foreground="#FACC15"/>
+            <Label x:Name="rule3" Visibility="Hidden"  Content=" { W[i-Nk] ⊕ W[i-1]" HorizontalAlignment="Left" Margin="78,452,0,0" VerticalAlignment="Top" Width="226" Height="41" FontSize="18" Foreground="AliceBlue"/>
+
             <Label x:Name="title" Visibility="Hidden" Content="1. Text → Bytes (Encoding)" HorizontalAlignment="Left" Margin="10,112,0,0" VerticalAlignment="Top" Width="515" Height="49" Foreground="LightSeaGreen" HorizontalContentAlignment="Center" FontSize="25" FontFamily="Segoe UI Black"/>
             <Button x:Name ="skip_btn"  Content="Skip" Margin="921,534,31,37" Background="#149414" FontSize="14" FontFamily="Segoe UI" FontWeight="Bold"  RenderTransformOrigin="0.5,0.5" Click="Skipping_btn">
                 <Button.RenderTransform>
@@ -1427,6 +1443,14 @@ Padding="18,14" Margin="386,368,349,170" Grid.ColumnSpan="2" Visibility="Hidden"
 
             <Label x:Name="HMAC" Visibility="Hidden" BorderBrush="Gray" BorderThickness="3" Foreground="Black" FontSize="23" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="DemiBold" FontStyle="Normal" FontFamily="Calibri" Background="LightGray" Content="HMAC" HorizontalAlignment="Left" Margin="667,334,0,0" VerticalAlignment="Top" Height="82" Width="157"/>
             <Label x:Name="U1_show" Visibility="Hidden"  BorderBrush="Gray" BorderThickness="1" Foreground="AntiqueWhite" FontSize="18" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,435,0,0" VerticalAlignment="Top" Width="530" Height="63"/>
+            <Label x:Name="W0" Visibility="Hidden"  Content="w[0] = " Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,242,0,0" VerticalAlignment="Top" Width="529" Height="42" FontSize="18"/>
+            <Label x:Name="W1" Visibility="Hidden"  Content="w[1] = " Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,272,0,0" VerticalAlignment="Top" Width="529" Height="42" FontSize="18"/>
+            <Label x:Name="W2" Visibility="Hidden"  Content="w[2] = " Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,302,0,0" VerticalAlignment="Top" Width="530" Height="42" FontSize="18"/>
+            <Label x:Name="W3" Visibility="Hidden" Content="w[3] = " Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,334,0,0" VerticalAlignment="Top" Width="529" Height="42" FontSize="18"/>
+            <Label x:Name="W4" Visibility="Hidden" Content="w[4] = " Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,368,0,0" VerticalAlignment="Top" Width="529" Height="42" FontSize="18"/>
+            <Label x:Name="W5" Visibility="Hidden" Content="w[5] = " Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,402,0,0" VerticalAlignment="Top" Width="516" Height="42" FontSize="18"/>
+            <Label x:Name="W6" Visibility="Hidden"  Content="w[6] = " Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,436,0,0" VerticalAlignment="Top" Width="529" Height="42" FontSize="18"/>
+            <Label x:Name="W7" Visibility="Hidden"  Content="w[7] = " Foreground="#38BDF8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="490,472,0,0" VerticalAlignment="Top" Width="529" Height="42" FontSize="18"/>
 
         </Grid>
 
