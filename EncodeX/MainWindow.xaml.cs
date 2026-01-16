@@ -28,7 +28,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-
+using System.Diagnostics;
 
 namespace EncodeX
 {
@@ -1070,7 +1070,27 @@ namespace EncodeX
             timing_.Start();
             activeTimers.Add(timing_);
         }
-
+        byte[] w8 = new byte[4];
+        byte[] result = new byte[4];
+        byte[] SBox = new byte[256]
+{
+    99,124,119,123,242,107,111,197,48,1,103,43,254,215,171,118,
+    202,130,201,125,250,89,71,240,173,212,162,175,156,164,114,192,
+    183,253,147,38,54,63,247,204,52,165,229,241,113,216,49,21,
+    4,199,35,195,24,150,5,154,7,18,128,226,235,39,178,117,
+    9,131,44,26,27,110,90,160,82,59,214,179,41,227,47,132,
+    83,209,0,237,32,252,177,91,106,203,190,57,74,76,88,207,
+    208,239,170,251,67,77,51,133,69,249,2,127,80,60,159,168,
+    81,163,64,143,146,157,56,245,188,182,218,33,16,255,243,210,
+    205,12,19,236,95,151,68,23,196,167,126,61,100,93,25,115,
+    96,129,79,220,34,42,144,136,70,238,184,20,222,94,11,219,
+    224,50,58,10,73,6,36,92,194,211,172,98,145,149,228,121,
+    231,200,55,109,141,213,78,169,108,86,244,234,101,122,174,8,
+    186,120,37,46,28,166,180,198,232,221,116,31,75,189,139,138,
+    112,62,181,102,72,3,246,14,97,53,87,185,134,193,29,158,
+    225,248,152,17,105,217,142,148,155,30,135,233,206,85,40,223,
+    140,161,137,13,191,230,66,104,65,153,45,15,176,84,187,22
+};
         public void action5()
         {
             string password;
@@ -1339,6 +1359,9 @@ namespace EncodeX
                                                         i.BeginAnimation(OpacityProperty, oopac);
                                                         i.Visibility = Visibility.Visible;
                                                     }
+                                                    U1_show.BeginAnimation(OpacityProperty, oopac2);
+                                                    
+
                                                 });
 
 
@@ -1370,6 +1393,503 @@ namespace EncodeX
             };
             timer1.Start();
             activeTimers.Add(timer1);
+
+            System.Timers.Timer timer1_5 = new System.Timers.Timer(114000);
+            timer1_5.AutoReset = false;
+            timer1_5.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    W8.BeginAnimation(OpacityProperty, oopac);
+                    W8.Visibility = Visibility.Visible;
+                    System.Timers.Timer timer1_7 = new System.Timers.Timer(900);
+                    timer1_7.AutoReset = false;
+                    timer1_7.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            W8_i.BeginAnimation(OpacityProperty, oopac);
+                            W8_i.Visibility = Visibility.Visible;
+                            change_color(rule1, "#22C55E", 2000);
+                            change_color(if1, "#22C55E", 2000);
+                            System.Timers.Timer timer1_6 = new System.Timers.Timer(3000);
+                            timer1_6.AutoReset = false;
+                            timer1_6.Elapsed += (s, e) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    W8_i.BeginAnimation(OpacityProperty, oopac2);
+                                    W8.Content = "W[8] = W[0] ⊕ SubWord(RotWord(W[7])) ⊕ Rcon[1]";
+                                    System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                                    timer1_8.AutoReset = false;
+                                    timer1_8.Elapsed += (s, e) =>
+                                    {
+                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            move(W8, "490,170,0,0", "490,140,0,0", 600);
+                                            W8_r.BeginAnimation(OpacityProperty, oopac);
+                                            W8_r.Visibility = Visibility.Visible;
+                                            System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                                            timer1_8.AutoReset = false;
+                                            timer1_8.Elapsed += (s, e) =>
+                                            {
+                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                {
+                                                    W8.Margin = new Thickness(490, 140, 0, 0);
+                                                    W8_app.BeginAnimation(OpacityProperty, oopac);
+                                                    W8_app.Visibility = Visibility.Visible;
+                                                    W8_app.Content = "W[7] = " + "[ " + string.Join(", ", lst[7]) + " ]";
+                                                    System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                                                    timer1_8.AutoReset = false;
+                                                    timer1_8.Elapsed += (s, e) =>
+                                                    {
+                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                        {
+
+                                                            W8_re.BeginAnimation(OpacityProperty, oopac);
+                                                            W8_re.Visibility = Visibility.Visible;
+                                                            W8_re.Content = "RotWord(W[7]) = " + RotWord(lst[7]);
+                                                            System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                                                            timer1_8.AutoReset = false;
+                                                            timer1_8.Elapsed += (s, e) =>
+                                                            {
+                                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                                {
+                                                                    W8_r.Content = "SubWord(W) => SBox";
+                                                                    W8_r.BeginAnimation(OpacityProperty, oopac);
+                                                                    W8_r.Visibility = Visibility.Visible;
+                                                                   
+                                                                    activeTimers.Add(timer1_8);
+
+
+
+                                                                });
+
+
+                                                            };
+                                                            timer1_8.Start();
+                                                            activeTimers.Add(timer1_8);
+
+
+                                                        });
+
+
+                                                    };
+                                                    timer1_8.Start();
+                                                    activeTimers.Add(timer1_8);
+
+
+                                                });
+
+
+                                            };
+                                            timer1_8.Start();
+                                            activeTimers.Add(timer1_8);
+
+
+
+                                        });
+
+
+                                    };
+                                    timer1_8.Start();
+                                    activeTimers.Add(timer1_8);
+
+
+                                });
+
+
+                            };
+                            timer1_6.Start();
+                            activeTimers.Add(timer1_6);
+                        });
+
+
+                    };
+                    timer1_7.Start();
+                    activeTimers.Add(timer1_7);
+
+                });
+
+
+            };
+            timer1_5.Start();
+            activeTimers.Add(timer1_5);
+
+
+            System.Timers.Timer timer1_8 = new System.Timers.Timer(150000);
+            timer1_8.AutoReset = false;
+            timer1_8.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+
+
+                    W8_app.BeginAnimation(OpacityProperty, oopac);
+                    W8_app.Visibility = Visibility.Visible;
+                    W8_app.Content = lst[7][1].ToString() + " => " + SBox[lst[7][1]].ToString() + "\t" +
+                       lst[7][2].ToString() + " => " + SBox[lst[7][2]].ToString() + "\n" +
+                       lst[7][3].ToString() + " => " + SBox[lst[7][3]].ToString() + "\t" +
+                    lst[7][0].ToString() + " => " + SBox[lst[7][0]].ToString();
+                    System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                    timer1_8.AutoReset = false;
+                    timer1_8.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+
+                            W8_re1.BeginAnimation(OpacityProperty, oopac);
+                            W8_re1.Visibility = Visibility.Visible;
+                            W8_re1.Content = "SubWord(RotWord(W[7])) = [ " + string.Join(", ", SubWord(RotWord_2(lst[7]))) + " ]";
+
+                            System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                            timer1_8.AutoReset = false;
+                            timer1_8.Elapsed += (s, e) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    W8_r.Content = "Rcon[i] = [rᵢ, 0, 0, 0]";
+                                    W8_r.BeginAnimation(OpacityProperty, oopac);
+                                    W8_r.Visibility = Visibility.Visible;
+                                    System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                                    timer1_8.AutoReset = false;
+                                    timer1_8.Elapsed += (s, e) =>
+                                    {
+                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                        {
+
+
+                                            W8_app.BeginAnimation(OpacityProperty, oopac);
+                                            W8_app.Visibility = Visibility.Visible;
+                                            W8_app.Content = "r₁ = 1        rᵢ = { 2·rᵢ₋₁                  if rᵢ₋₁ < 128\r\n                        (2·rᵢ₋₁ − 256) ⊕ 27     if rᵢ₋₁ ≥ 128 }\r\n";
+                                            System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                                            timer1_8.AutoReset = false;
+                                            timer1_8.Elapsed += (s, e) =>
+                                            {
+                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                {
+
+                                                    W8_re2.BeginAnimation(OpacityProperty, oopac);
+                                                    W8_re2.Visibility = Visibility.Visible;
+                                                    W8_re2.Content = "Rcon[1] = [1, 0, 0, 0] ";
+
+                                                    System.Timers.Timer timi = new System.Timers.Timer(3000);
+                                                    timi.AutoReset = false;
+                                                    timi.Elapsed += (s, e) =>
+                                                    {
+                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                        {
+                                                            W8_r.BeginAnimation(OpacityProperty, oopac2);
+                                                            W8_app.BeginAnimation(OpacityProperty, oopac2);
+                                                            W8_app.Content = "W[8] = [" + string.Join(", ",lst[0]) + "] ⊕ [" + string.Join(", ", SubWord(RotWord_2(lst[7]))) + "] ⊕ [1, 0, 0, 0]";
+                                                            W8_app.BeginAnimation(OpacityProperty, oopac);
+                                                        });
+                                                    };timi.Start();
+                                                    activeTimers.Add(timi);
+                                                    System.Timers.Timer timi2 = new System.Timers.Timer(6000);
+                                                    timi2.AutoReset = false;
+                                                    timi2.Elapsed += (s, e) =>
+                                                    {
+                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                        {
+                                                            byte[] Rcon = new byte[] { 1, 0, 0, 0 };
+                                                            
+                                                            for (int i = 0; i < 4; i++)
+                                                            {
+                                                                byte s = (byte) (lst[0][i] ^ SubWord(RotWord_2(lst[7]))[i]);
+                                                                byte n = (byte) (s ^ Rcon[i]);
+                                                                w8[i] = n;
+                                                            }
+                                                            W8_re.BeginAnimation(OpacityProperty, oopac2);
+                                                            W8_re1.BeginAnimation(OpacityProperty, oopac2);
+                                                            W8_re2.BeginAnimation(OpacityProperty, oopac2);
+
+                                                            
+                                                            System.Timers.Timer timi2 = new System.Timers.Timer(1000);
+                                                            timi2.AutoReset = false;
+                                                            timi2.Elapsed += (s, e) =>
+                                                            {
+                                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                                {
+                                                                    W8_re1.Content = "W[8] = [" + string.Join(", ", w8)+" ]";
+                                                                    W8_re1.BeginAnimation(OpacityProperty, oopac);
+                                                                });
+                                                            }; timi2.Start();
+                                                            activeTimers.Add(timi2);
+
+                                                        });
+                                                    }; timi2.Start();
+                                                    activeTimers.Add(timi2);
+                                                    System.Timers.Timer timi3 = new System.Timers.Timer(10000);
+                                                    timi3.AutoReset = false;
+                                                    timi3.Elapsed += (s, e) =>
+                                                    {
+                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                        {
+                                                            change_color(rule1, "#F0F8FF", 2000);
+                                                            change_color(if1, "#FACC15", 2000);
+                                                            W8_re1.BeginAnimation(OpacityProperty, oopac2);
+                                                            W8_app.BeginAnimation(OpacityProperty, oopac2);
+                                                            W8.BeginAnimation(OpacityProperty, oopac2);
+                                                        });
+                                                    };timi3.Start();
+                                                    activeTimers.Add(timi3);
+                                                    System.Timers.Timer timi4 = new System.Timers.Timer(13000);
+                                                    timi4.AutoReset = false;
+                                                    timi4.Elapsed += (s, e) =>
+                                                    {
+                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                                        {
+                                                            W8.Margin = new Thickness(490, 170, 0, 0);
+                                                            move(W8, "490,140,0,0", "490,170,0,0", 600);
+                                                            W8.Content = "W[9] = ?";
+                                                            W8.BeginAnimation(OpacityProperty, oopac);
+                                                            
+                                                        });
+
+                                                    }; timi4.Start();
+                                                    activeTimers.Add(timi4);
+                                                   
+
+
+                                                });
+
+
+                                            };
+                                            timer1_8.Start();
+                                            activeTimers.Add(timer1_8);
+
+
+                                        });
+
+
+                                    };
+                                    timer1_8.Start();
+                                    activeTimers.Add(timer1_8);
+
+
+
+                                });
+
+
+                            };
+                            timer1_8.Start();
+                            activeTimers.Add(timer1_8);
+
+
+
+
+
+                        });
+
+
+                    };
+                    timer1_8.Start();
+                    activeTimers.Add(timer1_8);
+
+
+                });
+
+
+            };
+            timer1_8.Start();
+
+            System.Timers.Timer timi4 = new System.Timers.Timer(180000);
+            timi4.AutoReset = false;
+            timi4.Elapsed += (s1, e1) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    W8_i.Content = "9 mod 8 = 1";
+                    W8_i.BeginAnimation(OpacityProperty, oopac);
+                    change_color(rule3, "#22C55E", 4000);
+                    change_color(if3, "#22C55E", 4000);
+                    
+                });
+
+
+            }; timi4.Start();
+            activeTimers.Add(timi4);
+            System.Timers.Timer timi41 = new System.Timers.Timer(185000);
+            timi41.AutoReset = false;
+            timi41.Elapsed += (s2, e2) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    W8_i.BeginAnimation(OpacityProperty, oopac2);
+                    move(W8, "490,170,0,0", "490,140,0,0", 600);
+                    W8_r.Content = "W[9] = W[9-8] ⊕ W[9-1]";
+                    W8_r.BeginAnimation(OpacityProperty, oopac);
+                    W8_r.Visibility = Visibility.Visible;
+                    W8_app.Visibility = Visibility.Visible;
+                    W8_app.Content = "W[9-8] = W[1] = [ " + string.Join(", ", lst[1]) + " ]   \nW[9-1] = W[8] = [ " + string.Join(", ", w8) + " ]";
+                    W8_app.BeginAnimation(OpacityProperty, oopac);
+                    
+                });
+            }; timi41.Start();
+            activeTimers.Add(timi41);
+            System.Timers.Timer timi42 = new System.Timers.Timer(191000);
+            timi42.AutoReset = false;
+            timi42.Elapsed += (s3, e3) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    
+                    
+                    for (int i = 0; i < 4; i++)
+                    {
+                        byte s = (byte)(lst[1][i] ^ w8[i]);
+                        result[i] = s;
+                    }
+                    W8_re.Content = "W[9] = [ " + string.Join(", ", result) + " ]";
+                    W8_re.Visibility = Visibility.Visible;
+                    W8_re.BeginAnimation(OpacityProperty, oopac);
+                    System.Timers.Timer timi42 = new System.Timers.Timer(10000);
+                    timi42.AutoReset = false;
+                    timi42.Elapsed += (s3, e3) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            W8_re.BeginAnimation(OpacityProperty, oopac2);
+                            W8.BeginAnimation(OpacityProperty, oopac2);
+                            W8_r.BeginAnimation(OpacityProperty, oopac2);
+                            W8_app.BeginAnimation(OpacityProperty, oopac2);
+                            change_color(rule3, "#F0F8FF", 2000);
+                            change_color(if3, "#FACC15", 2000);
+
+
+                        });
+                    }; timi42.Start();
+                    activeTimers.Add(timi42);
+
+
+                });
+            }; timi42.Start();
+            activeTimers.Add(timi42);
+
+            System.Timers.Timer timi46 = new System.Timers.Timer(206000);
+            timi46.AutoReset = false;
+            timi46.Elapsed += (s, e) =>
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    W8.Margin = new Thickness(490, 170, 0, 0);
+                    move(W8, "490,140,0,0", "490,170,0,0", 600);
+                    W8.Content = "W[12] = ?";
+                    W8.BeginAnimation(OpacityProperty, oopac);
+                    System.Timers.Timer timi4 = new System.Timers.Timer(6000);
+                    timi4.AutoReset = false;
+                    timi4.Elapsed += (s1, e1) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            W8_i.Content = "12 mod 8 = 4";
+                            W8_i.BeginAnimation(OpacityProperty, oopac);
+                            change_color(rule2, "#22C55E", 4000);
+                            change_color(if2, "#22C55E", 4000);
+
+                        });
+
+
+                    }; timi4.Start();
+                    activeTimers.Add(timi4);
+                    System.Timers.Timer timi411 = new System.Timers.Timer(11000);
+                    timi411.AutoReset = false;
+                    timi411.Elapsed += (s2, e2) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            byte[] result_10 = new byte[4];
+                            byte[] result_11 = new byte[4];
+                            for (int i = 0; i < 4; i++)
+                            {
+                                byte s = (byte)(lst[2][i] ^ result[i]);
+                                result_10[i] = s;
+                            }
+                            for (int i = 0; i < 4; i++)
+                            {
+                                byte s = (byte)(lst[3][i] ^ result_10[i]);
+                                result_11[i] = s;
+                            }
+                            W8_i.BeginAnimation(OpacityProperty, oopac2);
+                            move(W8, "490,170,0,0", "490,140,0,0", 600);
+                            W8_r.Content = "W[12] = W[12-8] ⊕ SubWord(W[12-1])";
+                            W8_r.BeginAnimation(OpacityProperty, oopac);
+                            W8_r.Visibility = Visibility.Visible;
+                            W8_app.Visibility = Visibility.Visible;
+                            W8_app.Content = "W[12-8] = W[4] = [ " + string.Join(", ", lst[4]) + " ]   \nW[12-1] = W[11] = [ " + string.Join(", ", result_11) + " ]";
+                            W8_app.BeginAnimation(OpacityProperty, oopac);
+                            System.Timers.Timer timi421 = new System.Timers.Timer(6000);
+                            timi421.AutoReset = false;
+                            timi421.Elapsed += (s3, e3) =>
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+
+                                    byte[] result_12 = new byte[4];
+                                    for (int i = 0; i < 4; i++)
+                                    {
+                                        byte s = (byte)(lst[4][i] ^ SubWord(result_11)[i]);
+                                        result_12[i] = s;
+                                    }
+                                    W8_re.Content = "W[12] = [ " + string.Join(", ", result_12) + " ]";
+                                    W8_re.Visibility = Visibility.Visible;
+                                    W8_re.BeginAnimation(OpacityProperty, oopac);
+                                    System.Timers.Timer timi47 = new System.Timers.Timer(10000);
+                                    timi47.AutoReset = false;
+                                    timi47.Elapsed += (s3, e3) =>
+                                    {
+                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            W8_re.BeginAnimation(OpacityProperty, oopac2);
+                                            W8.BeginAnimation(OpacityProperty, oopac2);
+                                            W8_r.BeginAnimation(OpacityProperty, oopac2);
+                                            W8_app.BeginAnimation(OpacityProperty, oopac2);
+                                            change_color(rule2, "#F0F8FF", 2000);
+                                            change_color(if2, "#FACC15", 2000);
+
+
+                                        });
+                                    }; timi47.Start();
+                                    activeTimers.Add(timi47);
+
+
+                                });
+                            }; timi421.Start();
+                            activeTimers.Add(timi421);
+
+                        });
+                    }; timi411.Start();
+                    activeTimers.Add(timi41);
+                    
+
+                });
+
+            }; timi46.Start();
+            activeTimers.Add(timi46);
+        }
+        public string RotWord(byte[] w)
+        {
+            byte[] roted = new byte[] { w[1], w[2], w[3], w[0] };
+            return "[ "+string.Join(", ",roted)+" ]";
+        }
+        public byte[] RotWord_2(byte[] w)
+        {
+            byte[] roted = new byte[] { w[1], w[2], w[3], w[0] };
+            return roted;
+        }
+
+
+        public byte[] SubWord(byte[] w)
+        {
+
+            return new byte[]
+             {
+        SBox[w[0] & 0xFF],
+        SBox[w[1]& 0xFF],
+        SBox[w[2]& 0xFF],
+        SBox[w[3]& 0xFF]
+                  };
         }
         public void vibrate()
         {
@@ -3792,4 +4312,3 @@ namespace EncodeX
 
     }
 }
-
