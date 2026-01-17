@@ -2312,7 +2312,7 @@ namespace EncodeX
                             change_color(matrix_r[6], "#FF0000", 2000);
                             change_color(matrix_r[7], "#FF0000", 2000);
                             W8.BeginAnimation(OpacityProperty, oopac2);
-                            W8.Content = "Row[0] => Shift Left 1";
+                            W8.Content = "Row[1] => Shift Left 1";
                             W8.BeginAnimation(OpacityProperty, oopac);
                             System.Timers.Timer timer = new System.Timers.Timer(4000);
                             timer.AutoReset = false;
@@ -2320,13 +2320,274 @@ namespace EncodeX
                             {
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
-                                    move(matrix_r[4], "604,300,0,0", "531,300,0,0", 500);
+                                    move(matrix_r[4], "604,300,0,0", "529,300,0,0", 500);
+                                    move(matrix_r[5], "677,300,0,0", "604,300,0,0", 500);
+                                    move(matrix_r[6], "753,300,0,0", "677,300,0,0", 500);
+                                    move(matrix_r[7], "829,300,0,0", "753,300,0,0", 500);
+                                   
+                                    
                                 });
                             };timer.Start();
                             activeTimers.Add(timer);
+                            System.Timers.Timer timer2 = new System.Timers.Timer(5000);
+                            timer2.AutoReset = false;
+                            timer2.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[4], "529,300,0,0", "529,200,0,0", 500);
+                                    
+                                });
+                            }; timer2.Start();
+                            activeTimers.Add(timer2);
+                            System.Timers.Timer timer3 = new System.Timers.Timer(6000);
+                            timer3.AutoReset = false;
+                            timer3.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[4], "529,200,0,0", "901,200,0,0", 500);
+
+                                });
+                            }; timer3.Start();
+                            activeTimers.Add(timer3);
+                            System.Timers.Timer timer4 = new System.Timers.Timer(7000);
+                            timer4.AutoReset = false;
+                            timer4.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[4], "901,200,0,0", "901,300,0,0", 500);
+
+                                });
+                            }; timer4.Start();
+                            activeTimers.Add(timer4);
+                            System.Timers.Timer timer5 = new System.Timers.Timer(8000);
+                            timer5.AutoReset = false;
+                            timer5.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[4], "901,300,0,0", "826,300,0,0", 500);
+
+                                });
+                            }; timer5.Start();
+                            activeTimers.Add(timer5);
                         });
                     }; tt9.Start();
                     activeTimers.Add(tt9);
+
+                    System.Timers.Timer tt10 = new System.Timers.Timer(32500);
+                    tt10.AutoReset = false;
+                    tt10.Elapsed += (s, r) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            change_color(matrix_r[4], "#FFFFFF", 2000);
+                            change_color(matrix_r[5], "#FFFFFF", 2000);
+                            change_color(matrix_r[6], "#FFFFFF", 2000);
+                            change_color(matrix_r[7], "#FFFFFF", 2000);
+                            change_color(matrix_r[8], "#FF0000", 2000);
+                            change_color(matrix_r[9], "#FF0000", 2000);
+                            change_color(matrix_r[10], "#FF0000", 2000);
+                            change_color(matrix_r[11], "#FF0000", 2000);
+                            W8.BeginAnimation(OpacityProperty, oopac2);
+                            W8.Content = "Row[2] => Shift Left 2";
+                            W8.BeginAnimation(OpacityProperty, oopac);
+                            System.Timers.Timer timer11 = new System.Timers.Timer(4000);
+                            timer11.AutoReset = false;
+                            timer11.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[8], "604,350,0,0", "529,350,0,0", 500);
+                                    move(matrix_r[9], "677,350,0,0", "604,350,0,0", 500);
+                                    move(matrix_r[10], "753,350,0,0", "677,350,0,0", 500);
+                                    move(matrix_r[11], "829,350,0,0", "753,350,0,0", 500);
+
+
+                                });
+                            }; timer11.Start();
+                            activeTimers.Add(timer11);
+                            System.Timers.Timer timer211 = new System.Timers.Timer(5000);
+                            timer211.AutoReset = false;
+                            timer211.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[8], "529,350,0,0", "529,200,0,0", 500);
+                                    
+                                    move(matrix_r[9], "604,350,0,0", "529,350,0,0", 500);
+                                    move(matrix_r[10], "677,350,0,0", "604,350,0,0", 500);
+                                    move(matrix_r[11], "753,350,0,0", "677,350,0,0", 500);
+
+                                });
+                            }; timer211.Start();
+                            activeTimers.Add(timer211);
+                            System.Timers.Timer timer311 = new System.Timers.Timer(6000);
+                            timer311.AutoReset = false;
+                            timer311.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[8], "529,200,0,0", "901,200,0,0", 500);
+                                    move(matrix_r[9], "529,350,0,0", "529,200,0,0", 500);
+
+                                });
+                            }; timer311.Start();
+                            activeTimers.Add(timer311);
+                            System.Timers.Timer timer411 = new System.Timers.Timer(7000);
+                            timer411.AutoReset = false;
+                            timer411.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[8], "901,200,0,0", "901,350,0,0", 500);
+                                    move(matrix_r[9], "529,200,0,0", "901,200,0,0", 500);
+
+                                });
+                            }; timer411.Start();
+                            activeTimers.Add(timer411);
+                            System.Timers.Timer timer511 = new System.Timers.Timer(8000);
+                            timer511.AutoReset = false;
+                            timer511.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[8], "901,350,0,0", "753,350,0,0", 500);
+                                    move(matrix_r[9], "901,200,0,0", "901,350,0,0", 500);
+                                });
+                            }; timer511.Start();
+                            activeTimers.Add(timer511);
+                            System.Timers.Timer timer611 = new System.Timers.Timer(9000);
+                            timer611.AutoReset = false;
+                            timer611.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[9], "901,350,0,0", "826,350,0,0", 500);
+                                    
+                                });
+                            }; timer611.Start();
+                            activeTimers.Add(timer611);
+                        });
+                    };
+                    tt10.Start();
+                    activeTimers.Add(tt10);
+
+                    System.Timers.Timer tt11 = new System.Timers.Timer(70000);
+                    tt11.AutoReset = false;
+                    tt11.Elapsed += (s, r) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            change_color(matrix_r[8], "#FFFFFF", 2000);
+                            change_color(matrix_r[9], "#FFFFFF", 2000);
+                            change_color(matrix_r[10], "#FFFFFF", 2000);
+                            change_color(matrix_r[11], "#FFFFFF", 2000);
+                            change_color(matrix_r[12], "#FF0000", 2000);
+                            change_color(matrix_r[13], "#FF0000", 2000);
+                            change_color(matrix_r[14], "#FF0000", 2000);
+                            change_color(matrix_r[15], "#FF0000", 2000);
+                            W8.BeginAnimation(OpacityProperty, oopac2);
+                            W8.Content = "Row[3] => Shift Left 3";
+                            W8.BeginAnimation(OpacityProperty, oopac);
+                            System.Timers.Timer timer111 = new System.Timers.Timer(4000);
+                            timer111.AutoReset = false;
+                            timer111.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[12], "604,400,0,0", "529,400,0,0", 500);
+                                    move(matrix_r[13], "677,400,0,0", "604,400,0,0", 500);
+                                    move(matrix_r[14], "753,400,0,0", "677,400,0,0", 500);
+                                    move(matrix_r[15], "826,400,0,0", "753,400,0,0", 500);
+
+
+                                });
+                            }; timer111.Start();
+                            activeTimers.Add(timer111);
+                            System.Timers.Timer timer2111 = new System.Timers.Timer(5000);
+                            timer2111.AutoReset = false;
+                            timer2111.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[12], "529,400,0,0", "529,200,0,0", 500);
+                                    move(matrix_r[13], "604,400,0,0", "529,400,0,0", 500);
+                                    move(matrix_r[14], "677,400,0,0", "604,400,0,0", 500);
+                                    move(matrix_r[15], "753,400,0,0", "677,400,0,0", 500);
+
+                                });
+                            }; timer2111.Start();
+                            activeTimers.Add(timer2111);
+                            System.Timers.Timer timerx = new System.Timers.Timer(6000);
+                            timerx.AutoReset = false;
+                            timerx.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[12], "529,200,0,0", "901,200,0,0", 500);
+                                    move(matrix_r[13], "529,400,0,0", "529,200,0,0", 500);
+                                    move(matrix_r[14], "604,400,0,0", "529,400,0,0", 500);
+                                    move(matrix_r[15], "677,400,0,0", "604,400,0,0", 500);
+
+                                });
+                            }; timerx.Start();
+                            activeTimers.Add(timerx);
+                            System.Timers.Timer timer3111 = new System.Timers.Timer(7000);
+                            timer3111.AutoReset = false;
+                            timer3111.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[12], "901,200,0,0", "901,400,0,0", 500);
+                                    move(matrix_r[13], "529,200,0,0", "901,200,0,0", 500);
+                                    move(matrix_r[14], "529,400,0,0", "529,200,0,0", 500);
+
+                                });
+                            }; timer3111.Start();
+                            activeTimers.Add(timer3111);
+                            System.Timers.Timer timer4111 = new System.Timers.Timer(8000);
+                            timer4111.AutoReset = false;
+                            timer4111.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[12], "901,400,0,0", "677,400,0,0", 500);
+                                    move(matrix_r[13], "901,200,0,0", "901,400,0,0", 500);
+                                    move(matrix_r[14], "529,200,0,0", "901,200,0,0", 500);
+
+                                });
+                            }; timer4111.Start();
+                            activeTimers.Add(timer4111);
+                            System.Timers.Timer timer5111 = new System.Timers.Timer(9000);
+                            timer5111.AutoReset = false;
+                            timer5111.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    
+                                    move(matrix_r[13], "901,400,0,0", "753,400,0,0", 500);
+                                    move(matrix_r[14], "901,200,0,0", "901,400,0,0", 500);
+                                });
+                            }; timer5111.Start();
+                            activeTimers.Add(timer5111);
+                            System.Timers.Timer timer6111 = new System.Timers.Timer(10000);
+                            timer6111.AutoReset = false;
+                            timer6111.Elapsed += (s, e) =>
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    move(matrix_r[14], "901,400,0,0", "826,400,0,0", 500);
+
+                                });
+                            }; timer6111.Start();
+                            activeTimers.Add(timer6111);
+                        });
+                    };
+                    tt11.Start();
+                    activeTimers.Add(tt11);
 
                 });
             };
