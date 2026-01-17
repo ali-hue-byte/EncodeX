@@ -59,6 +59,10 @@ namespace EncodeX
         byte[] pu_key = new byte[32];
         byte[] pu_salt = new byte[16];
         List<byte> words_4_11 = new List<byte>();
+        string con;
+        string con1;
+        string con2;
+        string con3;
 
         public MainWindow()
         {
@@ -2594,6 +2598,255 @@ namespace EncodeX
             tt7.Start();
             activeTimers.Add(tt7);
 
+            List<Label> matrix_mix = new List<Label> {mix_1, mix_2, mix_3, mix_4, mix_5, mix_6, mix_7, mix_8, mix_9, mix_10, mix_11, mix_12, mix_13, mix_14, mix_15, mix_16 };
+            System.Timers.Timer timi = new System.Timers.Timer(200000);
+            timi.AutoReset = false;
+            timi.Elapsed += (s, e) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    change_color(info_shif, "#F0F8FF", 800);
+                    change_color(info_mix, "#22C55E", 800);
+                    foreach(Label lbl in matrix_r)
+                    {
+                        change_color(lbl, "#FFFFFF", 800);
+                    }
+                    foreach (Label lbl in matrix_mix)
+                    {
+                        lbl.BeginAnimation(OpacityProperty, oopac);
+                        lbl.Visibility = Visibility.Visible;
+                    }
+                    symbol.BeginAnimation(OpacityProperty, oopac);
+                    symbol.Visibility = Visibility.Visible;
+                    a_0.BeginAnimation(OpacityProperty, oopac);
+                    a_0.Visibility = Visibility.Visible;
+                    a_1.BeginAnimation(OpacityProperty, oopac);
+                    a_1.Visibility = Visibility.Visible;
+                    a_2.BeginAnimation(OpacityProperty, oopac);
+                    a_2.Visibility = Visibility.Visible;
+                    a_3.BeginAnimation(OpacityProperty, oopac);
+                    a_3.Visibility = Visibility.Visible;
+                    W8.BeginAnimation(OpacityProperty, oopac2);
+                    title_matrix.BeginAnimation(OpacityProperty, oopac);
+                    mix.BeginAnimation(OpacityProperty, oopac);
+                    mix.Visibility = Visibility.Visible;
+                    title_matrix.Visibility = Visibility.Visible;
+                    info.Content = "After the initial AddRoundKey, AES enters the main rounds of \nencryption.\r\n\r\n" +
+                "Each round applies the following transformations to the state \nmatrix:\r\n\r\n" +
+                "      \t   →    \t             →   \t          →    \t         \r\n\r\n";
+
+                    System.Timers.Timer tt = new System.Timers.Timer(6000);
+                    tt.AutoReset = false;
+                    tt.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            W8.Content = "MixColumns works column by column";
+                            change_color(matrix_r[0],"#FF0000",800);
+                            change_color(matrix_r[5], "#FF0000", 800);
+                            change_color(matrix_r[10], "#FF0000", 800);
+                            change_color(matrix_r[15], "#FF0000", 800);
+                            W8.BeginAnimation(OpacityProperty, oopac);
+
+                        });
+                    };tt.Start();
+                    activeTimers.Add(tt);
+                    
+                    System.Timers.Timer tt2 = new System.Timers.Timer(9000);
+                    tt2.AutoReset = false;
+                    tt2.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            con = matrix_r[0].Content.ToString();
+                            W8.BeginAnimation(OpacityProperty, oopac2);
+                            W8.Content = "a0 = " + matrix_r[0].Content +"    a1 = "+matrix_r[5].Content+"    a2 = "+ matrix_r[10].Content + "    a3 = " + matrix_r[15].Content;
+                            matrix_r[0].Content = "b0";
+                            W8.BeginAnimation(OpacityProperty, oopac);
+
+                        });
+                    }; tt2.Start();
+                    activeTimers.Add(tt2);
+
+                    System.Timers.Timer tt3 = new System.Timers.Timer(11000);
+                    tt3.AutoReset = false;
+                    tt3.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            change_color(mix_1, "#FF0000", 800);
+                            change_color(mix_2, "#FF0000", 800);
+                            change_color(mix_3, "#FF0000", 800);
+                            change_color(mix_4, "#FF0000", 800);
+                            move(W8, "490,170,0,0", "490,120,0,0",800);
+                            move(W8_app, "490,200,0,0", "490,170,0,0", 800);
+                            W8_app.Visibility = Visibility.Visible;
+                            W8_app.Content = "b0 = (2·a0) ⊕ (3·a1) ⊕ (1·a2) ⊕ (1·a3)";
+                            
+                            
+                            W8_app.BeginAnimation(OpacityProperty, oopac);
+
+                        });
+                    }; tt3.Start();
+                    activeTimers.Add(tt3);
+
+                    System.Timers.Timer tt4 = new System.Timers.Timer(14000);
+                    tt4.AutoReset = false;
+                    tt4.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            string a0 = con.ToString();
+                            string a1 = matrix_r[5].Content.ToString();
+                            string a2 = matrix_r[10].Content.ToString();
+                            string a3 = matrix_r[15].Content.ToString();
+                            byte a_0 = byte.Parse(a0);
+                            byte a_1 = byte.Parse(a1);
+                            byte a_2 = byte.Parse(a2);
+                            byte a_3 = byte.Parse(a3);
+
+                            byte b0 = (byte) (Mul2(a_0) ^ Mul3(a_1) ^ a_2 ^ a_3);
+                            matrix_r[0].Content = b0.ToString();
+                            change_color(matrix_r[0], "#00FF9C", 800);
+
+                            W8_app.BeginAnimation(OpacityProperty, oopac2);
+                            W8_app.Content = "b1 = (1·a0) ⊕ (2·a1) ⊕ (3·a2) ⊕ (1·a3)";
+                            W8_app.BeginAnimation(OpacityProperty, oopac);
+                            change_color(mix_1, "#FFFFFF", 800);
+                            change_color(mix_2, "#FFFFFF", 800);
+                            change_color(mix_3, "#FFFFFF", 800);
+                            change_color(mix_4, "#FFFFFF", 800);
+                            change_color(mix_5, "#FF0000", 800);
+                            change_color(mix_6, "#FF0000", 800);
+                            change_color(mix_7, "#FF0000", 800);
+                            change_color(mix_8, "#FF0000", 800);
+                            con1 = matrix_r[5].Content.ToString();
+                            matrix_r[5].Content = "b1";
+                        });
+                    }; tt4.Start();
+                    activeTimers.Add(tt4);
+                    System.Timers.Timer tt5 = new System.Timers.Timer(17000);
+                    tt5.AutoReset = false;
+                    tt5.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            string a0 = con.ToString();
+                            string a1 = con1.ToString();
+                            string a2 = matrix_r[10].Content.ToString();
+                            string a3 = matrix_r[15].Content.ToString();
+                            byte a_0 = byte.Parse(a0);
+                            byte a_1 = byte.Parse(a1);
+                            byte a_2 = byte.Parse(a2);
+                            byte a_3 = byte.Parse(a3);
+
+                            byte b1 = (byte)(a_0 ^ Mul2(a_1) ^ Mul3(a_2) ^ a_3);
+                            matrix_r[5].Content = b1.ToString();
+                            change_color(matrix_r[5], "#00FF9C", 800);
+
+                            W8_app.BeginAnimation(OpacityProperty, oopac2);
+                            W8_app.Content = "b2 = (1·a0) ⊕ (1·a1) ⊕ (2·a2) ⊕ (3·a3)";
+                            W8_app.BeginAnimation(OpacityProperty, oopac);
+                            change_color(mix_5, "#FFFFFF", 800);
+                            change_color(mix_6, "#FFFFFF", 800);
+                            change_color(mix_7, "#FFFFFF", 800);
+                            change_color(mix_8, "#FFFFFF", 800);
+                            change_color(mix_9, "#FF0000", 800);
+                            change_color(mix_10, "#FF0000", 800);
+                            change_color(mix_11, "#FF0000", 800);
+                            change_color(mix_12, "#FF0000", 800);
+                            con2 = matrix_r[10].Content.ToString();
+                            matrix_r[10].Content = "b2";
+                        });
+                    }; tt5.Start();
+                    activeTimers.Add(tt5);
+
+                    System.Timers.Timer tt6 = new System.Timers.Timer(20000);
+                    tt6.AutoReset = false;
+                    tt6.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            string a0 = con.ToString();
+                            string a1 = con1.ToString();
+                            string a2 = con2.ToString();
+                            string a3 = matrix_r[15].Content.ToString();
+                            byte a_0 = byte.Parse(a0);
+                            byte a_1 = byte.Parse(a1);
+                            byte a_2 = byte.Parse(a2);
+                            byte a_3 = byte.Parse(a3);
+
+                            byte b2 = (byte)(a_0 ^ a_1 ^ Mul2(a_2) ^ Mul3(a_3));
+                            matrix_r[10].Content = b2.ToString();
+                            change_color(matrix_r[10], "#00FF9C", 800);
+
+                            W8_app.BeginAnimation(OpacityProperty, oopac2);
+                            W8_app.Content = "b3 = (3·a0) ⊕ (1·a1) ⊕ (1·a2) ⊕ (2·a3)";
+                            W8_app.BeginAnimation(OpacityProperty, oopac);
+                            change_color(mix_9, "#FFFFFF", 800);
+                            change_color(mix_10, "#FFFFFF", 800);
+                            change_color(mix_11, "#FFFFFF", 800);
+                            change_color(mix_12, "#FFFFFF", 800);
+                            change_color(mix_13, "#FF0000", 800);
+                            change_color(mix_14, "#FF0000", 800);
+                            change_color(mix_15, "#FF0000", 800);
+                            change_color(mix_16, "#FF0000", 800);
+                            con3 = matrix_r[15].Content.ToString();
+                            matrix_r[15].Content = "b3";
+                        });
+                    }; tt6.Start();
+                    activeTimers.Add(tt6);
+                    System.Timers.Timer tt7 = new System.Timers.Timer(23000);
+                    tt7.AutoReset = false;
+                    tt7.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            string a0 = con.ToString();
+                            string a1 = con1.Content.ToString();
+                            string a2 = con2.Content.ToString();
+                            string a3 = con3.Content.ToString();
+                            byte a_0 = byte.Parse(a0);
+                            byte a_1 = byte.Parse(a1);
+                            byte a_2 = byte.Parse(a2);
+                            byte a_3 = byte.Parse(a3);
+
+                            byte b3 = (byte)(Mul3(a_0) ^ a_1 ^ a_2 ^ Mul2(a_3));
+                            matrix_r[15].Content = b3.ToString();
+                            change_color(matrix_r[15], "#00FF9C", 800);
+
+                        });
+                    }; tt7.Start();
+                    activeTimers.Add(tt7);
+
+                    System.Timers.Timer tt8 = new System.Timers.Timer(26000);
+                    tt8.AutoReset = false;
+                    tt8.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            change_color(mix_13, "#FFFFFF", 800);
+                            change_color(mix_14, "#FFFFFF", 800);
+                            change_color(mix_15, "#FFFFFF", 800);
+                            change_color(mix_16, "#FFFFFF", 800);
+                        });
+                    };tt8.Start();
+                    activeTimers.Add(tt8);
+                });
+            };
+            timi.Start();
+            activeTimers.Add(timi);
+
+        }
+        static byte Mul2(byte x)
+        {
+            return (byte)((x << 1) ^ ((x & 0x80) != 0 ? 0x1B : 0x00));
+        }
+
+        
+        static byte Mul3(byte x)
+        {
+            return (byte)(Mul2(x) ^ x);
         }
         public string RotWord(byte[] w)
         {
