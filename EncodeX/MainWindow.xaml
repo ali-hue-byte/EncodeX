@@ -1321,7 +1321,7 @@ Padding="18,14" Margin="386,368,349,170" Grid.ColumnSpan="2" Visibility="Hidden"
         <Label x:Name="Instructions" Opacity="0.4" Content="Find the key and decrypt the text!" 
        FontSize="18" Foreground="White" 
        HorizontalContentAlignment="Center" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="3" Margin="186,35,294,0" Grid.Row="3" />
-        <Grid x:Name="Entry" Visibility="Hidden"  Grid.ColumnSpan="4" Margin="0,0,-48,10" Grid.RowSpan="4" Background="Black">
+        <Grid x:Name="Entry" Visibility="Hidden" Grid.ColumnSpan="4" Margin="0,0,-48,10" Grid.RowSpan="4" Background="Black">
             <Label x:Name="intro" Visibility="Hidden"  Content="Encryption is a mathematical way of protecting data .&#xD;&#xA;It takes your readable information (text, Image, video...) and scrambles&#xD;&#xA;it so that nobody can read it without the correct secret key.&#xD;&#xA;&#xD;&#xA;Think of it as locking your data inside a safe, where only the correct&#xD;&#xA;key can open it.&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;*Note: Encryption ALWAYS requires a key. If no key is set this app will&#xD;&#xA;use a default key.&#xD;&#xA;This is VERY dangerous, because anyone who knows the default key&#xD;&#xA;can access your data. Using a personnal key is Strongly recommended .&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" Width="962" Height="494" FontSize="30" Foreground="AliceBlue"/>
             <Label x:Name="enc_steps"   Content="Encryption Steps" Visibility="Hidden" Foreground="LawnGreen" FontSize="46" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" Width="1050" Height="73"/>
             <Label x:Name="encr_steps" HorizontalContentAlignment="Center" Visibility="Hidden"  Content="1. Text → Bytes &amp; Padding: Convert text to bytes and pad to 16-byte blocks.&#xD;&#xA;" FontSize="25" Foreground="AliceBlue" FontFamily="Candara Light" HorizontalAlignment="Center"  Margin="0,161,0,0" VerticalAlignment="Top" Height="54" Width="962"/>
@@ -1512,6 +1512,10 @@ Padding="18,14" Margin="386,368,349,170" Grid.ColumnSpan="2" Visibility="Hidden"
             <Label x:Name="r_4" Visibility="Hidden" Content="4" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="#FFFFFF" FontSize="13" BorderThickness="1" BorderBrush="#7AD88F" Margin="826,340,0,0" VerticalAlignment="Top" Width="76" Height="51"/>
             <Label x:Name="r_3"  Visibility="Hidden" Content="3" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="#FFFFFF" FontSize="13" BorderThickness="1" BorderBrush="#7AD88F" Margin="753,340,0,0" VerticalAlignment="Top" Width="73" Height="51"/>
             <Label x:Name="r_2" Visibility="Hidden" Content="2" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="#FFFFFF" FontSize="13" BorderThickness="1" BorderBrush="#7AD88F" Margin="677,340,0,0" VerticalAlignment="Top" Width="76" Height="51"/>
+            <Label x:Name="info_sub" Visibility="Hidden" Content="SubBytes" HorizontalAlignment="Left" Margin="15,307,0,0" VerticalAlignment="Top" Width="96" Height="44" FontSize="18" Foreground="AliceBlue"/>
+            <Label x:Name="info_shif" Visibility="Hidden" Content="ShiftRows" HorizontalAlignment="Left" Margin="122,307,0,0" VerticalAlignment="Top" Width="96" Height="42" FontSize="18" Foreground="AliceBlue"/>
+            <Label x:Name="info_mix" Visibility="Hidden" Content="MixColumns" HorizontalAlignment="Left" Margin="240,307,0,0" VerticalAlignment="Top" Width="111" Height="32" FontSize="18" Foreground="AliceBlue"/>
+            <Label x:Name="info_add" Visibility="Hidden" Content="AddRoundKey" HorizontalAlignment="Left" Margin="373,307,0,0" VerticalAlignment="Top" Width="142" Height="40" FontSize="18" Foreground="AliceBlue"/>
 
         </Grid>
 
