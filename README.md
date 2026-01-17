@@ -15,13 +15,6 @@ A simple app to **encrypt and decrypt text, files or folders (supports large fil
 - Large files support
 - A page to learn how **Encryption** works *(still in progress...)* 
 
-
----
-
-### Upcoming Features
-- Decryption simulation
-
-
 ---
 ### Installation / How to Run
 
