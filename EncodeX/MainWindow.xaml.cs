@@ -1169,7 +1169,7 @@ namespace EncodeX
                 "is mixed with the secret key to inject the password into the \n" +
                 "encryption. \n\n" +
                 "- The AES key (From Step 2) is then expanded into a series of \n16-byte" +
-                "round keys using the AES key schedule (== AES key expansion).\n" +
+                "round keys using the AES key expansion.\n" +
                 "- The number of round keys depends on the AES variant:\r\n\r\n   " +
                 "• AES-128 => 16-byte key => 10 rounds => 11 round keys  \r\n   " +
                 "• AES-192 => 24-byte key => 12 rounds => 13 round keys  \r\n   " +
@@ -4536,3 +4536,4 @@ namespace EncodeX
 
     }
 }
+
