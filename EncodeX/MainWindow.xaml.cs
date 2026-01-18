@@ -2834,15 +2834,7 @@ namespace EncodeX
                     };tt8.Start();
                     activeTimers.Add(tt8);
 
-                    System.Timers.Timer timi2 = new System.Timers.Timer(31000);
-                    timi2.AutoReset = false;
-                    timi2.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-
-                        })
-                    };
+                    
                 });
             };
             timi.Start();
@@ -5348,3 +5340,4 @@ namespace EncodeX
 
     }
 }
+
