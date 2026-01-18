@@ -2239,9 +2239,10 @@ namespace EncodeX
                                 if (index != 16)
                                 {
                                     string contentStr = matrix_r[index].Content.ToString();
+                                    byte value = byte.Parse(contentStr);
+                                    
 
                                     
-                                    byte value = byte.Parse(contentStr);
                                     change_color(matrix_r[index], "#FF0000", 500);
                                     W8.Content = contentStr + " => " + SBox[value].ToString();
                                     W8.BeginAnimation(OpacityProperty, oopac);
@@ -2803,9 +2804,9 @@ namespace EncodeX
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             string a0 = con.ToString();
-                            string a1 = con1.Content.ToString();
-                            string a2 = con2.Content.ToString();
-                            string a3 = con3.Content.ToString();
+                            string a1 = con1.ToString();
+                            string a2 = con2.ToString();
+                            string a3 = con3.ToString();
                             byte a_0 = byte.Parse(a0);
                             byte a_1 = byte.Parse(a1);
                             byte a_2 = byte.Parse(a2);
@@ -2832,6 +2833,16 @@ namespace EncodeX
                         });
                     };tt8.Start();
                     activeTimers.Add(tt8);
+
+                    System.Timers.Timer timi2 = new System.Timers.Timer(31000);
+                    timi2.AutoReset = false;
+                    timi2.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+
+                        })
+                    };
                 });
             };
             timi.Start();
