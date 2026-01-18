@@ -39,7 +39,7 @@ namespace EncodeX
 
     public partial class MainWindow : Window
     {
-
+        
         private List<System.Timers.Timer> activeTimers = new List<System.Timers.Timer>();
 
         private System.Timers.Timer timing;
@@ -50,6 +50,8 @@ namespace EncodeX
         private System.Timers.Timer timing6;
         private System.Timers.Timer timing7;
         private System.Timers.Timer timing8;
+        private System.Timers.Timer timing9;
+
         System.Timers.Timer timing3_1;
         bool gotten_key = false;
         string mode = "encrypt";
@@ -58,14 +60,17 @@ namespace EncodeX
         int skipping = 0;
         byte[] pu_key = new byte[32];
         byte[] pu_salt = new byte[16];
-        List<byte> words_4_11 = new List<byte>();
+        List<byte> words_4_7 = new List<byte>();
         string con;
         string con1;
         string con2;
         string con3;
-
+        List<byte[]> lst = new List<byte[]> { };
+        List<System.Timers.Timer> timers = new List<System.Timers.Timer> { };
+        List<Action> functions = new List<Action> { };
         public MainWindow()
         {
+            functions = new List<Action> {action0, action1, action2 ,actions3,action4,action5,action6};
 
             InitializeComponent();
 
@@ -265,9 +270,38 @@ namespace EncodeX
             };
             col.BeginAnimation(SolidColorBrush.ColorProperty, chan);
         }
-
+        public void action0()
+        {
+            DoubleAnimation oopac = new DoubleAnimation
+            {
+                From = 0.0,
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(1000),
+            };
+            DoubleAnimation oopac2 = new DoubleAnimation
+            {
+                From = 1.0,
+                To = 0.0,
+                Duration = TimeSpan.FromMilliseconds(1000),
+            };
+            intro.BeginAnimation(OpacityProperty, oopac2);
+            enc_steps.BeginAnimation(OpacityProperty, oopac);
+            encr_steps_Copy.BeginAnimation(OpacityProperty, oopac);
+            encr_steps_Copy1.BeginAnimation(OpacityProperty, oopac);
+            encr_steps_Copy2.BeginAnimation(OpacityProperty, oopac);
+            encr_steps_Copy3.BeginAnimation(OpacityProperty, oopac);
+            encr_steps_Copy4.BeginAnimation(OpacityProperty, oopac);
+            enc_steps.Visibility = Visibility.Visible;
+            encr_steps.Visibility = Visibility.Visible;
+            encr_steps_Copy.Visibility = Visibility.Visible;
+            encr_steps_Copy1.Visibility = Visibility.Visible;
+            encr_steps_Copy2.Visibility = Visibility.Visible;
+            encr_steps_Copy3.Visibility = Visibility.Visible;
+            encr_steps_Copy4.Visibility = Visibility.Visible;
+        }
         public void action1()
         {
+            intro.Visibility = Visibility.Hidden;
             Label last = str_1_b;
             List<Label> labels_txt = new List<Label> { str_1, str_2, str_3, str_4, str_5, str_6, str_7, str_8, str_9, str_10, str_11, str_12, str_13, str_14, str_15, str_16 };
             List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
@@ -500,7 +534,7 @@ namespace EncodeX
 
             }
 
-            System.Timers.Timer timing = new System.Timers.Timer(900);
+            System.Timers.Timer timing = new System.Timers.Timer(2000);
             timing.AutoReset = false;
             timing.Elapsed += (s, e) =>
             {
@@ -540,7 +574,7 @@ namespace EncodeX
                         str_to_show_2 += "]";
                     }
 
-                    System.Timers.Timer timing2 = new System.Timers.Timer(5000);
+                    System.Timers.Timer timing2 = new System.Timers.Timer(8000);
                     timing2.AutoReset = false;
                     timing2.Elapsed += (s, e) =>
                     {
@@ -584,7 +618,7 @@ namespace EncodeX
                                     str_to_show_3 += "]";
                                 }
 
-                                System.Timers.Timer timing22 = new System.Timers.Timer(5000);
+                                System.Timers.Timer timing22 = new System.Timers.Timer(8000);
                                 timing22.AutoReset = false;
                                 timing22.Elapsed += (s, e) =>
                                 {
@@ -620,7 +654,7 @@ namespace EncodeX
                                             str_to_show_4 += string.Join(", ", second);
                                             str_to_show_4 += "]";
                                         }
-                                        System.Timers.Timer timing222 = new System.Timers.Timer(5000);
+                                        System.Timers.Timer timing222 = new System.Timers.Timer(8000);
                                         timing222.AutoReset = false;
                                         timing222.Elapsed += (s, e) =>
                                         {
@@ -656,7 +690,7 @@ namespace EncodeX
                                                     str_to_show_5 += string.Join(", ", second);
                                                     str_to_show_5 += "]";
                                                 }
-                                                System.Timers.Timer timing2222 = new System.Timers.Timer(5000);
+                                                System.Timers.Timer timing2222 = new System.Timers.Timer(8000);
                                                 timing2222.AutoReset = false;
                                                 timing2222.Elapsed += (s, e) =>
                                                 {
@@ -1139,7 +1173,7 @@ namespace EncodeX
             pu_key = key;
             string key_str = string.Join(", ", key);
             string to_show = "Key: [ " + key_str.Substring(0, 40) + " ... " + key_str.Substring(key_str.Length - 9) + " ]";
-            List<byte[]> lst = new List<byte[]> { };
+            
             for (int i = 0; i < 32; i += 4)
             {
                 byte[] slice = new byte[4];
@@ -1148,7 +1182,7 @@ namespace EncodeX
             };
             for(int i =16 ;i<32 ; i++)
             {
-                words_4_11.Add(key[i]);
+                words_4_7.Add(key[i]);
             }
             DoubleAnimation oopac = new DoubleAnimation
             {
@@ -1617,7 +1651,7 @@ namespace EncodeX
                                                                 byte s = (byte) (lst[0][i] ^ SubWord(RotWord_2(lst[7]))[i]);
                                                                 byte n = (byte) (s ^ Rcon[i]);
                                                                 w8[i] = n;
-                                                                words_4_11.Add(n);
+                                                                
                                                             }
                                                             W8_re.BeginAnimation(OpacityProperty, oopac2);
                                                             W8_re1.BeginAnimation(OpacityProperty, oopac2);
@@ -1760,7 +1794,7 @@ namespace EncodeX
                     {
                         byte s = (byte)(lst[1][i] ^ w8[i]);
                         result[i] = s;
-                        words_4_11.Add(s);
+                        
                     }
                     W8_re.Content = "W[9] = [ " + string.Join(", ", result) + " ]";
                     W8_re.Visibility = Visibility.Visible;
@@ -1826,13 +1860,11 @@ namespace EncodeX
                             {
                                 byte s = (byte)(lst[2][i] ^ result[i]);
                                 result_10[i] = s;
-                                words_4_11.Add(s);
                             }
                             for (int i = 0; i < 4; i++)
                             {
                                 byte s = (byte)(lst[3][i] ^ result_10[i]);
                                 result_11[i] = s;
-                                words_4_11.Add(s);
                             }
                             W8_i.BeginAnimation(OpacityProperty, oopac2);
                             move(W8, "490,170,0,0", "490,140,0,0", 600);
@@ -2113,6 +2145,13 @@ namespace EncodeX
 
         public void action6()
         {
+            title.Visibility = Visibility.Hidden;
+            rule1.Visibility = Visibility.Hidden;
+            rule2.Visibility = Visibility.Hidden;
+            rule3.Visibility = Visibility.Hidden;
+            if1.Visibility = Visibility.Hidden;
+            if2.Visibility = Visibility.Hidden;
+            if3.Visibility = Visibility.Hidden;
             foreach (var time in activeTimers)
             {
                 time.Stop();
@@ -2834,12 +2873,306 @@ namespace EncodeX
                     };tt8.Start();
                     activeTimers.Add(tt8);
 
-                    
+                    System.Timers.Timer timi2 = new System.Timers.Timer(31000);
+                    timi2.AutoReset = false;
+                    timi2.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            W8.BeginAnimation(OpacityProperty, oopac2);
+                            W8.Content = "Same with other Columns";
+                            W8.BeginAnimation(OpacityProperty, oopac);
+                            W8_app.BeginAnimation(OpacityProperty, oopac2);
+                            for(int i = 1; i < 16; i++)
+                            {
+                                if (i % 5 != 0)
+                                {
+                                    change_color(matrix_r[i],"#FF0000",800);
+                                }
+                            }
+                            
+                        });
+                    };timi2.Start();
+                    activeTimers.Add(timi2);
+
+                    System.Timers.Timer timi3 = new System.Timers.Timer(35000);
+                    timi3.AutoReset = false;
+                    timi3.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            string a_0 = matrix_r[1].Content.ToString();
+                            string a_1 = matrix_r[6].Content.ToString();
+                            string a_2 = matrix_r[11].Content.ToString();
+                            string a_3 = matrix_r[12].Content.ToString();
+
+                            byte a0 = byte.Parse(a_0);
+                            byte a1 = byte.Parse(a_1);
+                            byte a2 = byte.Parse(a_2);
+                            byte a3 = byte.Parse(a_3);
+                            byte b0 = (byte)(Mul2(a0) ^ Mul3(a1) ^ a2 ^ a3);
+                            byte b1 = (byte)(a0 ^ Mul2(a1) ^ Mul3(a2) ^ a3);
+                            byte b2 = (byte)(a0 ^ a1 ^ Mul2(a2) ^ Mul3(a3)) ;
+                            byte b3 = (byte)(Mul3(a0) ^ a1 ^ a2 ^ Mul2(a3));
+
+                            matrix_r[1].Content = b0.ToString();
+                            matrix_r[6].Content = b1.ToString();
+                            matrix_r[11].Content = b2.ToString();
+                            matrix_r[12].Content = b3.ToString();
+                            change_color(matrix_r[1], "#00FF9C", 800);
+                            change_color(matrix_r[6], "#00FF9C", 800);
+                            change_color(matrix_r[11], "#00FF9C", 800);
+                            change_color(matrix_r[12], "#00FF9C", 800);
+
+                        });
+                    }; timi3.Start();
+                    activeTimers.Add(timi3);
+
+                    System.Timers.Timer timi4 = new System.Timers.Timer(39000);
+                    timi4.AutoReset = false;
+                    timi4.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            string a_0 = matrix_r[2].Content.ToString();
+                            string a_1 = matrix_r[7].Content.ToString();
+                            string a_2 = matrix_r[8].Content.ToString();
+                            string a_3 = matrix_r[13].Content.ToString();
+
+                            byte a0 = byte.Parse(a_0);
+                            byte a1 = byte.Parse(a_1);
+                            byte a2 = byte.Parse(a_2);
+                            byte a3 = byte.Parse(a_3);
+                            byte b0 = (byte)(Mul2(a0) ^ Mul3(a1) ^ a2 ^ a3);
+                            byte b1 = (byte)(a0 ^ Mul2(a1) ^ Mul3(a2) ^ a3);
+                            byte b2 = (byte)(a0 ^ a1 ^ Mul2(a2) ^ Mul3(a3));
+                            byte b3 = (byte)(Mul3(a0) ^ a1 ^ a2 ^ Mul2(a3));
+
+                            matrix_r[2].Content = b0.ToString();
+                            matrix_r[7].Content = b1.ToString();
+                            matrix_r[8].Content = b2.ToString();
+                            matrix_r[13].Content = b3.ToString();
+                            change_color(matrix_r[2], "#00FF9C", 800);
+                            change_color(matrix_r[7], "#00FF9C", 800);
+                            change_color(matrix_r[8], "#00FF9C", 800);
+                            change_color(matrix_r[13], "#00FF9C", 800);
+
+                        });
+                    }; timi4.Start();
+                    activeTimers.Add(timi4);
+
+                    System.Timers.Timer timi5 = new System.Timers.Timer(43000);
+                    timi5.AutoReset = false;
+                    timi5.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            string a_0 = matrix_r[3].Content.ToString();
+                            string a_1 = matrix_r[4].Content.ToString();
+                            string a_2 = matrix_r[9].Content.ToString();
+                            string a_3 = matrix_r[14].Content.ToString();
+
+                            byte a0 = byte.Parse(a_0);
+                            byte a1 = byte.Parse(a_1);
+                            byte a2 = byte.Parse(a_2);
+                            byte a3 = byte.Parse(a_3);
+                            byte b0 = (byte)(Mul2(a0) ^ Mul3(a1) ^ a2 ^ a3);
+                            byte b1 = (byte)(a0 ^ Mul2(a1) ^ Mul3(a2) ^ a3);
+                            byte b2 = (byte)(a0 ^ a1 ^ Mul2(a2) ^ Mul3(a3));
+                            byte b3 = (byte)(Mul3(a0) ^ a1 ^ a2 ^ Mul2(a3));
+
+                            matrix_r[3].Content = b0.ToString();
+                            matrix_r[4].Content = b1.ToString();
+                            matrix_r[9].Content = b2.ToString();
+                            matrix_r[14].Content = b3.ToString();
+                            change_color(matrix_r[3], "#00FF9C", 800);
+                            change_color(matrix_r[4], "#00FF9C", 800);
+                            change_color(matrix_r[9], "#00FF9C", 800);
+                            change_color(matrix_r[14], "#00FF9C", 800);
+
+                        });
+                    }; timi5.Start();
+                    activeTimers.Add(timi5);
                 });
             };
             timi.Start();
             activeTimers.Add(timi);
 
+            System.Timers.Timer timi10 = new System.Timers.Timer(350000);
+            timi10.AutoReset = false;
+            timi10.Elapsed += (s, e) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach(Label mix_lbl in matrix_mix)
+                    {
+                        mix_lbl.BeginAnimation(OpacityProperty, oopac2);
+                    }
+                    symbol.BeginAnimation(OpacityProperty, oopac2);
+                    a_0.BeginAnimation(OpacityProperty, oopac2);
+                    a_1.BeginAnimation(OpacityProperty, oopac2);
+                    a_2.BeginAnimation(OpacityProperty, oopac2);
+                    a_3.BeginAnimation(OpacityProperty, oopac2);
+                    mix.BeginAnimation(OpacityProperty, oopac2);
+                    title_matrix.BeginAnimation(OpacityProperty, oopac2);
+                    title_matrix.Content = "Round key 1 = W[4] W[5] W[6] W[7]";
+                    title_matrix.BeginAnimation(OpacityProperty, oopac);
+                    change_color(info_mix, "#F0F8FF", 800);
+                    change_color(info_add, "#22C55E", 800);
+                    W8.BeginAnimation(OpacityProperty, oopac2);
+                    System.Timers.Timer tim = new System.Timers.Timer(4000);
+                    tim.AutoReset = false;
+                    tim.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            W8.BeginAnimation(OpacityProperty, oopac);
+                            W8.Content = "W[4] = [ " + string.Join(", ",lst[4])+" ]";
+                            change_color(matrix_r[0],"#FF0000",800);
+                            change_color(matrix_r[2], "#FF0000", 800);
+                            change_color(matrix_r[1], "#FF0000", 800);
+                            change_color(matrix_r[3], "#FF0000", 800);
+                            mix.Content = "\nRow0 ⊕ W4\tRow1 ⊕ W5\nRow2 ⊕ W6\tRow3 ⊕ W7";
+                            mix.BeginAnimation(OpacityProperty, oopac);
+
+                        });
+                    };
+                    tim.Start();
+                    activeTimers.Add(tim);
+                    System.Timers.Timer tim2 = new System.Timers.Timer(8000);
+                    tim2.AutoReset = false;
+                    tim2.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            
+                            change_color(matrix_r[4], "#FF0000", 800);
+                            change_color(matrix_r[5], "#FF0000", 800);
+                            change_color(matrix_r[6], "#FF0000", 800);
+                            change_color(matrix_r[7], "#FF0000", 800);
+
+                            change_color(matrix_r[0], "#FFFFFF", 800);
+                            change_color(matrix_r[1], "#FFFFFF", 800);
+                            change_color(matrix_r[3], "#FFFFFF", 800);
+                            change_color(matrix_r[2], "#FFFFFF", 800);
+                            W8.Content = "W[5] = [ " + string.Join(", ", lst[5]) + " ]";
+                            W8.BeginAnimation(OpacityProperty, oopac);
+                            byte a = byte.Parse(matrix_r[0].Content.ToString());
+                            byte b = byte.Parse(matrix_r[1].Content.ToString());
+                            byte c = byte.Parse(matrix_r[2].Content.ToString());
+                            byte d = byte.Parse(matrix_r[3].Content.ToString());
+
+
+                            matrix_r[0].Content = (a ^ words_4_7[0]).ToString();
+                            matrix_r[1].Content = (b ^ words_4_7[1]).ToString();
+                            matrix_r[2].Content = (c ^ words_4_7[2]).ToString();
+                            matrix_r[3].Content = (d ^ words_4_7[3]).ToString();
+
+                        });
+                    };
+                    tim2.Start();
+                    activeTimers.Add(tim2);
+                    System.Timers.Timer tim3 = new System.Timers.Timer(12000);
+                    tim3.AutoReset = false;
+                    tim3.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+
+                            change_color(matrix_r[8], "#FF0000", 800);
+                            change_color(matrix_r[9], "#FF0000", 800);
+                            change_color(matrix_r[10], "#FF0000", 800);
+                            change_color(matrix_r[11], "#FF0000", 800);
+
+                            change_color(matrix_r[4], "#FFFFFF", 800);
+                            change_color(matrix_r[5], "#FFFFFF", 800);
+                            change_color(matrix_r[6], "#FFFFFF", 800);
+                            change_color(matrix_r[7], "#FFFFFF", 800);
+                            W8.Content = "W[6] = [ " + string.Join(", ", lst[6]) + " ]";
+                            W8.BeginAnimation(OpacityProperty, oopac);
+                            byte a = byte.Parse(matrix_r[4].Content.ToString());
+                            byte b = byte.Parse(matrix_r[5].Content.ToString());
+                            byte c = byte.Parse(matrix_r[6].Content.ToString());
+                            byte d = byte.Parse(matrix_r[7].Content.ToString());
+
+
+                            matrix_r[4].Content = (a ^ words_4_7[7]).ToString();
+                            matrix_r[5].Content = (b ^ words_4_7[4]).ToString();
+                            matrix_r[6].Content = (c ^ words_4_7[5]).ToString();
+                            matrix_r[7].Content = (d ^ words_4_7[6]).ToString();
+
+                        });
+                    };
+                    tim3.Start();
+                    activeTimers.Add(tim3);
+                    System.Timers.Timer tim4 = new System.Timers.Timer(16000);
+                    tim4.AutoReset = false;
+                    tim4.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+
+                            change_color(matrix_r[12], "#FF0000", 800);
+                            change_color(matrix_r[13], "#FF0000", 800);
+                            change_color(matrix_r[14], "#FF0000", 800);
+                            change_color(matrix_r[15], "#FF0000", 800);
+
+                            change_color(matrix_r[8], "#FFFFFF", 800);
+                            change_color(matrix_r[9], "#FFFFFF", 800);
+                            change_color(matrix_r[10], "#FFFFFF", 800);
+                            change_color(matrix_r[11], "#FFFFFF", 800);
+                            W8.Content = "W[7] = [ " + string.Join(", ", lst[7]) + " ]";
+                            W8.BeginAnimation(OpacityProperty, oopac);
+                            byte a = byte.Parse(matrix_r[8].Content.ToString());
+                            byte b = byte.Parse(matrix_r[9].Content.ToString());
+                            byte c = byte.Parse(matrix_r[10].Content.ToString());
+                            byte d = byte.Parse(matrix_r[11].Content.ToString());
+
+
+                            matrix_r[8].Content = (a ^ words_4_7[10]).ToString();
+                            matrix_r[9].Content = (b ^ words_4_7[11]).ToString();
+                            matrix_r[10].Content = (c ^ words_4_7[8]).ToString();
+                            matrix_r[11].Content = (d ^ words_4_7[9]).ToString();
+
+                        });
+                    };
+                    tim4.Start();
+                    activeTimers.Add(tim4);
+                    System.Timers.Timer tim5 = new System.Timers.Timer(20000);
+                    tim5.AutoReset = false;
+                    tim5.Elapsed += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+
+                            
+
+                            change_color(matrix_r[12], "#FFFFFF", 800);
+                            change_color(matrix_r[13], "#FFFFFF", 800);
+                            change_color(matrix_r[14], "#FFFFFF", 800);
+                            change_color(matrix_r[15], "#FFFFFF", 800);
+                            
+                            W8.BeginAnimation(OpacityProperty, oopac2);
+                            byte a = byte.Parse(matrix_r[12].Content.ToString());
+                            byte b = byte.Parse(matrix_r[13].Content.ToString());
+                            byte c = byte.Parse(matrix_r[14].Content.ToString());
+                            byte d = byte.Parse(matrix_r[15].Content.ToString());
+
+
+                            matrix_r[12].Content = (a ^ words_4_7[13]).ToString();
+                            matrix_r[13].Content = (b ^ words_4_7[14]).ToString();
+                            matrix_r[14].Content = (c ^ words_4_7[15]).ToString();
+                            matrix_r[15].Content = (d ^ words_4_7[12]).ToString();
+
+                        });
+                    };
+                    tim5.Start();
+                    activeTimers.Add(tim5);
+
+                });
+            };
+            timi10.Start();
+            activeTimers.Add(timi10);
         }
         static byte Mul2(byte x)
         {
@@ -3324,106 +3657,99 @@ namespace EncodeX
                     };
                     intro.BeginAnimation(OpacityProperty, oopac);
                     intro.Visibility = Visibility.Visible;
-                    timing = new System.Timers.Timer(17000);
-                    timing.AutoReset = false;
-                    timing.Elapsed += (s, e) =>
+                    
+                    timing2 = new System.Timers.Timer(20000);
+                    timing2.AutoReset = false;
+                    timing2.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+
+
+                            action0();
+                            skipping += 1;
+
+                            
+                        }
+                        );
+
+                    };
+                    timing2.Start();
+                    timers.Add(timing2);
+                    timing3 = new System.Timers.Timer(35000);
+                    timing3.AutoReset = false;
+                    timing3.Elapsed += (s, e) =>
                     {
                         System.Windows.Application.Current.Dispatcher.Invoke(() =>
                         {
                             skipping += 1;
-                            intro.BeginAnimation(OpacityProperty, oopac2);
-                            timing2 = new System.Timers.Timer(200);
-                            timing2.AutoReset = false;
-                            timing2.Elapsed += (s, e) =>
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-
-
-                                    enc_steps.BeginAnimation(OpacityProperty, oopac);
-                                    encr_steps_Copy.BeginAnimation(OpacityProperty, oopac);
-                                    encr_steps_Copy1.BeginAnimation(OpacityProperty, oopac);
-                                    encr_steps_Copy2.BeginAnimation(OpacityProperty, oopac);
-                                    encr_steps_Copy3.BeginAnimation(OpacityProperty, oopac);
-                                    encr_steps_Copy4.BeginAnimation(OpacityProperty, oopac);
-                                    enc_steps.Visibility = Visibility.Visible;
-                                    encr_steps.Visibility = Visibility.Visible;
-                                    encr_steps_Copy.Visibility = Visibility.Visible;
-                                    encr_steps_Copy1.Visibility = Visibility.Visible;
-                                    encr_steps_Copy2.Visibility = Visibility.Visible;
-                                    encr_steps_Copy3.Visibility = Visibility.Visible;
-                                    encr_steps_Copy4.Visibility = Visibility.Visible;
-
-                                    timing3 = new System.Timers.Timer(10000);
-                                    timing3.AutoReset = false;
-                                    timing3.Elapsed += (s, e) =>
-                                    {
-                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                        {
-                                            skipping += 1;
-                                            action1();
-                                            timing4 = new System.Timers.Timer(31000);
-                                            timing4.AutoReset = false;
-                                            timing4.Elapsed += (s, e) =>
-                                            {
-                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                {
-                                                    skipping += 1;
-                                                    action2();
-                                                    timing5 = new System.Timers.Timer(15000);
-                                                    timing5.AutoReset = false;
-                                                    timing5.Elapsed += (s, e) =>
-                                                    {
-                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                        {
-                                                            skipping += 1;
-                                                            actions3();
-                                                            timing6 = new System.Timers.Timer(30000);
-                                                            timing6.AutoReset = false;
-                                                            timing6.Elapsed += (s, e) =>
-                                                            {
-                                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                                {
-                                                                    skipping += 1;
-                                                                    action4();
-                                                                    timing7 = new System.Timers.Timer(100000);
-                                                                    timing7.AutoReset = false;
-                                                                    timing7.Elapsed += (s, e) =>
-                                                                    {
-                                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                                        {
-                                                                            skipping += 1;
-                                                                            action5();
-                                                                            timing8 = new System.Timers.Timer(390000);
-                                                                            timing8.AutoReset = false;
-                                                                            timing8.Elapsed += (s, e) =>
-                                                                            {
-                                                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                                                {
-                                                                                    skipping += 1;
-                                                                                    action5();
-                                                                                });
-                                                                            }; timing8.Start();
-                                                                        });
-                                                                    }; timing7.Start();
-                                                                });
-                                                            }; timing6.Start();
-                                                        });
-                                                    }; timing5.Start();
-                                                });
-                                            }; timing4.Start();
-                                        });
-                                    };
-                                    timing3.Start();
-                                }
-                                );
-
-                            };
-                            timing2.Start();
-
+                            action1();
+                            
                         });
                     };
-                    timing.Start();
+                    timing3.Start();
+                    timers.Add(timing3);
+                    timing4 = new System.Timers.Timer(75000);
+                    timing4.AutoReset = false;
+                    timing4.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            skipping += 1;
+                            action2();
+                            
+                        });
+                    }; timing4.Start();
+                    timers.Add(timing4);
+                    timing5 = new System.Timers.Timer(105000);
+                    timing5.AutoReset = false;
+                    timing5.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            skipping += 1;
+                            actions3();
+                            
+                        });
+                    }; timing5.Start();
+                    timers.Add(timing5);
+                    timing6 = new System.Timers.Timer(155000);
+                    timing6.AutoReset = false;
+                    timing6.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            skipping += 1;
+                            action4();
+                            
+                            
+                        });
+                    }; timing6.Start();
+                    timers.Add(timing6);
+                    timing7 = new System.Timers.Timer(1000000000);
+                    timing7.AutoReset = false;
+                    timing7.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            skipping += 1;
+                            action5();
+                            
+                        });
+                    }; timing7.Start();
+                    timers.Add(timing7);
+                    
+                    timing9 = new System.Timers.Timer(1000000000);
+                    timing9.AutoReset = false;
+                    timing9.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            skipping += 1;
+                            action6();
+                        });
+                    }; timing9.Start();
+                    timers.Add(timing9);
 
 
                 };
@@ -3435,214 +3761,16 @@ namespace EncodeX
             }
         }
 
-
+        
         public void Skipping_btn(object sender, EventArgs e)
         {
-            if (skipping == 0)
+            if (skipping < 7)
             {
-                if (timing != null)
-                {
-                    timing.Stop();
-
-                    intro.Visibility = Visibility.Collapsed;
-                    enc_steps.Visibility = Visibility.Visible;
-                    encr_steps.Visibility = Visibility.Visible;
-                    encr_steps_Copy.Visibility = Visibility.Visible;
-                    encr_steps_Copy1.Visibility = Visibility.Visible;
-                    encr_steps_Copy2.Visibility = Visibility.Visible;
-                    encr_steps_Copy3.Visibility = Visibility.Visible;
-                    encr_steps_Copy4.Visibility = Visibility.Visible;
-                    skipping += 1;
-                    timing3_1 = new System.Timers.Timer(10000);
-                    timing3_1.AutoReset = false;
-                    timing3_1.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke((() =>
-                        {
-                            action1();
-                        }));
-                    };
-                    timing3_1.Start();
-
-                }
-
+                timers[skipping].Stop();
+                functions[skipping]();
+                skipping += 1;
             }
-            else if (skipping == 1)
-            {
-                if (timing3_1 != null)
-                {
-                    skipping += 1;
-                    timing3_1.Stop();
-                    timing3_1.Dispose();
-
-                }
-                else if (timing3 != null)
-                {
-                    skipping += 1;
-                    timing3.Stop();
-
-                }
-                action1();
-                timing3_1 = new System.Timers.Timer(25000);
-                timing3_1.AutoReset = false;
-                timing3_1.Elapsed += (s, e) =>
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
-                    {
-                        action2();
-                    }));
-                };
-                timing3_1.Start();
-            }
-            else if (skipping == 2)
-            {
-                if (timing3_1 != null)
-                {
-                    skipping += 1;
-                    timing3_1.Stop();
-                    timing3_1.Dispose();
-
-                }
-                else if (timing4 != null)
-                {
-                    skipping += 1;
-                    timing4.Stop();
-
-                }
-                action2();
-                timing3_1 = new System.Timers.Timer(25000);
-                timing3_1.AutoReset = false;
-                timing3_1.Elapsed += (s, e) =>
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
-                    {
-                        actions3();
-                    }));
-                };
-                timing3_1.Start();
-            }
-            else if (skipping == 3)
-            {
-                if (timing3_1 != null)
-                {
-                    skipping += 1;
-                    timing3_1.Stop();
-                    timing3_1.Dispose();
-
-                }
-                else if (timing5 != null)
-                {
-                    skipping += 1;
-                    timing5.Stop();
-
-                }
-                actions3();
-                timing3_1 = new System.Timers.Timer(15000);
-                timing3_1.AutoReset = false;
-                timing3_1.Elapsed += (s, e) =>
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
-                    {
-                        action4();
-                    }));
-                };
-                timing3_1.Start();
-
-            }
-            else if (skipping == 4)
-            {
-
-                if (timing3_1 != null)
-                {
-                    skipping += 1;
-                    timing3_1.Stop();
-                    timing3_1.Dispose();
-
-                }
-                else if (timing6 != null)
-                {
-                    skipping += 1;
-                    timing6.Stop();
-
-                }
-                action4();
-                timing3_1 = new System.Timers.Timer(150000);
-                timing3_1.AutoReset = false;
-                timing3_1.Elapsed += (s, e) =>
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
-                    {
-                        action5();
-                    }));
-                };
-                timing3_1.Start();
-
-            }
-            else if (skipping == 5)
-            {
-
-                if (timing3_1 != null)
-                {
-                    skipping += 1;
-                    timing3_1.Stop();
-                    timing3_1.Dispose();
-
-                }
-                else if (timing7 != null)
-                {
-                    skipping += 1;
-                    timing7.Stop();
-
-                }
-                HMAC.Visibility = Visibility.Hidden;
-                salt_anim.Visibility = Visibility.Hidden;
-                pss_anim.Visibility = Visibility.Hidden;
-                action5();
-                timing3_1 = new System.Timers.Timer(390000);
-                timing3_1.AutoReset = false;
-                timing3_1.Elapsed += (s, e) =>
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
-                    {
-                        action6();
-                    }));
-                };
-                timing3_1.Start();
-
-            }
-            else if (skipping == 6)
-            {
-
-                if (timing3_1 != null)
-                {
-                    skipping += 1;
-                    timing3_1.Stop();
-                    timing3_1.Dispose();
-
-                }
-                else if (timing8 != null)
-                {
-                    skipping += 1;
-                    timing8.Stop();
-
-                }
-                HMAC.Visibility = Visibility.Hidden;
-                salt_anim.Visibility = Visibility.Hidden;
-                pss_anim.Visibility = Visibility.Hidden;
-                action6();
-                timing3_1 = new System.Timers.Timer(390000);
-                timing3_1.AutoReset = false;
-                timing3_1.Elapsed += (s, e) =>
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
-                    {
-                        
-                    }));
-                };
-                timing3_1.Start();
-
-            }
-
+            
 
         }
 
@@ -5340,4 +5468,3 @@ namespace EncodeX
 
     }
 }
-
