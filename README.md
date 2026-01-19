@@ -23,7 +23,7 @@ You can run EncodeX in two ways:
 1. **Run the app (easiest, no setup required):**  
    - Download the ZIP from the [Releases](https://github.com/ali-hue-byte/EncodeX/releases).  
    - Extract the ZIP file to a folder of your choice.  
-   - Open the folder and double-click the `.exe` file to launch the app on Windows.
+   - Open the folder and double-click the `.exe` (EncodeX.exe) file to launch the app on Windows.
  
 
 2. **Build and run from source:**  
