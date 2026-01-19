@@ -11,7 +11,6 @@ A simple app to **encrypt and decrypt text, files or folders (supports large fil
 - Files/Folders Encryption and Decreption 
 - Save Encrypted / decrypted data or file informations
 - Modern UI built with XAML and WPF
-- Color Changing animations 
 - Large files support
 - A page to learn how **Encryption** works
 
