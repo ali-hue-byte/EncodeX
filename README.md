@@ -7,7 +7,7 @@ A simple app to **encrypt and decrypt text, files or folders (supports large fil
 
 ### Features ✅
 - Text encryption and decryption
-- Password strength checking
+- Password strength checking 
 - Files/Folders Encryption and Decreption 
 - Save Encrypted / decrypted data or file informations
 - Modern UI built with XAML and WPF
@@ -52,5 +52,6 @@ Suggestions, bug reports, or contributions are welcome. Feel free to open an iss
 
 <img width="2069" height="1221" alt="image" src="https://github.com/user-attachments/assets/d5a90e0f-8d75-4dc7-956c-3b7c522fccd9" />
 
+<img width="2067" height="1217" alt="image" src="https://github.com/user-attachments/assets/54b4ffb0-3d38-4350-87d5-ab4a6b17f825" />
 
 
