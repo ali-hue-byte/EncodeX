@@ -25,6 +25,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -51,6 +52,7 @@ namespace EncodeX
         private System.Timers.Timer timing7;
         private System.Timers.Timer timing8;
         private System.Timers.Timer timing9;
+        private System.Timers.Timer final_timer;
 
         System.Timers.Timer timing3_1;
         bool gotten_key = false;
@@ -70,7 +72,7 @@ namespace EncodeX
         List<Action> functions = new List<Action> { };
         public MainWindow()
         {
-            functions = new List<Action> {action0, action1, action2 ,actions3,action4,action5,action6};
+            functions = new List<Action> {action0, action1, action2 ,actions3,action4,action5,action6,action7};
 
             InitializeComponent();
 
@@ -286,14 +288,14 @@ namespace EncodeX
             };
             intro.BeginAnimation(OpacityProperty, oopac2);
             enc_steps.BeginAnimation(OpacityProperty, oopac);
-            encr_steps_Copy.BeginAnimation(OpacityProperty, oopac);
+            
             encr_steps_Copy1.BeginAnimation(OpacityProperty, oopac);
             encr_steps_Copy2.BeginAnimation(OpacityProperty, oopac);
             encr_steps_Copy3.BeginAnimation(OpacityProperty, oopac);
             encr_steps_Copy4.BeginAnimation(OpacityProperty, oopac);
             enc_steps.Visibility = Visibility.Visible;
             encr_steps.Visibility = Visibility.Visible;
-            encr_steps_Copy.Visibility = Visibility.Visible;
+            
             encr_steps_Copy1.Visibility = Visibility.Visible;
             encr_steps_Copy2.Visibility = Visibility.Visible;
             encr_steps_Copy3.Visibility = Visibility.Visible;
@@ -324,7 +326,7 @@ namespace EncodeX
             move(encr_steps, "0,161,0,0", "0,54,0,0", 1000);
             change_color(encr_steps, "#22C55E", 800);
             move(encr_steps_Copy4, "0,215,0,0", "1050,228,0,0", 1000);
-            move(encr_steps_Copy, "0,431,0,0", "1052,431,0,0", 1000);
+            
             move(encr_steps_Copy2, "0,323,0,0", "1084,323,0,0", 1000);
             move(encr_steps_Copy1, "0,377,0,0", "-2022,377,0,0", 1000);
             move(encr_steps_Copy3, "0,269,0,0", "-1923,269,0,0", 1000);
@@ -844,7 +846,7 @@ namespace EncodeX
                 });
             };tio.Start();
             activeTimers.Add(tio);
-            System.Timers.Timer gg = new System.Timers.Timer(18000);
+            System.Timers.Timer gg = new System.Timers.Timer(25000);
             gg.AutoReset = false;
             gg.Elapsed += (s, e) =>
             {
@@ -1029,7 +1031,7 @@ namespace EncodeX
             };gg.Start();
             activeTimers.Add(gg);
 
-            System.Timers.Timer timing_ez7 = new System.Timers.Timer(62300);
+            System.Timers.Timer timing_ez7 = new System.Timers.Timer(66000);
 
             timing_ez7.AutoReset = false;
             timing_ez7.Elapsed += (s, e) =>
@@ -1046,7 +1048,7 @@ namespace EncodeX
             timing_ez7.Start();
             activeTimers.Add(timing_ez7);
 
-            System.Timers.Timer timing_ = new System.Timers.Timer(66300);
+            System.Timers.Timer timing_ = new System.Timers.Timer(70000);
 
             timing_.AutoReset = false;
             timing_.Elapsed += (s, e) =>
@@ -1076,7 +1078,7 @@ namespace EncodeX
                     opacity_anim(HMAC,1.0,0.0,null,700);
                     opacity_anim(salt_anim, 1.0, 0.0, null, 700);
 
-                    System.Timers.Timer ne = new System.Timers.Timer(9000);
+                    System.Timers.Timer ne = new System.Timers.Timer(15000);
                     ne.AutoReset = false;
                     ne.Elapsed += (s, e) =>
                     {
@@ -1087,7 +1089,7 @@ namespace EncodeX
                             opacity_anim(info, 0.0, 1.0, null, 800);
                             info.Content = "Example: XOR of two bytes\r\n\r\nNumber A = 172  (binary: 10101100)\r\nNumber B = 197  (binary: 11000101)\r\n\r\nCompute XOR (A ⊕ B) bit by bit:\r\n\r\n  1 0 1 0 1 1 0 0   (A)\r\n⊕ 1 1 0 0 0 1 0 1   (B)\r\n-------------------\r\n  0 1 1 0 1 0 0 1   (Result)\r\n\r\nResult in decimal = 105\r\n\r\nSo:\r\n172 ⊕ 197 = 105\r\n";
                             
-                            System.Timers.Timer ne = new System.Timers.Timer(9000);
+                            System.Timers.Timer ne = new System.Timers.Timer(15000);
                             ne.AutoReset = false;
                             ne.Elapsed += (s, e) =>
                             {
@@ -1227,7 +1229,7 @@ namespace EncodeX
                 "remaining round keys into the data.";
             info.BeginAnimation(OpacityProperty, oopac);
 
-            System.Timers.Timer timer = new System.Timers.Timer(16000);
+            System.Timers.Timer timer = new System.Timers.Timer(20000);
             timer.AutoReset = false;
             timer.Elapsed += (s, e) =>
             {
@@ -1250,7 +1252,7 @@ namespace EncodeX
                                     
                     info.BeginAnimation(OpacityProperty, oopac);
                     title.BeginAnimation(OpacityProperty, oopac);
-                    System.Timers.Timer timer2 = new System.Timers.Timer(16000);
+                    System.Timers.Timer timer2 = new System.Timers.Timer(20000);
                     timer2.AutoReset = false;
                     timer2.Elapsed += (s, e) =>
                     {
@@ -1266,7 +1268,7 @@ namespace EncodeX
                                            "   -The master key is expanded into a complete set of \n    round keys.\n" +
                                            "   - These round keys will be used in order during the\n    AES encryption rounds.";
                             info.BeginAnimation(OpacityProperty, oopac);
-                            System.Timers.Timer timer3 = new System.Timers.Timer(16000);
+                            System.Timers.Timer timer3 = new System.Timers.Timer(20000);
                             timer3.AutoReset = false;
                             timer3.Elapsed += (s, e) =>
                             {
@@ -1308,7 +1310,7 @@ namespace EncodeX
             };timer.Start();
             activeTimers.Add(timer);
 
-            System.Timers.Timer timer4 = new System.Timers.Timer(60000);
+            System.Timers.Timer timer4 = new System.Timers.Timer(80000);
             timer4.AutoReset = false;
             timer4.Elapsed += (s, e) =>
             {
@@ -1325,7 +1327,7 @@ namespace EncodeX
                 
             }; timer4.Start();
             activeTimers.Add(timer4);
-            System.Timers.Timer timer1 = new System.Timers.Timer(70000);
+            System.Timers.Timer timer1 = new System.Timers.Timer(92000);
             timer1.AutoReset = false;
             timer1.Elapsed += (s, e) =>
             {
@@ -1343,7 +1345,7 @@ namespace EncodeX
                     "SubWord(x) = apply AES S-box to each byte.\r\n\r\n" +
                     "⊕ = bitwise XOR of bytes.";
                     info.BeginAnimation(OpacityProperty, oopac);
-                    System.Timers.Timer timer1_1 = new System.Timers.Timer(6000);
+                    System.Timers.Timer timer1_1 = new System.Timers.Timer(12000);
                     timer1_1.AutoReset = false;
                     timer1_1.Elapsed += (s, e) =>
                     {
@@ -1353,7 +1355,7 @@ namespace EncodeX
 
                             info.Content = "\n\n\n\nGoal: Expand the 32-byte master key into 60 words → 15 round keys \n(4 words each, 16 bytes).";
                             info.BeginAnimation(OpacityProperty, oopac);
-                            System.Timers.Timer timer1_2 = new System.Timers.Timer(6000);
+                            System.Timers.Timer timer1_2 = new System.Timers.Timer(9000);
                             timer1_2.AutoReset = false;
                             timer1_2.Elapsed += (s, e) =>
                             {
@@ -1366,7 +1368,7 @@ namespace EncodeX
                                     info.BeginAnimation(OpacityProperty, oopac);
                                     U1_show.Visibility = Visibility.Visible;
                                     U1_show.BeginAnimation(OpacityProperty, oopac);
-                                    System.Timers.Timer timer1_3 = new System.Timers.Timer(4000);
+                                    System.Timers.Timer timer1_3 = new System.Timers.Timer(5000);
                                     timer1_3.AutoReset = false;
                                     timer1_3.Elapsed += (s, e) =>
                                     {
@@ -1387,7 +1389,7 @@ namespace EncodeX
                                                 i.BeginAnimation(OpacityProperty, oopac);
                                                 i.Visibility = Visibility.Visible;
                                             }
-                                            System.Timers.Timer timer1_4 = new System.Timers.Timer(4000);
+                                            System.Timers.Timer timer1_4 = new System.Timers.Timer(8000);
                                             timer1_4.AutoReset = false;
                                             timer1_4.Elapsed += (s, e) =>
                                             {
@@ -1399,7 +1401,7 @@ namespace EncodeX
                                                         
                                                     }
                                                     info.BeginAnimation(OpacityProperty, oopac2);
-                                                    info.Content = "   ____Step 3: Generate a New Word W[i]____\r\n\r\n" +
+                                                    info.Content = "   ____Step 2: Generate a New Word W[i]____\r\n\r\n" +
                                                     "Rule for each new word in the AES-256 key schedule:\r\n\r\n\n\n\n\n\n" +
                                                     
                                                     "W[i] =";
@@ -1446,7 +1448,7 @@ namespace EncodeX
             timer1.Start();
             activeTimers.Add(timer1);
 
-            System.Timers.Timer timer1_5 = new System.Timers.Timer(114000);
+            System.Timers.Timer timer1_5 = new System.Timers.Timer(142000);
             timer1_5.AutoReset = false;
             timer1_5.Elapsed += (s, e) =>
             {
@@ -1464,7 +1466,7 @@ namespace EncodeX
                             W8_i.Visibility = Visibility.Visible;
                             change_color(rule1, "#22C55E", 2000);
                             change_color(if1, "#22C55E", 2000);
-                            System.Timers.Timer timer1_6 = new System.Timers.Timer(3000);
+                            System.Timers.Timer timer1_6 = new System.Timers.Timer(4000);
                             timer1_6.AutoReset = false;
                             timer1_6.Elapsed += (s, e) =>
                             {
@@ -1509,6 +1511,7 @@ namespace EncodeX
                                                                 {
                                                                     W8_r.Content = "SubWord(W) => SBox";
                                                                     W8_r.BeginAnimation(OpacityProperty, oopac);
+                                                                    W8_app.BeginAnimation(OpacityProperty, oopac2);
                                                                     W8_r.Visibility = Visibility.Visible;
                                                                    
                                                                     activeTimers.Add(timer1_8);
@@ -1569,7 +1572,7 @@ namespace EncodeX
             activeTimers.Add(timer1_5);
 
 
-            System.Timers.Timer timer1_8 = new System.Timers.Timer(150000);
+            System.Timers.Timer timer1_8 = new System.Timers.Timer(165000);
             timer1_8.AutoReset = false;
             timer1_8.Elapsed += (s, e) =>
             {
@@ -1583,7 +1586,7 @@ namespace EncodeX
                        lst[7][2].ToString() + " => " + SBox[lst[7][2]].ToString() + "\n" +
                        lst[7][3].ToString() + " => " + SBox[lst[7][3]].ToString() + "\t" +
                     lst[7][0].ToString() + " => " + SBox[lst[7][0]].ToString();
-                    System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                    System.Timers.Timer timer1_8 = new System.Timers.Timer(5000);
                     timer1_8.AutoReset = false;
                     timer1_8.Elapsed += (s, e) =>
                     {
@@ -1594,7 +1597,7 @@ namespace EncodeX
                             W8_re1.Visibility = Visibility.Visible;
                             W8_re1.Content = "SubWord(RotWord(W[7])) = [ " + string.Join(", ", SubWord(RotWord_2(lst[7]))) + " ]";
 
-                            System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                            System.Timers.Timer timer1_8 = new System.Timers.Timer(5000);
                             timer1_8.AutoReset = false;
                             timer1_8.Elapsed += (s, e) =>
                             {
@@ -1602,8 +1605,9 @@ namespace EncodeX
                                 {
                                     W8_r.Content = "Rcon[i] = [rᵢ, 0, 0, 0]";
                                     W8_r.BeginAnimation(OpacityProperty, oopac);
+                                    W8_app.BeginAnimation(OpacityProperty, oopac2);
                                     W8_r.Visibility = Visibility.Visible;
-                                    System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                                    System.Timers.Timer timer1_8 = new System.Timers.Timer(5000);
                                     timer1_8.AutoReset = false;
                                     timer1_8.Elapsed += (s, e) =>
                                     {
@@ -1614,7 +1618,7 @@ namespace EncodeX
                                             W8_app.BeginAnimation(OpacityProperty, oopac);
                                             W8_app.Visibility = Visibility.Visible;
                                             W8_app.Content = "r₁ = 1        rᵢ = { 2·rᵢ₋₁                  if rᵢ₋₁ < 128\r\n                        (2·rᵢ₋₁ − 256) ⊕ 27     if rᵢ₋₁ ≥ 128 }\r\n";
-                                            System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
+                                            System.Timers.Timer timer1_8 = new System.Timers.Timer(5000);
                                             timer1_8.AutoReset = false;
                                             timer1_8.Elapsed += (s, e) =>
                                             {
@@ -1625,7 +1629,7 @@ namespace EncodeX
                                                     W8_re2.Visibility = Visibility.Visible;
                                                     W8_re2.Content = "Rcon[1] = [1, 0, 0, 0] ";
 
-                                                    System.Timers.Timer timi = new System.Timers.Timer(3000);
+                                                    System.Timers.Timer timi = new System.Timers.Timer(5000);
                                                     timi.AutoReset = false;
                                                     timi.Elapsed += (s, e) =>
                                                     {
@@ -1638,7 +1642,7 @@ namespace EncodeX
                                                         });
                                                     };timi.Start();
                                                     activeTimers.Add(timi);
-                                                    System.Timers.Timer timi2 = new System.Timers.Timer(6000);
+                                                    System.Timers.Timer timi2 = new System.Timers.Timer(9000);
                                                     timi2.AutoReset = false;
                                                     timi2.Elapsed += (s, e) =>
                                                     {
@@ -1673,7 +1677,7 @@ namespace EncodeX
                                                         });
                                                     }; timi2.Start();
                                                     activeTimers.Add(timi2);
-                                                    System.Timers.Timer timi3 = new System.Timers.Timer(10000);
+                                                    System.Timers.Timer timi3 = new System.Timers.Timer(15000);
                                                     timi3.AutoReset = false;
                                                     timi3.Elapsed += (s, e) =>
                                                     {
@@ -1687,7 +1691,7 @@ namespace EncodeX
                                                         });
                                                     };timi3.Start();
                                                     activeTimers.Add(timi3);
-                                                    System.Timers.Timer timi4 = new System.Timers.Timer(13000);
+                                                    System.Timers.Timer timi4 = new System.Timers.Timer(20000);
                                                     timi4.AutoReset = false;
                                                     timi4.Elapsed += (s, e) =>
                                                     {
@@ -1748,7 +1752,7 @@ namespace EncodeX
             timer1_8.Start();
             activeTimers.Add(timer1_8);
 
-            System.Timers.Timer timi4 = new System.Timers.Timer(180000);
+            System.Timers.Timer timi4 = new System.Timers.Timer(226000);
             timi4.AutoReset = false;
             timi4.Elapsed += (s1, e1) =>
             {
@@ -1764,7 +1768,7 @@ namespace EncodeX
 
             }; timi4.Start();
             activeTimers.Add(timi4);
-            System.Timers.Timer timi41 = new System.Timers.Timer(185000);
+            System.Timers.Timer timi41 = new System.Timers.Timer(232000);
             timi41.AutoReset = false;
             timi41.Elapsed += (s2, e2) =>
             {
@@ -1782,7 +1786,7 @@ namespace EncodeX
                 });
             }; timi41.Start();
             activeTimers.Add(timi41);
-            System.Timers.Timer timi42 = new System.Timers.Timer(191000);
+            System.Timers.Timer timi42 = new System.Timers.Timer(242000);
             timi42.AutoReset = false;
             timi42.Elapsed += (s3, e3) =>
             {
@@ -1822,7 +1826,7 @@ namespace EncodeX
             }; timi42.Start();
             activeTimers.Add(timi42);
 
-            System.Timers.Timer timi46 = new System.Timers.Timer(206000);
+            System.Timers.Timer timi46 = new System.Timers.Timer(262000);
             timi46.AutoReset = false;
             timi46.Elapsed += (s, e) =>
             {
@@ -1923,7 +1927,7 @@ namespace EncodeX
             }; timi46.Start();
             activeTimers.Add(timi46);
 
-            System.Timers.Timer tt = new System.Timers.Timer(250000) ;
+            System.Timers.Timer tt = new System.Timers.Timer(290000) ;
             tt.AutoReset = false;
             tt.Elapsed += (s, e) =>
             {
@@ -2998,7 +3002,7 @@ namespace EncodeX
             timi.Start();
             activeTimers.Add(timi);
 
-            System.Timers.Timer timi10 = new System.Timers.Timer(350000);
+            System.Timers.Timer timi10 = new System.Timers.Timer(250000);
             timi10.AutoReset = false;
             timi10.Elapsed += (s, e) =>
             {
@@ -3173,6 +3177,131 @@ namespace EncodeX
             };
             timi10.Start();
             activeTimers.Add(timi10);
+
+
+            
+        }
+
+        public void action7()
+        {
+            foreach (var time in activeTimers)
+            {
+                time.Stop();
+                time.Dispose();
+            }
+            activeTimers.Clear();
+            DoubleAnimation oopac = new DoubleAnimation
+            {
+                From = 0.0,
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(1200)
+            };
+            DoubleAnimation oopac2 = new DoubleAnimation
+            {
+
+                To = 0.0,
+                Duration = TimeSpan.FromMilliseconds(1200)
+            };
+            List<Label> matrix_r = new List<Label> { r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, r_9, r_10, r_11, r_12, r_13, r_14, r_15, r_16 };
+
+            skip_btn.Content = "End";
+            move(encr_steps_Copy1, "0,161,0,0", "0,54,0,0", 1000);
+            move(encr_steps_Copy2, "0,54,0,0", "0,-54,0,0", 1000);
+            change_color(encr_steps_Copy1, "#22C55E", 1100);
+            foreach (Label l in matrix_r)
+            {
+                l.BeginAnimation(OpacityProperty, oopac2);
+            }
+            title_matrix.BeginAnimation(OpacityProperty, oopac2);
+            info_sub.BeginAnimation(OpacityProperty, oopac2);
+
+            info_shif.BeginAnimation(OpacityProperty, oopac2);
+
+            info_add.BeginAnimation(OpacityProperty, oopac2);
+
+            info_mix.BeginAnimation(OpacityProperty, oopac2);
+
+            mix.BeginAnimation(OpacityProperty, oopac2);
+            info.BeginAnimation(OpacityProperty, oopac2);
+            info.Content = "The final round of AES encryption is slightly different from \n" +
+            "the previous rounds. For each 16-byte block, the state matrix\n" +
+            "undergoes SubBytes, where every byte is replaced using the \nAES " +
+            "S-box, followed by ShiftRows, which cyclically shifts the \nrows to " +
+            "the left by 0, 1, 2, and 3 positions for rows 0 to 3, \n" +
+            "respectively. Finally, the AddRoundKey operation combines the \n" +
+            "state with the final round key using a bitwise XOR. Notably, \n" +
+            "MixColumns is omitted in this last round, which differentiates \n" +
+            "it from the earlier rounds. After completing these steps, the \n" +
+            "resulting state matrix represents the cipher text for that block. \n" +
+            "This process is repeated for each 16-byte block of the input \n" +
+            "message until the entire plaintext is fully encrypted.";
+            info.BeginAnimation(OpacityProperty, oopac);
+
+            System.Timers.Timer final = new System.Timers.Timer(30000);
+            final.AutoReset = false;
+            final.Elapsed += (s, e) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    encr_steps.Visibility = Visibility.Hidden;
+                    encr_steps_Copy1.Visibility = Visibility.Hidden;
+                    encr_steps_Copy2.Visibility = Visibility.Hidden;
+                    encr_steps_Copy3.Visibility = Visibility.Hidden;
+                    encr_steps_Copy4.Visibility = Visibility.Hidden;
+                    move(encr_steps_Copy1, "0,54,0,0", "0,377,0,0", 1000);
+                    move(encr_steps_Copy2, "0,54,0,0", "0,323,0,0", 1000);
+                    move(encr_steps_Copy3, "0,54,0,0", "0,269,0,0", 1000);
+                    move(encr_steps_Copy4, "0,54,0,0", "0,215,0,0", 1000);
+                    move(encr_steps, "0,54,0,0", "0,161,0,0", 1000);
+                    change_color(encr_steps, "#FFFFFF", 200);
+                    change_color(encr_steps_Copy1, "#FFFFFF", 200);
+                    change_color(encr_steps_Copy2, "#FFFFFF", 200);
+                    change_color(encr_steps_Copy3, "#FFFFFF", 200);
+                    change_color(encr_steps_Copy4, "#FFFFFF", 200);
+                    Entry.Visibility = Visibility.Hidden;
+                    info.Visibility = Visibility.Hidden;
+
+                    arrow.Visibility = Visibility.Visible;
+                    ScaleTransform scale = new ScaleTransform(1.0, 1.0);
+                    RotateTransform rotate = new RotateTransform(180);
+
+                    TransformGroup group = new TransformGroup();
+                    group.Children.Add(scale);
+                    group.Children.Add(rotate);
+
+                    arrow.RenderTransform = group;
+
+
+                    DoubleAnimation scaleAnim = new DoubleAnimation
+                    {
+                        From = 30.0,
+                        To = 1.0,
+                        Duration = TimeSpan.FromMilliseconds(800),
+                        FillBehavior = FillBehavior.HoldEnd
+                    };
+                    DoubleAnimation scaleAnim2 = new DoubleAnimation
+                    {
+                        From = 30.0,
+                        To = 1.0,
+                        Duration = TimeSpan.FromMilliseconds(800),
+                        FillBehavior = FillBehavior.HoldEnd
+                    };
+
+                    skipping = 0;
+                    scale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
+                    scale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim2);
+                    skip_btn.Content = "Skip";
+
+                    string password = "password@1010^";
+                    if (password_field.IsReadOnly == false)
+                    {
+                        password = password_field.Text;
+                    }
+                    string text = input_field.Text;
+                    encrypted_field.Text = encrypt(password,text);
+                });
+            };final.Start();
+            activeTimers.Add(final);
         }
         static byte Mul2(byte x)
         {
@@ -3404,6 +3533,7 @@ namespace EncodeX
             }
             return result;
         }
+
 
         public async void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -3638,8 +3768,6 @@ namespace EncodeX
                 };
 
 
-
-
                 scaleAnim.Completed += (s, e) =>
                 {
                     Entry.Visibility = Visibility.Visible;
@@ -3726,7 +3854,7 @@ namespace EncodeX
                         });
                     }; timing6.Start();
                     timers.Add(timing6);
-                    timing7 = new System.Timers.Timer(1000000000);
+                    timing7 = new System.Timers.Timer(260000);
                     timing7.AutoReset = false;
                     timing7.Elapsed += (s, e) =>
                     {
@@ -3739,7 +3867,7 @@ namespace EncodeX
                     }; timing7.Start();
                     timers.Add(timing7);
                     
-                    timing9 = new System.Timers.Timer(1000000000);
+                    timing9 = new System.Timers.Timer(676000);
                     timing9.AutoReset = false;
                     timing9.Elapsed += (s, e) =>
                     {
@@ -3750,7 +3878,18 @@ namespace EncodeX
                         });
                     }; timing9.Start();
                     timers.Add(timing9);
-
+                    timing = new System.Timers.Timer(952000);
+                    timing.AutoReset = false;
+                    timing.Elapsed += (s, e) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            skipping += 1;
+                            action7();
+                        });
+                    }; timing.Start();
+                    timers.Add(timing);
+                    
 
                 };
 
@@ -3764,14 +3903,135 @@ namespace EncodeX
         
         public void Skipping_btn(object sender, EventArgs e)
         {
-            if (skipping < 7)
+            if (skipping < 8)
             {
-                timers[skipping].Stop();
+                foreach (System.Timers.Timer t in timers)
+                {
+                    t.Stop();
+                    
+                }
+
                 functions[skipping]();
                 skipping += 1;
-            }
-            
+            }else 
+            {
+                encr_steps.Visibility = Visibility.Hidden;
+                encr_steps_Copy1.Visibility = Visibility.Hidden;
+                encr_steps_Copy2.Visibility = Visibility.Hidden;
+                encr_steps_Copy3.Visibility = Visibility.Hidden;
+                encr_steps_Copy4.Visibility = Visibility.Hidden;
+                change_color(encr_steps, "#FFFFFF", 200);
+                change_color(encr_steps_Copy1, "#FFFFFF", 200);
+                change_color(encr_steps_Copy2, "#FFFFFF", 200);
+                change_color(encr_steps_Copy3, "#FFFFFF", 200);
+                change_color(encr_steps_Copy4, "#FFFFFF", 200);
+                move(encr_steps_Copy1, "0,54,0,0", "0,377,0,0", 1000);
+                move(encr_steps_Copy2, "0,54,0,0", "0,323,0,0", 1000);
+                move(encr_steps_Copy3, "0,54,0,0", "0,269,0,0", 1000);
+                move(encr_steps_Copy4, "0,54,0,0", "0,215,0,0", 1000);
+                move(encr_steps, "0,54,0,0", "0,161,0,0", 1000);
+                Entry.Visibility = Visibility.Hidden;
+                info.Visibility = Visibility.Hidden;
 
+                arrow.Visibility = Visibility.Visible;
+                ScaleTransform scale = new ScaleTransform(1.0, 1.0);
+                RotateTransform rotate = new RotateTransform(180);
+
+                TransformGroup group = new TransformGroup();
+                group.Children.Add(scale);
+                group.Children.Add(rotate);
+
+                arrow.RenderTransform = group;
+
+
+                DoubleAnimation scaleAnim = new DoubleAnimation
+                {
+                    From = 30.0,
+                    To = 1.0,
+                    Duration = TimeSpan.FromMilliseconds(800),
+                    FillBehavior = FillBehavior.HoldEnd
+                };
+                DoubleAnimation scaleAnim2 = new DoubleAnimation
+                {
+                    From = 30.0,
+                    To = 1.0,
+                    Duration = TimeSpan.FromMilliseconds(800),
+                    FillBehavior = FillBehavior.HoldEnd
+                };
+
+                skipping = 0;
+                scale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
+                scale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim2);
+                skip_btn.Content = "Skip";
+                timers.Clear();
+
+                string password = "password@1010^";
+                if (password_field.IsReadOnly == false)
+                {
+                    password = password_field.Text;
+                }
+                string text = input_field.Text;
+                encrypted_field.Text = encrypt(password, text);
+                return;
+            }
+
+
+                List<int> timing = new List<int> { };
+            if (skipping == 1)
+            {
+                timing = new List<int> { 15000, 55000, 85000, 135000, 240000, 656000 ,932000};
+
+                
+                
+            }else if (skipping == 2)
+            {
+                timing = new List<int> { 40000, 70000, 120000, 225000, 641000 ,917000};
+
+
+
+            }
+            else if (skipping == 3)
+            {
+                timing = new List<int> { 30000, 80000, 185000, 601000 ,877000};
+
+
+
+            }
+            else if (skipping == 4)
+            {
+                timing = new List<int> {50000, 155000, 571000 ,847000};
+
+
+
+            }
+            else if (skipping == 5)
+            {
+                timing = new List<int> {105000,521000 ,797000};
+
+
+
+            }
+            else if (skipping == 6)
+            {
+                timing = new List<int> {416000 ,692000};
+
+
+            }
+            else if (skipping == 7)
+            {
+                timing = new List<int> { 276000 };
+
+
+            }
+            for (int i = skipping; i < timers.Count ; i++)
+                {
+                    timers[i].Interval = timing[i - skipping];
+                    timers[i].Start();
+                }
+            
+            
+            
+            
         }
 
 
