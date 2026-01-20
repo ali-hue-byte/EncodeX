@@ -5,7 +5,7 @@ A simple app to **encrypt and decrypt text, files or folders (supports large fil
 
 ---
 
-### Features ✅
+### Features
 - Text encryption and decryption
 - Password strength checking 
 - Files/Folders Encryption and Decreption 
