@@ -24,6 +24,13 @@ namespace EncodeX
             Duration = TimeSpan.FromMilliseconds(1000),
         };
 
+        public DoubleAnimation oopac_h = new DoubleAnimation
+        {
+            From = 0.0,
+            To = 1.0,
+            Duration = TimeSpan.FromMilliseconds(1800)
+        };
+
         public void animation(FrameworkElement thing)
         {
             Thickness current = thing.Margin;
