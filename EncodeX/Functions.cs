@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media.Animation; 
 using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Threading.Tasks;
 
 
 namespace EncodeX
@@ -51,40 +52,34 @@ namespace EncodeX
         SBox[w[3]& 0xFF]
                   };
         }
-        public void vibrate()
+        public async Task vibrate()
         {
             Thickness start = new Thickness(667, 334, 0, 0);
-            System.Timers.Timer timing_s = new System.Timers.Timer(4000);
-            timing_s.AutoReset = false;
-            timing_s.Elapsed += (s, e) =>
+            await Task.Delay(4000);
+            ThicknessAnimation anim = new ThicknessAnimation
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                From = HMAC.Margin,
+                To = new Thickness(HMAC.Margin.Left + 20, HMAC.Margin.Top, HMAC.Margin.Right - 20, HMAC.Margin.Bottom),
+                Duration = TimeSpan.FromMilliseconds(50),
+                AutoReverse = true,
+                RepeatBehavior = new RepeatBehavior(20)
+            };
+            anim.Completed += (s, e) =>
+            {
+                ThicknessAnimation anim2 = new ThicknessAnimation
                 {
-                    ThicknessAnimation anim = new ThicknessAnimation
-                    {
-                        From = HMAC.Margin,
-                        To = new Thickness(HMAC.Margin.Left + 20, HMAC.Margin.Top, HMAC.Margin.Right - 20, HMAC.Margin.Bottom),
-                        Duration = TimeSpan.FromMilliseconds(50),
-                        AutoReverse = true,
-                        RepeatBehavior = new RepeatBehavior(20)
-                    };
-                    anim.Completed += (s, e) =>
-                    {
-                        ThicknessAnimation anim2 = new ThicknessAnimation
-                        {
-                            From = HMAC.Margin,
-                            To = new Thickness(HMAC.Margin.Left - 20, HMAC.Margin.Top, HMAC.Margin.Right + 20, HMAC.Margin.Bottom),
-                            Duration = TimeSpan.FromMilliseconds(50)
-                        };
+                    From = HMAC.Margin,
+                    To = new Thickness(HMAC.Margin.Left - 20, HMAC.Margin.Top, HMAC.Margin.Right + 20, HMAC.Margin.Bottom),
+                    Duration = TimeSpan.FromMilliseconds(50)
+                };
 
 
 
-                    };
-                    HMAC.BeginAnimation(MarginProperty, anim);
-                });
-            }; timing_s.Start();
-            activeTimers.Add(timing_s);
-            HMAC.Margin = start;
+            };
+            HMAC.BeginAnimation(MarginProperty, anim);
+
+
+
 
 
         }
