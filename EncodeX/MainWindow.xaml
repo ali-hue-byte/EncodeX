@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EncodeX"
        
-        xmlns:gif="clr-namespace:XamlAnimatedGif;assembly=XamlAnimatedGif"
 
         mc:Ignorable="d"
         Title="EncodeX" Height="620" Width="1050" ResizeMode="NoResize" Icon="/icons/main_icon.ico"
