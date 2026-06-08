@@ -26,13 +26,16 @@ namespace EncodeX
             }
             intro.BeginAnimation(OpacityProperty, oopac2);
 
-            await Task.Delay(6000);
+            try { await Task.Delay(9000, _skip.Token); }
+            catch (TaskCanceledException) { }
+            
             await action1();
             
         }
         
         public async Task action1()
         {
+            bool skiped= false;
             enc_steps.BeginAnimation(OpacityProperty, oopac2);
             move(encr_steps, "0,161,0,0", "0,54,0,0", 1000);
             change_color(encr_steps, "#22C55E", 800);
@@ -71,9 +74,13 @@ namespace EncodeX
             {
                 
                 int index = i;
-                await Task.Delay(2000);
-
-                if (lbls.Contains(labels_b[index]))
+                try { await Task.Delay(2000, _skip.Token); }
+                catch (TaskCanceledException)
+                {
+                    Arr.Visibility = Visibility.Collapsed;
+                    skiped = true;
+                }
+                if (lbls.Contains(labels_b[index]) || skiped == true)
                 {
                       Arr.Visibility = Visibility.Collapsed;
 
@@ -112,7 +119,8 @@ namespace EncodeX
                 }
 
             }
-            await Task.Delay(7000);
+            try { await Task.Delay(7000, _skip.Token); }
+            catch (TaskCanceledException) { }
             await action2();
         }
 
@@ -156,7 +164,9 @@ namespace EncodeX
                 "padding is added.";
             opacity_anim(info, 0.0, 1.0);
             opacity_anim(title, 0.0, 1.0);
-            await Task.Delay(10000);
+            try { await Task.Delay(10000, _skip.Token); }
+            catch (TaskCanceledException) { }
+            
             await actions3();
         }
 
@@ -235,7 +245,8 @@ namespace EncodeX
                 str_to_show += "]";
 
             }
-            await Task.Delay(2000);
+            try { await Task.Delay(2000, _skip.Token); }
+            catch (TaskCanceledException) { }
             
             pad_show.Content = str_to_show;
             opacity_anim(pad_show, 0.0, 1.0);
@@ -269,7 +280,8 @@ namespace EncodeX
                  str_to_show_2 += string.Join(", ", second);
                  str_to_show_2 += "]";
             }
-            await Task.Delay(8000); 
+            try { await Task.Delay(8000, _skip.Token); }
+            catch (TaskCanceledException) { }
            
                     
             pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
@@ -308,8 +320,8 @@ namespace EncodeX
                    str_to_show_3 += string.Join(", ", second);
                    str_to_show_3 += "]";
             }
-
-            await Task.Delay(8000);
+            try { await Task.Delay(8000, _skip.Token); }
+            catch (TaskCanceledException) { }
             pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
             pad_show.Content = str_to_show_3;
             opacity_anim(pad_show, 0.0, 1.0);
@@ -340,8 +352,8 @@ namespace EncodeX
                     str_to_show_4 += string.Join(", ", second);
                     str_to_show_4 += "]";
             }
-
-            await Task.Delay(8000);
+            try { await Task.Delay(8000, _skip.Token); }
+            catch (TaskCanceledException) { }
             
             pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 80, pad_show.Margin.Right, pad_show.Margin.Bottom - 80);
             pad_show.Content = str_to_show_4;
@@ -373,15 +385,16 @@ namespace EncodeX
                        str_to_show_5 += string.Join(", ", second);
                        str_to_show_5 += "]";
             }
-            await Task.Delay(8000);
+            try { await Task.Delay(8000, _skip.Token); }
+            catch (TaskCanceledException) { }
             
             pad_show.Margin = new Thickness(pad_show.Margin.Left, 206, pad_show.Margin.Right, 0);
             pad_show.Content = str_to_show_5;
             opacity_anim(pad_show, 0.0, 1.0);
             opacity_anim(info, 0.0, 1.0);
             info.Content = "6. **Random Padding**:\n- Fills remaining bytes with random values.\n- Often combined with other encryption modes to add \nextra randomness.\n \n \nAfter padding, AES can safely encrypt the full 16-byte blocks, \nand the ciphertext can later be decrypted correctly, \nremoving the padding automatically.";
-
-            await Task.Delay(8000);
+            try { await Task.Delay(8000, _skip.Token); }
+            catch (TaskCanceledException) { }
             await action4();
         }
 
@@ -457,7 +470,8 @@ namespace EncodeX
 "Each block has a unique number called the block index.";
 
             info.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(3000);
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
            
             pad_info1_Copy.Foreground = (Brush)new BrushConverter().ConvertFromString("#22C55E");
             pad_info1.Foreground = (Brush)new BrushConverter().ConvertFromString("#F59E0B");
@@ -472,7 +486,8 @@ namespace EncodeX
             pad_info1.Visibility = Visibility.Visible;
             pad_info1_Copy.Visibility = Visibility.Visible;
 
-            await Task.Delay(25000);
+            try { await Task.Delay(25000, _skip.Token); }
+            catch (TaskCanceledException) { }
             
             info.BeginAnimation(OpacityProperty, oopac2);
             info.Content = "Each block is computed like this:\n" +
@@ -495,7 +510,8 @@ namespace EncodeX
              HMAC.BeginAnimation(OpacityProperty, oopac_h);
              HMAC.Visibility = Visibility.Visible;
 
-            await Task.Delay(2000);
+            try { await Task.Delay(2000, _skip.Token); }
+            catch (TaskCanceledException) { }
                     
             DoubleAnimation o = new DoubleAnimation
             {
@@ -516,7 +532,8 @@ namespace EncodeX
             salt_anim.Visibility = Visibility.Visible;
             move(salt_anim, "737,136,0,0", "690,334,0,0", 2500);
             move(pss_anim, "574,136,0,0", "690,334,0,0", 3000);
-            await Task.Delay(3300);
+            try { await Task.Delay(3300, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             
             pss_anim.Visibility = Visibility.Hidden;
@@ -524,14 +541,15 @@ namespace EncodeX
             pss_anim.Margin = new Thickness(574, 136, 0, 0);
 
             vibrate();
-
-            await Task.Delay(7500);
+            try { await Task.Delay(75000, _skip.Token); }
+            catch (TaskCanceledException) { }
             
             salt_anim.Foreground = (Brush)new BrushConverter().ConvertFromString("#00CC99");
             salt_anim.Content = "U1";
             salt_anim.Visibility = Visibility.Visible;
             move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
-            await Task.Delay(1000);
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             
             opacity_anim(Hmac_im_arr, 0.0, 1.0);
             Hmac_im_arr.Visibility = Visibility.Visible;
@@ -540,7 +558,8 @@ namespace EncodeX
             U1_show.Content = "U1: [ " + U1.Substring(0, 40) + "..." + U1.Substring(U1.Length - 3) + " ]";
             opacity_anim(U1_show, 0.0, 1.0);
             U1_show.Visibility = Visibility.Visible;
-            await Task.Delay(8500);
+            try { await Task.Delay(8500, _skip.Token); }
+            catch (TaskCanceledException) { }
             
 
             opacity_anim(Hmac_im_arr, 1.0, 0.0);
@@ -549,34 +568,40 @@ namespace EncodeX
             move(pss_anim, "574,136,0,0", "690,334,0,0", 1000);
             move(salt_anim, "710, 284, 0, 0", "710,334,0,0", 2000);
             opacity_anim(U1_show, 1.0, 0.0);
-            await Task.Delay(2300);
+            try { await Task.Delay(2300, _skip.Token); }
+            catch (TaskCanceledException) { }
                                                     
             pss_anim.Visibility = Visibility.Hidden;
             salt_anim.Visibility = Visibility.Hidden;
             pss_anim.Margin = new Thickness(574, 136, 0, 0);
             vibrate();
-            await Task.Delay(7300);
+            try { await Task.Delay(7300, _skip.Token); }
+            catch (TaskCanceledException) { }
                                                             
             salt_anim.Content = "U2";
             salt_anim.Visibility = Visibility.Visible;
             move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
-            await Task.Delay(3300);
+            try { await Task.Delay(3300, _skip.Token); }
+            catch (TaskCanceledException) { }
                                                                     
             pss_anim.Margin = new Thickness(574, 136, 0, 0);
             pss_anim.Visibility = Visibility.Visible;
             move(pss_anim, "574,136,0,0", "690,334,0,0", 1000);
             move(salt_anim, "710, 284, 0, 0", "710,334,0,0", 2000);
-            await Task.Delay(1300);
+            try { await Task.Delay(1300, _skip.Token); }
+            catch (TaskCanceledException) { }
             
             vibrate();
 
-            await Task.Delay(7300);
+            try { await Task.Delay(7300, _skip.Token); }
+            catch (TaskCanceledException) { }
             pss_anim.Visibility = Visibility.Hidden;
             salt_anim.Content = "U3";
             salt_anim.Visibility = Visibility.Visible;
             move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
 
-            await Task.Delay(4000);
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
             
             U1_show.Content = "Block = U1 ⊕ U2 ⊕ U3 ⊕ ... ⊕ Uc";
             info.Content = "⊕ => XOR (exclusive OR) is a bitwise operation.\r\n\r\n" +
@@ -601,15 +626,18 @@ namespace EncodeX
             opacity_anim(HMAC, 1.0, 0.0, null, 700);
             opacity_anim(salt_anim, 1.0, 0.0, null, 700);
 
-            await Task.Delay(15000);
+            try { await Task.Delay(15000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
 
             
             opacity_anim(info, 1.0, 0.0, null, 800);
             opacity_anim(info, 0.0, 1.0, null, 800);
-            info.Content = "Example: XOR of two bytes\r\n\r\nNumber A = 172  (binary: 10101100)\r\nNumber B = 197  (binary: 11000101)\r\n\r\nCompute XOR (A ⊕ B) bit by bit:\r\n\r\n  1 0 1 0 1 1 0 0   (A)\r\n⊕ 1 1 0 0 0 1 0 1   (B)\r\n-------------------\r\n  0 1 1 0 1 0 0 1   (Result)\r\n\r\nResult in decimal = 105\r\n\r\nSo:\r\n172 ⊕ 197 = 105\r\n";
+            info.Content = "Example: XOR of two bytes\r\n\r\nNumber A = 172  (binary: 10101100)\r\nNumber B = 197  (binary: 11000101)\r\n\r\nCompute XOR (A ⊕ B) bit by bit:\r\n\r\n   1 0 1 0 1 1 0 0   (A)\r\n⊕ 1 1 0 0 0 1 0 1   (B)\r\n-------------------\r\n  0 1 1 0 1 0 0 1   (Result)\r\n\r\nResult in decimal = 105\r\n\r\nSo:\r\n172 ⊕ 197 = 105\r\n";
 
-            await Task.Delay(15000);
-            
+            try { await Task.Delay(15000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
 
             opacity_anim(info, 1.0, 0.0, null, 800);
             opacity_anim(info, 0.0, 1.0, null, 800);
@@ -619,7 +647,8 @@ namespace EncodeX
                             "XOR is used because it combines all iterations, preserves \nentropy, " +
                             "and ensures that every iteration influences the \nfinal derived key.\r\n";
 
-            await Task.Delay(3000);
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
             await action5();
 
         }
@@ -715,7 +744,8 @@ namespace EncodeX
                 "remaining round keys into the data.";
             info.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(20000);
+            try { await Task.Delay(20000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             title.Content = "AES Key Expansion. How does it work ?";
 
@@ -732,7 +762,8 @@ namespace EncodeX
 
             info.BeginAnimation(OpacityProperty, oopac);
             title.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(20000);
+            try { await Task.Delay(25000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             info.Content = "3.All words are stored sequentially in a key schedule array.\n" +
                            "   - Consecutive words are grouped to form round keys.\n\n" +
@@ -740,7 +771,8 @@ namespace EncodeX
                            "   -The master key is expanded into a complete set of \n    round keys.\n" +
                            "   - These round keys will be used in order during the\n    AES encryption rounds.";
             info.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(20000);
+            try { await Task.Delay(16000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             title.Content = "AES Key Schedule – Number of Words";
             title.BeginAnimation(OpacityProperty, oopac);
@@ -761,8 +793,9 @@ namespace EncodeX
 
             info.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(20000);
-            
+            try { await Task.Delay(20000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             info.Content = "3. AES-256:\r\n" +
             "   - Master key: 32 bytes → 8 words\r\n" +
             "   - Number of rounds: 14\r\n" +
@@ -770,8 +803,9 @@ namespace EncodeX
             "   - Total words needed: 15 × 4 = 60 words\r\n" +
             "   - Words to generate: 60 − 8 = 52\r\n";
             info.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(12000);
-            
+            try { await Task.Delay(12000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             title.Content = "Example of AES-256 Key Expansion";
             title.BeginAnimation(OpacityProperty, oopac);
             info.Content = "   ____Step 0: Definitions____\r\n\r\n" +
@@ -783,21 +817,24 @@ namespace EncodeX
                     "SubWord(x) = apply AES S-box to each byte.\r\n\r\n" +
                     "⊕ = bitwise XOR of bytes.";
             info.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(12000);
+            try { await Task.Delay(12000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             info.Content = "\n\n\n\nGoal: Expand the 32-byte master key into 60 words → 15 round keys \n(4 words each, 16 bytes).";
             info.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(9000);
-            
+            try { await Task.Delay(9000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             U1_show.Margin = new Thickness(490, 170, 0, 0);
             U1_show.Content = to_show;
             info.Content = "\n\n\n\n   ____Step 1: Split Master Key into Words____\n" + "";
             info.BeginAnimation(OpacityProperty, oopac);
             U1_show.Visibility = Visibility.Visible;
             U1_show.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(5000);
-            
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             W0.Content += "[ " + string.Join(", ", lst[0]) + " ]";
             W1.Content += "[ " + string.Join(", ", lst[1]) + " ]";
             W2.Content += "[ " + string.Join(", ", lst[2]) + " ]";
@@ -813,8 +850,9 @@ namespace EncodeX
                      i.BeginAnimation(OpacityProperty, oopac);
                      i.Visibility = Visibility.Visible;
             }
-            await Task.Delay(8000);
-             
+            try { await Task.Delay(8000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             foreach (Label i in li)
             {
                    i.BeginAnimation(OpacityProperty, oopac2);
@@ -834,49 +872,57 @@ namespace EncodeX
             }
             U1_show.BeginAnimation(OpacityProperty, oopac2);
 
-            await Task.Delay(10000);
+            try { await Task.Delay(10000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             W8.BeginAnimation(OpacityProperty, oopac);
             W8.Visibility = Visibility.Visible;
 
-            await Task.Delay(900);
-                    
+            try { await Task.Delay(900, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             W8_i.BeginAnimation(OpacityProperty, oopac);
             W8_i.Visibility = Visibility.Visible;
             change_color(rule1, "#22C55E", 2000);
             change_color(if1, "#22C55E", 2000);
 
-            await Task.Delay(4000);
-                            
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             W8_i.BeginAnimation(OpacityProperty, oopac2);
             W8.Content = "W[8] = W[0] ⊕ SubWord(RotWord(W[7])) ⊕ Rcon[1]";
 
-            await Task.Delay(3000);
-                                    
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             move(W8, "490,170,0,0", "490,140,0,0", 600);
             W8_r.BeginAnimation(OpacityProperty, oopac);
             W8_r.Visibility = Visibility.Visible;
 
-            await Task.Delay(3000);
-            
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             W8.Margin = new Thickness(490, 140, 0, 0);
             W8_app.BeginAnimation(OpacityProperty, oopac);
             W8_app.Visibility = Visibility.Visible;
             W8_app.Content = "W[7] = " + "[ " + string.Join(", ", lst[7]) + " ]";
-            await Task.Delay(3000);
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             W8_re.BeginAnimation(OpacityProperty, oopac);
             W8_re.Visibility = Visibility.Visible;
             W8_re.Content = "RotWord(W[7]) = " + RotWord(lst[7]);
 
-            await Task.Delay(3000);
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             W8_r.Content = "SubWord(W) => SBox";
             W8_r.BeginAnimation(OpacityProperty, oopac);
             W8_app.BeginAnimation(OpacityProperty, oopac2);
             W8_r.Visibility = Visibility.Visible;
 
-            await Task.Delay(10000);
+            try { await Task.Delay(10000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             W8_app.BeginAnimation(OpacityProperty, oopac);
             W8_app.Visibility = Visibility.Visible;
@@ -884,41 +930,47 @@ namespace EncodeX
                              lst[7][2].ToString() + " => " + SBox[lst[7][2]].ToString() + "\n" +
                              lst[7][3].ToString() + " => " + SBox[lst[7][3]].ToString() + "\t" +
                              lst[7][0].ToString() + " => " + SBox[lst[7][0]].ToString();
-            await Task.Delay(5000);
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             W8_re1.BeginAnimation(OpacityProperty, oopac);
             W8_re1.Visibility = Visibility.Visible;
             W8_re1.Content = "SubWord(RotWord(W[7])) = [ " + string.Join(", ", SubWord(RotWord_2(lst[7]))) + " ]";
-            await Task.Delay(5000);
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
-            
+
             W8_r.Content = "Rcon[i] = [rᵢ, 0, 0, 0]";
             W8_r.BeginAnimation(OpacityProperty, oopac);
             W8_app.BeginAnimation(OpacityProperty, oopac2);
             W8_r.Visibility = Visibility.Visible;
-            await Task.Delay(5000);
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
-           
+
             W8_app.BeginAnimation(OpacityProperty, oopac);
             W8_app.Visibility = Visibility.Visible;
             W8_app.Content = "r₁ = 1        rᵢ = { 2·rᵢ₋₁                  if rᵢ₋₁ < 128\r\n                        (2·rᵢ₋₁ − 256) ⊕ 27     if rᵢ₋₁ ≥ 128 }\r\n";
-            await Task.Delay(5000);
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
-            
+
             W8_re2.BeginAnimation(OpacityProperty, oopac);
             W8_re2.Visibility = Visibility.Visible;
             W8_re2.Content = "Rcon[1] = [1, 0, 0, 0] ";
 
-            await Task.Delay(5000);
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
-            
+
             W8_r.BeginAnimation(OpacityProperty, oopac2);
             W8_app.BeginAnimation(OpacityProperty, oopac2);
             W8_app.Content = "W[8] = [" + string.Join(", ", lst[0]) + "] ⊕ [" + string.Join(", ", SubWord(RotWord_2(lst[7]))) + "] ⊕ [1, 0, 0, 0]";
             W8_app.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(4000);
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
-            
+
             byte[] Rcon = new byte[] { 1, 0, 0, 0 };
 
             for (int i = 0; i < 4; i++)
@@ -931,12 +983,14 @@ namespace EncodeX
             W8_re.BeginAnimation(OpacityProperty, oopac2);
             W8_re1.BeginAnimation(OpacityProperty, oopac2);
             W8_re2.BeginAnimation(OpacityProperty, oopac2);
-            await Task.Delay(1000);
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
 
             W8_re1.Content = "W[8] = [" + string.Join(", ", w8) + " ]";
             W8_re1.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(6000);
+            try { await Task.Delay(6000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
 
             change_color(rule1, "#F0F8FF", 2000);
@@ -944,22 +998,25 @@ namespace EncodeX
             W8_re1.BeginAnimation(OpacityProperty, oopac2);
             W8_app.BeginAnimation(OpacityProperty, oopac2);
             W8.BeginAnimation(OpacityProperty, oopac2);
-            await Task.Delay(5000);
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             W8.Margin = new Thickness(490, 170, 0, 0);
             move(W8, "490,140,0,0", "490,170,0,0", 600);
             W8.Content = "W[9] = ?";
             W8.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(9000);
+            try { await Task.Delay(9000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             W8_i.Content = "9 mod 8 = 1";
             W8_i.BeginAnimation(OpacityProperty, oopac);
             change_color(rule3, "#22C55E", 4000);
             change_color(if3, "#22C55E", 4000);
 
-                
-            await Task.Delay(6000);
+
+            try { await Task.Delay(6000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             W8_i.BeginAnimation(OpacityProperty, oopac2);
             move(W8, "490,170,0,0", "490,140,0,0", 600);
@@ -970,8 +1027,9 @@ namespace EncodeX
             W8_app.Content = "W[9-8] = W[1] = [ " + string.Join(", ", lst[1]) + " ]   \nW[9-1] = W[8] = [ " + string.Join(", ", w8) + " ]";
             W8_app.BeginAnimation(OpacityProperty, oopac);
 
-                
-            await Task.Delay(10000);
+
+            try { await Task.Delay(10000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             for (int i = 0; i < 4; i++)
             {
@@ -982,8 +1040,9 @@ namespace EncodeX
             W8_re.Content = "W[9] = [ " + string.Join(", ", result) + " ]";
             W8_re.Visibility = Visibility.Visible;
             W8_re.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(10000);
-            
+            try { await Task.Delay(10000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             W8_re.BeginAnimation(OpacityProperty, oopac2);
             W8.BeginAnimation(OpacityProperty, oopac2);
             W8_r.BeginAnimation(OpacityProperty, oopac2);
@@ -992,20 +1051,23 @@ namespace EncodeX
             change_color(if3, "#FACC15", 2000);
 
 
-            await Task.Delay(10000);
-            
+            try { await Task.Delay(10000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             W8.Margin = new Thickness(490, 170, 0, 0);
             move(W8, "490,140,0,0", "490,170,0,0", 600);
             W8.Content = "W[12] = ?";
             W8.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(6000);
-                   
+            try { await Task.Delay(6000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             W8_i.Content = "Nk = 8 > 6 and 12 mod 8 = 4";
             W8_i.BeginAnimation(OpacityProperty, oopac);
             change_color(rule2, "#22C55E", 4000);
             change_color(if2, "#22C55E", 4000);
 
-            await Task.Delay(5000);
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             byte[] result_10 = new byte[4];
             byte[] result_11 = new byte[4];
@@ -1027,8 +1089,9 @@ namespace EncodeX
             W8_app.Visibility = Visibility.Visible;
             W8_app.Content = "W[12-8] = W[4] = [ " + string.Join(", ", lst[4]) + " ]   \nW[12-1] = W[11] = [ " + string.Join(", ", result_11) + " ]";
             W8_app.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(6000);
-                            
+            try { await Task.Delay(6000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             byte[] result_12 = new byte[4];
             for (int i = 0; i < 4; i++)
             { 
@@ -1038,8 +1101,9 @@ namespace EncodeX
             W8_re.Content = "W[12] = [ " + string.Join(", ", result_12) + " ]";
             W8_re.Visibility = Visibility.Visible;
             W8_re.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(10000);
-                                    
+            try { await Task.Delay(10000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             W8_re.BeginAnimation(OpacityProperty, oopac2);
             W8.BeginAnimation(OpacityProperty, oopac2);
             W8_r.BeginAnimation(OpacityProperty, oopac2);
@@ -1047,8 +1111,9 @@ namespace EncodeX
             change_color(rule2, "#F0F8FF", 2000);
             change_color(if2, "#FACC15", 2000);
 
-            await Task.Delay(10000);
-            
+            try { await Task.Delay(10000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             title.BeginAnimation(OpacityProperty, oopac2);
             info.BeginAnimation(OpacityProperty, oopac2);
             rule1.BeginAnimation(OpacityProperty, oopac2);
@@ -1057,7 +1122,7 @@ namespace EncodeX
             if2.BeginAnimation(OpacityProperty, oopac2);
             rule3.BeginAnimation(OpacityProperty, oopac2);
             if3.BeginAnimation(OpacityProperty, oopac2);
-            await Task.Delay(200);
+            await Task.Delay(500);
             info.Content = "After the key schedule generates all the round keys, AES begins \n" +
                     "the encryption process by combining the plaintext data with \n" +
                     "the first round key. \n\n" +
@@ -1068,18 +1133,20 @@ namespace EncodeX
                     "This initial key mixing ensures that the plaintext is immediately \n“masked” by " +
                     "the secret key, providing the first layer of \nsecurity before the main rounds " +
                     "of SubBytes, \nShiftRows, and MixColumns begin.";
-            await Task.Delay(900);
+            try { await Task.Delay(900, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             info.BeginAnimation(OpacityProperty, oopac);
-            await Task.Delay(900);
+            try { await Task.Delay(900, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             text_title.BeginAnimation(OpacityProperty, oopac);
             key_title.BeginAnimation(OpacityProperty, oopac);
             text_title.Visibility = Visibility.Visible;
             key_title.Visibility = Visibility.Visible;
 
-            await Task.Delay(900);
-            
+            try { await Task.Delay(900, _skip.Token); }
+            catch (TaskCanceledException) { }
             List<Label> matrix_txt = new List<Label> { t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9, t_10, t_11, t_12, t_13, t_14, t_15, t_16 };
             List<Label> matrix_k = new List<Label> { k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, k_12, k_13, k_14, k_15, k_16 };
 
@@ -1099,7 +1166,8 @@ namespace EncodeX
 
             for (int i = 0; i < 16; i++)
             {
-                await Task.Delay(600);
+                try { await Task.Delay(600, _skip.Token); }
+                catch (TaskCanceledException) { }
                 int index = i;
 
                 matrix_txt[index].BeginAnimation(OpacityProperty, oopac);
@@ -1109,8 +1177,8 @@ namespace EncodeX
                 matrix_k[index].Visibility = Visibility.Visible;
             }
 
-            await Task.Delay(10000);
-            
+            try { await Task.Delay(10000, _skip.Token); }
+            catch (TaskCanceledException) { }
             text_title.BeginAnimation(OpacityProperty, oopac2);
             key_title.BeginAnimation(OpacityProperty, oopac2);
             foreach (Label myControl in matrix_txt)
@@ -1131,43 +1199,13 @@ namespace EncodeX
                 ThicknessAnimation moveUp = new ThicknessAnimation
                 {
                     From = myControl.Margin,
-                    To = new Thickness(
-                                           myControl.Margin.Left,
-                                              myControl.Margin.Top - 60,
-                                   myControl.Margin.Right,
-                           myControl.Margin.Bottom),
+                    To = new Thickness(myControl.Margin.Left, myControl.Margin.Top - 60, myControl.Margin.Right, myControl.Margin.Bottom),
 
                     Duration = TimeSpan.FromMilliseconds(800),
                     EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
                 };
 
                 myControl.BeginAnimation(FrameworkElement.MarginProperty, moveUp);
-            }
-            for (int i = 0; i < 17; i++)
-            {
-                int index = i;
-                System.Timers.Timer showing = new System.Timers.Timer(6500 * (index + 1));
-                showing.AutoReset = false;
-                showing.Elapsed += (s, e) =>
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        if (index != 0 || index == 16)
-                        {
-                            change_color(matrix_txt[index - 1], "#33E0C9", 500);
-                            change_color(matrix_k[index - 1], "#FFFFFF", 500);
-
-                        }
-                        if (index != 16)
-                        {
-                            change_color(matrix_txt[index], "#FF0000", 500);
-                            change_color(matrix_k[index], "#FF0000", 500);
-                        }
-
-                    });
-                };
-                showing.Start();
-                activeTimers.Add(showing);
             }
             List<byte> ldr = new List<byte> { };
             foreach (byte[] elem in lst)
@@ -1178,25 +1216,38 @@ namespace EncodeX
                 }
             }
             List<Label> matrix_r = new List<Label> { r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, r_9, r_10, r_11, r_12, r_13, r_14, r_15, r_16 };
+
             for (int i = 0; i < 17; i++)
             {
-                await Task.Delay(6500);
                 int index = i;
+                try { await Task.Delay(6500, _skip.Token); }
+                catch (TaskCanceledException) { }
                 if (index != 0 || index == 16)
                 {
+                    change_color(matrix_txt[index - 1], "#33E0C9", 500);
+                    change_color(matrix_k[index - 1], "#FFFFFF", 500);
+
                     matrix_r[index - 1].Foreground = Brushes.White;
                     byte res = (byte)(first16Bytes[index - 1] ^ ldr[index - 1]);
                     matrix_r[index - 1].Content = res.ToString();
+
                 }
                 if (index != 16)
                 {
+                    change_color(matrix_txt[index], "#FF0000", 500);
+                    change_color(matrix_k[index], "#FF0000", 500);
+
                     matrix_r[index].Foreground = Brushes.Red;
                     matrix_r[index].Content = matrix_txt[index].Content + " ⊕ " + matrix_k[index].Content;
                     matrix_r[index].Visibility = Visibility.Visible;
                     matrix_r[index].BeginAnimation(OpacityProperty, oopac);
                 }
 
+
             }
+            
+            try { await Task.Delay(2000, _skip.Token); }
+            catch (TaskCanceledException) { }
             await action6();
 
         }
@@ -1297,14 +1348,14 @@ namespace EncodeX
             info_sub.Visibility = Visibility.Visible;
             info_shif.Visibility = Visibility.Visible;
             info_mix.Visibility = Visibility.Visible;
-            await Task.Delay(8000);
-
+            try { await Task.Delay(8000, _skip.Token); }
+            catch (TaskCanceledException) { }
             change_color(info_sub, "#22C55E", 2000);
             for (int i = 0; i < 17; i++)
             {
                 int index = i;
-                await Task.Delay(6000);
-
+                try { await Task.Delay(6000, _skip.Token); }
+                catch (TaskCanceledException) { }
                 if (index != 16)
                 {
                     string contentStr = matrix_r[index].Content.ToString();
@@ -1332,18 +1383,16 @@ namespace EncodeX
                     W8.BeginAnimation(OpacityProperty, oopac2);
                 }
 
-
-
-
-
-
             }
-        
 
-            await Task.Delay(6000);
+
+            try { await Task.Delay(6000, _skip.Token); }
+            catch (TaskCanceledException) { }
             change_color(info_shif, "#22C55E", 2000);
             change_color(info_sub, "#F0F8FF", 2000);
-            await Task.Delay(5000);
+
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             change_color(matrix_r[0], "#FF0000", 2000);
             change_color(matrix_r[1], "#FF0000", 2000);
@@ -1353,7 +1402,9 @@ namespace EncodeX
             W8.Content = "Row[0] => No Shift";
             W8.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(9000);
+            try { await Task.Delay(9000, _skip.Token); }
+            catch (TaskCanceledException) { }
+
             change_color(matrix_r[0], "#FFFFFF", 2000);
             change_color(matrix_r[1], "#FFFFFF", 2000);
             change_color(matrix_r[2], "#FFFFFF", 2000);
@@ -1366,31 +1417,33 @@ namespace EncodeX
             W8.Content = "Row[1] => Shift Left 1";
             W8.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(4000);
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[4], "604,300,0,0", "529,300,0,0", 500);
             move(matrix_r[5], "677,300,0,0", "604,300,0,0", 500);
             move(matrix_r[6], "753,300,0,0", "677,300,0,0", 500);
             move(matrix_r[7], "829,300,0,0", "753,300,0,0", 500);
 
 
-            await Task.Delay(1000);
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             move(matrix_r[4], "529,300,0,0", "529,200,0,0", 500);
 
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[4], "529,200,0,0", "901,200,0,0", 500);
 
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[4], "901,200,0,0", "901,300,0,0", 500);
 
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[4], "901,300,0,0", "826,300,0,0", 500);
 
-            await Task.Delay(3000);
-
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
             change_color(matrix_r[4], "#FFFFFF", 2000);
             change_color(matrix_r[5], "#FFFFFF", 2000);
             change_color(matrix_r[6], "#FFFFFF", 2000);
@@ -1403,39 +1456,41 @@ namespace EncodeX
             W8.Content = "Row[2] => Shift Left 2";
             W8.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(4000);
-
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[8], "604,350,0,0", "529,350,0,0", 500);
             move(matrix_r[9], "677,350,0,0", "604,350,0,0", 500);
             move(matrix_r[10], "753,350,0,0", "677,350,0,0", 500);
             move(matrix_r[11], "829,350,0,0", "753,350,0,0", 500);
 
 
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[8], "529,350,0,0", "529,200,0,0", 500);
 
             move(matrix_r[9], "604,350,0,0", "529,350,0,0", 500);
             move(matrix_r[10], "677,350,0,0", "604,350,0,0", 500);
             move(matrix_r[11], "753,350,0,0", "677,350,0,0", 500);
-            await Task.Delay(2000);
-
+            try { await Task.Delay(2000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[8], "529,200,0,0", "901,200,0,0", 500);
             move(matrix_r[9], "529,350,0,0", "529,200,0,0", 500);
 
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[8], "901,200,0,0", "901,350,0,0", 500);
             move(matrix_r[9], "529,200,0,0", "901,200,0,0", 500);
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[8], "901,350,0,0", "753,350,0,0", 500);
             move(matrix_r[9], "901,200,0,0", "901,350,0,0", 500);
 
-            await Task.Delay(1000);
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[9], "901,350,0,0", "826,350,0,0", 500);
 
-            await Task.Delay(5000);
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
             change_color(matrix_r[8], "#FFFFFF", 2000);
             change_color(matrix_r[9], "#FFFFFF", 2000);
             change_color(matrix_r[10], "#FFFFFF", 2000);
@@ -1448,53 +1503,56 @@ namespace EncodeX
             W8.Content = "Row[3] => Shift Left 3";
             W8.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(4000);
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[12], "604,400,0,0", "529,400,0,0", 500);
             move(matrix_r[13], "677,400,0,0", "604,400,0,0", 500);
             move(matrix_r[14], "753,400,0,0", "677,400,0,0", 500);
             move(matrix_r[15], "826,400,0,0", "753,400,0,0", 500);
 
-            await Task.Delay(1000);
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[12], "529,400,0,0", "529,200,0,0", 500);
             move(matrix_r[13], "604,400,0,0", "529,400,0,0", 500);
             move(matrix_r[14], "677,400,0,0", "604,400,0,0", 500);
             move(matrix_r[15], "753,400,0,0", "677,400,0,0", 500);
 
 
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[12], "529,200,0,0", "901,200,0,0", 500);
             move(matrix_r[13], "529,400,0,0", "529,200,0,0", 500);
             move(matrix_r[14], "604,400,0,0", "529,400,0,0", 500);
             move(matrix_r[15], "677,400,0,0", "604,400,0,0", 500);
 
 
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[12], "901,200,0,0", "901,400,0,0", 500);
             move(matrix_r[13], "529,200,0,0", "901,200,0,0", 500);
             move(matrix_r[14], "529,400,0,0", "529,200,0,0", 500);
 
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[12], "901,400,0,0", "677,400,0,0", 500);
             move(matrix_r[13], "901,200,0,0", "901,400,0,0", 500);
             move(matrix_r[14], "529,200,0,0", "901,200,0,0", 500);
 
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             move(matrix_r[13], "901,400,0,0", "753,400,0,0", 500);
             move(matrix_r[14], "901,200,0,0", "901,400,0,0", 500);
-            await Task.Delay(1000);
-
+            try { await Task.Delay(1000, _skip.Token); }
+            catch (TaskCanceledException) { }
             move(matrix_r[14], "901,400,0,0", "826,400,0,0", 500);
 
              
 
             List<Label> matrix_mix = new List<Label> { mix_1, mix_2, mix_3, mix_4, mix_5, mix_6, mix_7, mix_8, mix_9, mix_10, mix_11, mix_12, mix_13, mix_14, mix_15, mix_16 };
-            
-            await Task.Delay(5000);
+
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
             change_color(info_shif, "#F0F8FF", 800);
             change_color(info_mix, "#22C55E", 800);
             foreach (Label lbl in matrix_r)
@@ -1526,8 +1584,8 @@ namespace EncodeX
         "      \t   →    \t             →   \t          →    \t         \r\n\r\n";
 
 
-            await Task.Delay(6000);
-
+            try { await Task.Delay(6000, _skip.Token); }
+            catch (TaskCanceledException) { }
             W8.Content = "MixColumns works column by column";
             change_color(matrix_r[0], "#FF0000", 800);
             change_color(matrix_r[5], "#FF0000", 800);
@@ -1535,15 +1593,16 @@ namespace EncodeX
             change_color(matrix_r[15], "#FF0000", 800);
             W8.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(9000);
-
+            try { await Task.Delay(9000, _skip.Token); }
+            catch (TaskCanceledException) { }
             con = matrix_r[0].Content.ToString();
             W8.BeginAnimation(OpacityProperty, oopac2);
             W8.Content = "a0 = " + matrix_r[0].Content + "    a1 = " + matrix_r[5].Content + "    a2 = " + matrix_r[10].Content + "    a3 = " + matrix_r[15].Content;
             matrix_r[0].Content = "b0";
             W8.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(2000);
+            try { await Task.Delay(2000, _skip.Token); }
+            catch (TaskCanceledException) { }
             change_color(mix_1, "#FF0000", 800);
             change_color(mix_2, "#FF0000", 800);
             change_color(mix_3, "#FF0000", 800);
@@ -1556,8 +1615,8 @@ namespace EncodeX
 
             W8_app.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(3000);
-
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             string A0 = con.ToString();
             string A1 = matrix_r[5].Content.ToString();
@@ -1586,8 +1645,8 @@ namespace EncodeX
             con1 = matrix_r[5].Content.ToString();
             matrix_r[5].Content = "b1";
 
-            await Task.Delay(3000);
-
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
             string a0_ = con.ToString();
             string a1_ = con1.ToString();
             string a2_ = matrix_r[10].Content.ToString();
@@ -1616,8 +1675,8 @@ namespace EncodeX
             matrix_r[10].Content = "b2";
 
 
-            await Task.Delay(3000);
-
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
             string a0_1 = con.ToString();
             string a1_1 = con1.ToString();
             string a2_1 = con2.ToString();
@@ -1645,8 +1704,8 @@ namespace EncodeX
             con3 = matrix_r[15].Content.ToString();
             matrix_r[15].Content = "b3";
 
-            await Task.Delay(3000);
-
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
             string a0_2 = con.ToString();
             string a1_2 = con1.ToString();
             string a2_2 = con2.ToString();
@@ -1660,16 +1719,16 @@ namespace EncodeX
             matrix_r[15].Content = b3.ToString();
             change_color(matrix_r[15], "#00FF9C", 800);
 
-            await Task.Delay(3000);
-
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
             change_color(mix_13, "#FFFFFF", 800);
             change_color(mix_14, "#FFFFFF", 800);
             change_color(mix_15, "#FFFFFF", 800);
             change_color(mix_16, "#FFFFFF", 800);
 
 
-            await Task.Delay(7000);
-
+            try { await Task.Delay(7000, _skip.Token); }
+            catch (TaskCanceledException) { }
             W8.BeginAnimation(OpacityProperty, oopac2);
             W8.Content = "Same with other Columns";
             W8.BeginAnimation(OpacityProperty, oopac);
@@ -1682,8 +1741,8 @@ namespace EncodeX
                 }
             }
 
-            await Task.Delay(4000);
-
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
             string a_0_3 = matrix_r[1].Content.ToString();
             string a_1_3 = matrix_r[6].Content.ToString();
             string a_2_3 = matrix_r[11].Content.ToString();
@@ -1709,8 +1768,8 @@ namespace EncodeX
 
 
 
-            await Task.Delay(3000);
-
+            try { await Task.Delay(3000, _skip.Token); }
+            catch (TaskCanceledException) { }
             string a_0_4 = matrix_r[2].Content.ToString();
             string a_1_4 = matrix_r[7].Content.ToString();
             string a_2_4 = matrix_r[8].Content.ToString();
@@ -1735,8 +1794,8 @@ namespace EncodeX
 
 
 
-            await Task.Delay(9000);
-
+            try { await Task.Delay(9000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             string a_0_5 = matrix_r[3].Content.ToString();
             string a_1_5 = matrix_r[4].Content.ToString();
@@ -1761,8 +1820,8 @@ namespace EncodeX
             change_color(matrix_r[14], "#00FF9C", 800);
 
 
-            await Task.Delay(5000);
-
+            try { await Task.Delay(5000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
             foreach (Label mix_lbl in matrix_mix)
             {
@@ -1781,8 +1840,8 @@ namespace EncodeX
             change_color(info_add, "#22C55E", 800);
             W8.BeginAnimation(OpacityProperty, oopac2);
 
-            await Task.Delay(4000);
-
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
             W8.BeginAnimation(OpacityProperty, oopac);
             W8.Content = "W[4] = [ " + string.Join(", ", lst[4]) + " ]";
             change_color(matrix_r[0], "#FF0000", 800);
@@ -1794,8 +1853,8 @@ namespace EncodeX
 
 
 
-            await Task.Delay(4000);
-
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
             change_color(matrix_r[4], "#FF0000", 800);
             change_color(matrix_r[5], "#FF0000", 800);
             change_color(matrix_r[6], "#FF0000", 800);
@@ -1820,8 +1879,8 @@ namespace EncodeX
 
 
 
-            await Task.Delay(4000);
-
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
             change_color(matrix_r[8], "#FF0000", 800);
             change_color(matrix_r[9], "#FF0000", 800);
             change_color(matrix_r[10], "#FF0000", 800);
@@ -1846,8 +1905,8 @@ namespace EncodeX
 
 
 
-            await Task.Delay(4000);
-
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
 
             change_color(matrix_r[12], "#FF0000", 800);
@@ -1872,8 +1931,8 @@ namespace EncodeX
             matrix_r[10].Content = (c_3 ^ words_4_7[8]).ToString();
             matrix_r[11].Content = (d_3 ^ words_4_7[9]).ToString();
 
-            await Task.Delay(4000);
-
+            try { await Task.Delay(4000, _skip.Token); }
+            catch (TaskCanceledException) { }
 
 
             change_color(matrix_r[12], "#FFFFFF", 800);
@@ -1894,7 +1953,8 @@ namespace EncodeX
 
 
 
-
+            try { await Task.Delay(1500, _skip.Token); }
+            catch (TaskCanceledException) { }
             await action7();
 
         }
@@ -1937,8 +1997,8 @@ namespace EncodeX
             "message until the entire plaintext is fully encrypted.";
             info.BeginAnimation(OpacityProperty, oopac);
 
-            await Task.Delay(30000);
-
+            try { await Task.Delay(30000, _skip.Token); }
+            catch (TaskCanceledException) { }
             encr_steps.Visibility = Visibility.Hidden;
             encr_steps_Copy1.Visibility = Visibility.Hidden;
             encr_steps_Copy2.Visibility = Visibility.Hidden;
