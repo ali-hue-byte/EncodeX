@@ -249,7 +249,7 @@ namespace EncodeX
                 };
 
 
-                scaleAnim.Completed += (s, e) =>
+                scaleAnim.Completed += async (s, e) =>
                 {
                     Entry.Visibility = Visibility.Visible;
                     DoubleAnimation oopac = new DoubleAnimation
@@ -267,109 +267,9 @@ namespace EncodeX
                     intro.BeginAnimation(OpacityProperty, oopac);
                     intro.Visibility = Visibility.Visible;
 
-                    timing2 = new System.Timers.Timer(20000);
-                    timing2.AutoReset = false;
-                    timing2.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
+                    await Task.Delay(20000);
+                    await action0();
 
-
-                            action0();
-                            skipping += 1;
-
-
-                        }
-                        );
-
-                    };
-                    timing2.Start();
-                    timers.Add(timing2);
-                    timing3 = new System.Timers.Timer(35000);
-                    timing3.AutoReset = false;
-                    timing3.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            skipping += 1;
-                            action1();
-
-                        });
-                    };
-                    timing3.Start();
-                    timers.Add(timing3);
-                    timing4 = new System.Timers.Timer(75000);
-                    timing4.AutoReset = false;
-                    timing4.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            skipping += 1;
-                            action2();
-
-                        });
-                    }; timing4.Start();
-                    timers.Add(timing4);
-                    timing5 = new System.Timers.Timer(105000);
-                    timing5.AutoReset = false;
-                    timing5.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            skipping += 1;
-                            actions3();
-
-                        });
-                    }; timing5.Start();
-                    timers.Add(timing5);
-                    timing6 = new System.Timers.Timer(155000);
-                    timing6.AutoReset = false;
-                    timing6.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            skipping += 1;
-                            action4();
-
-
-                        });
-                    }; timing6.Start();
-                    timers.Add(timing6);
-                    timing7 = new System.Timers.Timer(260000);
-                    timing7.AutoReset = false;
-                    timing7.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            skipping += 1;
-                            action5();
-
-                        });
-                    }; timing7.Start();
-                    timers.Add(timing7);
-
-                    timing9 = new System.Timers.Timer(676000);
-                    timing9.AutoReset = false;
-                    timing9.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            skipping += 1;
-                            action6();
-                        });
-                    }; timing9.Start();
-                    timers.Add(timing9);
-                    timing = new System.Timers.Timer(952000);
-                    timing.AutoReset = false;
-                    timing.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            skipping += 1;
-                            action7();
-                        });
-                    }; timing.Start();
-                    timers.Add(timing);
 
 
                 };
@@ -378,143 +278,14 @@ namespace EncodeX
                 scale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim2);
 
 
+               
             }
         }
 
 
-        public void Skipping_btn(object sender, EventArgs e)
+        public async void Skipping_btn(object sender, EventArgs e)
         {
-            if (skipping < 8)
-            {
-                foreach (System.Timers.Timer t in timers)
-                {
-                    t.Stop();
-
-                }
-
-                functions[skipping]();
-                skipping += 1;
-            }
-            else
-            {
-                encr_steps.Visibility = Visibility.Hidden;
-                encr_steps_Copy1.Visibility = Visibility.Hidden;
-                encr_steps_Copy2.Visibility = Visibility.Hidden;
-                encr_steps_Copy3.Visibility = Visibility.Hidden;
-                encr_steps_Copy4.Visibility = Visibility.Hidden;
-                change_color(encr_steps, "#FFFFFF", 200);
-                change_color(encr_steps_Copy1, "#FFFFFF", 200);
-                change_color(encr_steps_Copy2, "#FFFFFF", 200);
-                change_color(encr_steps_Copy3, "#FFFFFF", 200);
-                change_color(encr_steps_Copy4, "#FFFFFF", 200);
-                move(encr_steps_Copy1, "0,54,0,0", "0,377,0,0", 1000);
-                move(encr_steps_Copy2, "0,54,0,0", "0,323,0,0", 1000);
-                move(encr_steps_Copy3, "0,54,0,0", "0,269,0,0", 1000);
-                move(encr_steps_Copy4, "0,54,0,0", "0,215,0,0", 1000);
-                move(encr_steps, "0,54,0,0", "0,161,0,0", 1000);
-                Entry.Visibility = Visibility.Hidden;
-                info.Visibility = Visibility.Hidden;
-
-                arrow.Visibility = Visibility.Visible;
-                ScaleTransform scale = new ScaleTransform(1.0, 1.0);
-                RotateTransform rotate = new RotateTransform(180);
-
-                TransformGroup group = new TransformGroup();
-                group.Children.Add(scale);
-                group.Children.Add(rotate);
-
-                arrow.RenderTransform = group;
-
-
-                DoubleAnimation scaleAnim = new DoubleAnimation
-                {
-                    From = 30.0,
-                    To = 1.0,
-                    Duration = TimeSpan.FromMilliseconds(800),
-                    FillBehavior = FillBehavior.HoldEnd
-                };
-                DoubleAnimation scaleAnim2 = new DoubleAnimation
-                {
-                    From = 30.0,
-                    To = 1.0,
-                    Duration = TimeSpan.FromMilliseconds(800),
-                    FillBehavior = FillBehavior.HoldEnd
-                };
-
-                skipping = 0;
-                scale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
-                scale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim2);
-                skip_btn.Content = "Skip";
-                timers.Clear();
-
-                string password = "password@1010^";
-                if (password_field.IsReadOnly == false)
-                {
-                    password = password_field.Text;
-                }
-                string text = input_field.Text;
-                encrypted_field.Text = encrypt(password, text);
-                return;
-            }
-
-
-            List<int> timing = new List<int> { };
-            if (skipping == 1)
-            {
-                timing = new List<int> { 15000, 55000, 85000, 135000, 240000, 656000, 932000 };
-
-
-
-            }
-            else if (skipping == 2)
-            {
-                timing = new List<int> { 40000, 70000, 120000, 225000, 641000, 917000 };
-
-
-
-            }
-            else if (skipping == 3)
-            {
-                timing = new List<int> { 30000, 80000, 185000, 601000, 877000 };
-
-
-
-            }
-            else if (skipping == 4)
-            {
-                timing = new List<int> { 50000, 155000, 571000, 847000 };
-
-
-
-            }
-            else if (skipping == 5)
-            {
-                timing = new List<int> { 105000, 521000, 797000 };
-
-
-
-            }
-            else if (skipping == 6)
-            {
-                timing = new List<int> { 416000, 692000 };
-
-
-            }
-            else if (skipping == 7)
-            {
-                timing = new List<int> { 276000 };
-
-
-            }
-            for (int i = skipping; i < timers.Count; i++)
-            {
-                timers[i].Interval = timing[i - skipping];
-                timers[i].Start();
-            }
-
-
-
-
+            return;
         }
 
         public void decrypt_clicked(object sender, RoutedEventArgs e)
