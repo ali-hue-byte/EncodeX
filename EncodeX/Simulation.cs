@@ -17,7 +17,7 @@ namespace EncodeX
     public partial class MainWindow
     {
         // Shows the encryption steps and hides the intro
-        public void action0()
+        public async Task action0()
         {
             foreach (FrameworkElement elem in new FrameworkElement[] { enc_steps, encr_steps, encr_steps_Copy1, encr_steps_Copy2, encr_steps_Copy3, encr_steps_Copy4 })
             {
@@ -25,23 +25,18 @@ namespace EncodeX
                 elem.BeginAnimation(OpacityProperty, oopac);
             }
             intro.BeginAnimation(OpacityProperty, oopac2);
+
+            await Task.Delay(6000);
+            await action1();
             
         }
-
-        public void action1()
+        
+        public async Task action1()
         {
-            Label last = str_1_b;
-            List<Label> labels_txt = new List<Label> { str_1, str_2, str_3, str_4, str_5, str_6, str_7, str_8, str_9, str_10, str_11, str_12, str_13, str_14, str_15, str_16 };
-            List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
-
-            String txt = input_field.Text;
-            List<Rune> runes = txt.EnumerateRunes().ToList();
-            
             enc_steps.BeginAnimation(OpacityProperty, oopac2);
             move(encr_steps, "0,161,0,0", "0,54,0,0", 1000);
             change_color(encr_steps, "#22C55E", 800);
             move(encr_steps_Copy4, "0,215,0,0", "1050,228,0,0", 1000);
-
             move(encr_steps_Copy2, "0,323,0,0", "1084,323,0,0", 1000);
             move(encr_steps_Copy1, "0,377,0,0", "-2022,377,0,0", 1000);
             move(encr_steps_Copy3, "0,269,0,0", "-1923,269,0,0", 1000);
@@ -50,12 +45,19 @@ namespace EncodeX
             title.Visibility = Visibility.Visible;
             info.Visibility = Visibility.Visible;
 
-            int it = runes.Count;
-            if (it > 16)
+            Label last = str_1_b;
+            List<Label> labels_txt = new List<Label> { str_1, str_2, str_3, str_4, str_5, str_6, str_7, str_8, str_9, str_10, str_11, str_12, str_13, str_14, str_15, str_16 };
+            List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
+
+            String txt = input_field.Text;
+            List<Rune> runes = txt.EnumerateRunes().ToList();
+            
+            int txt_len = runes.Count;
+            if (txt_len > 16)
             {
-                it = 16;
+                txt_len = 16;
             }
-            for (int i = 0; i < it; i++)
+            for (int i = 0; i < txt_len; i++)
             {
                 Rune c = runes[i];
                 labels_txt[i].Content = c;
@@ -65,73 +67,59 @@ namespace EncodeX
             }
             byte[] texts_bytes = Encoding.UTF8.GetBytes(txt);
             List<Label> lbls = new List<Label> { str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
-            for (int i = 0; i < it; i++)
+            for (int i = 0; i < txt_len; i++)
             {
+                
                 int index = i;
-                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                await Task.Delay(2000);
+
+                if (lbls.Contains(labels_b[index]))
                 {
-                    System.Timers.Timer timer = new System.Timers.Timer(2000 * (index + 1));
-                    timer.AutoReset = false;
-                    activeTimers.Add(timer);
-                    timer.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            if (lbls.Contains(labels_b[index]))
-                            {
-                                Arr.Visibility = Visibility.Collapsed;
+                      Arr.Visibility = Visibility.Collapsed;
 
-                            }
-                            else
-                            {
-                                Arr.Visibility = Visibility.Visible;
-                            }
+                }
+                else
+                {
+                      Arr.Visibility = Visibility.Visible;
+                }
 
 
-                            DoubleAnimation po = new DoubleAnimation
-                            {
-                                To = Canvas.GetLeft(Arr) + 35,
-                                Duration = TimeSpan.FromMilliseconds(1200)
-                            };
+                DoubleAnimation po = new DoubleAnimation
+                {
+                      To = Canvas.GetLeft(Arr) + 35,
+                      Duration = TimeSpan.FromMilliseconds(1200)
+                };
 
-                            string to_show = "";
-                            Rune c = runes[index];
-                            byte[] b = Encoding.UTF8.GetBytes(c.ToString());
-                            foreach (byte c2 in b)
-                            {
-                                to_show += c2.ToString();
-                                to_show += "\n";
-                            }
-                            labels_b[index].Content = to_show;
-                            labels_b[index].BeginAnimation(OpacityProperty, oopac);
-                            labels_b[index].Visibility = Visibility.Visible;
+                string to_show = "";
+                Rune c = runes[index];
+                byte[] b = Encoding.UTF8.GetBytes(c.ToString());
+                foreach (byte c2 in b)
+                {
+                     to_show += c2.ToString();
+                     to_show += "\n";
+                }
+                labels_b[index].Content = to_show;
+                labels_b[index].BeginAnimation(OpacityProperty, oopac);
+                labels_b[index].Visibility = Visibility.Visible;
 
-                            if (labels_b[index] != str_8_b && labels_b[index] != last)
-                            {
-                                Arr.BeginAnimation(Canvas.LeftProperty, po);
-                            }
-                            else
-                            {
-                                Arr.BeginAnimation(OpacityProperty, oopac2);
-                            }
+                if (labels_b[index] != str_8_b && labels_b[index] != last)
+                {
+                      Arr.BeginAnimation(Canvas.LeftProperty, po);
+                }
+                else
+                {
+                      Arr.BeginAnimation(OpacityProperty, oopac2);
+                }
 
-                        });
-                    };
-                    timer.Start();
-
-                }));
             }
+            await Task.Delay(7000);
+            await action2();
         }
 
-        public void action2()
+        public async Task action2()
         {
 
-            foreach (var timer in activeTimers)
-            {
-                timer.Stop();
-                timer.Dispose();
-            }
-            activeTimers.Clear();
+            
             Arr.Visibility = Visibility.Hidden;
             List<Label> labels_txt = new List<Label> { str_1, str_2, str_3, str_4, str_5, str_6, str_7, str_8, str_9, str_10, str_11, str_12, str_13, str_14, str_15, str_16 };
             List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
@@ -168,20 +156,17 @@ namespace EncodeX
                 "padding is added.";
             opacity_anim(info, 0.0, 1.0);
             opacity_anim(title, 0.0, 1.0);
+            await Task.Delay(10000);
+            await actions3();
         }
 
-        public void actions3()
+        public async Task actions3()
         {
-            foreach (var timer in activeTimers)
-            {
-                timer.Stop();
-                timer.Dispose();
-            }
             String txt = input_field.Text;
             byte[] c = Encoding.UTF8.GetBytes(txt);
             opacity_anim(info, 1.0, 0.0);
 
-            info.Content = "There are several common padding schemes : (dec= decimal) \n" +
+            info.Content = "There are several common padding schemes : (dec = decimal) \n" +
 
     "1. **PKCS7 / CMS Padding**:\n" +
     "   - Each added byte is the number of padding bytes. \n" +
@@ -219,7 +204,6 @@ namespace EncodeX
                 last16 = txt;
             }
 
-
             opacity_anim(info, 0.0, 1.0);
 
             String str_to_show = "";
@@ -251,210 +235,159 @@ namespace EncodeX
                 str_to_show += "]";
 
             }
+            await Task.Delay(2000);
+            
+            pad_show.Content = str_to_show;
+            opacity_anim(pad_show, 0.0, 1.0);
+            opacity_anim(pad_info1_Copy, 0.0, 1.0);
+            pad_info1_Copy.Visibility = Visibility.Visible;
+            pad_show.Visibility = Visibility.Visible;
+            opacity_anim(pad_info1, 0.0, 1.0);
+            pad_info1.Visibility = Visibility.Visible;
+            opacity_anim(pad_info2, 0.0, 1.0);
+            pad_info2.Visibility = Visibility.Visible;
 
-            System.Timers.Timer timing = new System.Timers.Timer(2000);
-            timing.AutoReset = false;
-            timing.Elapsed += (s, e) =>
+            String str_to_show_2 = "";
+            byte[] ss2 = pad2(bytes_last16);
+            if (ss2.Length == 16)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    pad_show.Content = str_to_show;
-                    opacity_anim(pad_show, 0.0, 1.0);
-                    opacity_anim(pad_info1_Copy, 0.0, 1.0);
-                    pad_info1_Copy.Visibility = Visibility.Visible;
-                    pad_show.Visibility = Visibility.Visible;
-                    opacity_anim(pad_info1, 0.0, 1.0);
-                    pad_info1.Visibility = Visibility.Visible;
-                    opacity_anim(pad_info2, 0.0, 1.0);
-                    pad_info2.Visibility = Visibility.Visible;
 
-                    String str_to_show_2 = "";
-                    byte[] ss2 = pad2(bytes_last16);
-                    if (ss2.Length == 16)
-                    {
+                 str_to_show_2 += "[";
+                 str_to_show_2 += string.Join(", ", ss2);
+                 str_to_show_2 += "]";
+            }
+            else
+            {
+                 byte[] first = new byte[16];
+                 byte[] second = new byte[16];
+                 Array.Copy(ss2, 0, first, 0, 16);
+                 Array.Copy(ss2, 16, second, 0, 16);
+                 str_to_show_2 += "[";
+                 str_to_show_2 += string.Join(", ", first);
+                 str_to_show_2 += "]\n";
+                 str_to_show_2 += "[";
+                 str_to_show_2 += string.Join(", ", second);
+                 str_to_show_2 += "]";
+            }
+            await Task.Delay(8000); 
+           
+                    
+            pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
+            pad_show.Content = str_to_show_2;
+            opacity_anim(pad_show, 0.0, 1.0);
 
-                        str_to_show_2 += "[";
-                        str_to_show_2 += string.Join(", ", ss2);
-                        str_to_show_2 += "]";
-                    }
-                    else
-                    {
+            pad_show.Visibility = Visibility.Visible;
 
-                        byte[] first = new byte[16];
-                        byte[] second = new byte[16];
-                        Array.Copy(ss2, 0, first, 0, 16);
-                        Array.Copy(ss2, 16, second, 0, 16);
-                        str_to_show_2 += "[";
-                        str_to_show_2 += string.Join(", ", first);
-                        str_to_show_2 += "]\n";
-                        str_to_show_2 += "[";
-                        str_to_show_2 += string.Join(", ", second);
-                        str_to_show_2 += "]";
-                    }
+                            
+            pad_show.Content = str_to_show_2;
+            opacity_anim(pad_show, 0.0, 1.0);
 
-                    System.Timers.Timer timing2 = new System.Timers.Timer(8000);
-                    timing2.AutoReset = false;
-                    timing2.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
-                            pad_show.Content = str_to_show_2;
-                            opacity_anim(pad_show, 0.0, 1.0);
-
-                            pad_show.Visibility = Visibility.Visible;
-
-                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                pad_show.Content = str_to_show_2;
-                                opacity_anim(pad_show, 0.0, 1.0);
-
-                                pad_show.Visibility = Visibility.Visible;
+            pad_show.Visibility = Visibility.Visible;
 
 
-                                String str_to_show_3 = "";
-                                byte[] ss3 = pad3(bytes_last16);
-                                if (ss3.Length == 16)
-                                {
+            String str_to_show_3 = "";
+            byte[] ss3 = pad3(bytes_last16);
+            if (ss3.Length == 16)
+            {
 
-                                    str_to_show_3 += "[";
-                                    str_to_show_3 += string.Join(", ", ss3);
-                                    str_to_show_3 += "]";
-                                }
-                                else
-                                {
+                   str_to_show_3 += "[";
+                   str_to_show_3 += string.Join(", ", ss3);
+                   str_to_show_3 += "]";
+            }
+            else
+            {
 
-                                    byte[] first = new byte[16];
-                                    byte[] second = new byte[16];
-                                    Array.Copy(ss3, 0, first, 0, 16);
-                                    Array.Copy(ss3, 16, second, 0, 16);
-                                    str_to_show_3 += "[";
-                                    str_to_show_3 += string.Join(", ", first);
-                                    str_to_show_3 += "]\n";
-                                    str_to_show_3 += "[";
-                                    str_to_show_3 += string.Join(", ", second);
-                                    str_to_show_3 += "]";
-                                }
+                   byte[] first = new byte[16];
+                   byte[] second = new byte[16];
+                   Array.Copy(ss3, 0, first, 0, 16);
+                   Array.Copy(ss3, 16, second, 0, 16);
+                   str_to_show_3 += "[";
+                   str_to_show_3 += string.Join(", ", first);
+                   str_to_show_3 += "]\n";
+                   str_to_show_3 += "[";
+                   str_to_show_3 += string.Join(", ", second);
+                   str_to_show_3 += "]";
+            }
 
-                                System.Timers.Timer timing22 = new System.Timers.Timer(8000);
-                                timing22.AutoReset = false;
-                                timing22.Elapsed += (s, e) =>
-                                {
-                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                    {
-                                        pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
-                                        pad_show.Content = str_to_show_3;
-                                        opacity_anim(pad_show, 0.0, 1.0);
+            await Task.Delay(8000);
+            pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 90, pad_show.Margin.Right, pad_show.Margin.Bottom - 90);
+            pad_show.Content = str_to_show_3;
+            opacity_anim(pad_show, 0.0, 1.0);
 
-                                        pad_show.Visibility = Visibility.Visible;
+            pad_show.Visibility = Visibility.Visible;
 
 
-                                        String str_to_show_4 = "";
-                                        byte[] ss4 = pad4(bytes_last16);
-                                        if (ss4.Length == 16)
-                                        {
+            String str_to_show_4 = "";
+            byte[] ss4 = pad4(bytes_last16);
+            if (ss4.Length == 16)
+            {
 
-                                            str_to_show_4 += "[";
-                                            str_to_show_4 += string.Join(", ", ss4);
-                                            str_to_show_4 += "]";
-                                        }
-                                        else
-                                        {
+                   str_to_show_4 += "[";
+                   str_to_show_4 += string.Join(", ", ss4);
+                   str_to_show_4 += "]";
+            }
+            else
+            {
 
-                                            byte[] first = new byte[16];
-                                            byte[] second = new byte[16];
-                                            Array.Copy(ss4, 0, first, 0, 16);
-                                            Array.Copy(ss4, 16, second, 0, 16);
-                                            str_to_show_4 += "[";
-                                            str_to_show_4 += string.Join(", ", first);
-                                            str_to_show_4 += "]\n";
-                                            str_to_show_4 += "[";
-                                            str_to_show_4 += string.Join(", ", second);
-                                            str_to_show_4 += "]";
-                                        }
-                                        System.Timers.Timer timing222 = new System.Timers.Timer(8000);
-                                        timing222.AutoReset = false;
-                                        timing222.Elapsed += (s, e) =>
-                                        {
-                                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                            {
-                                                pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 80, pad_show.Margin.Right, pad_show.Margin.Bottom - 80);
-                                                pad_show.Content = str_to_show_4;
-                                                opacity_anim(pad_show, 0.0, 1.0);
+                    byte[] first = new byte[16];
+                    byte[] second = new byte[16];
+                    Array.Copy(ss4, 0, first, 0, 16);
+                    Array.Copy(ss4, 16, second, 0, 16);
+                    str_to_show_4 += "[";
+                    str_to_show_4 += string.Join(", ", first);
+                    str_to_show_4 += "]\n";
+                    str_to_show_4 += "[";
+                    str_to_show_4 += string.Join(", ", second);
+                    str_to_show_4 += "]";
+            }
 
-                                                pad_show.Visibility = Visibility.Visible;
+            await Task.Delay(8000);
+            
+            pad_show.Margin = new Thickness(pad_show.Margin.Left, pad_show.Margin.Top + 80, pad_show.Margin.Right, pad_show.Margin.Bottom - 80);
+            pad_show.Content = str_to_show_4;
+            opacity_anim(pad_show, 0.0, 1.0);
+
+            pad_show.Visibility = Visibility.Visible;
 
 
-                                                String str_to_show_5 = "";
-                                                byte[] ss5 = pad5(bytes_last16);
-                                                if (ss5.Length == 16)
-                                                {
+            String str_to_show_5 = "";
+            byte[] ss5 = pad5(bytes_last16);
+            if (ss5.Length == 16)
+            {
 
-                                                    str_to_show_5 += "[";
-                                                    str_to_show_5 += string.Join(", ", ss5);
-                                                    str_to_show_5 += "]";
-                                                }
-                                                else
-                                                {
+                       str_to_show_5 += "[";
+                       str_to_show_5 += string.Join(", ", ss5);
+                       str_to_show_5 += "]";
+            }
+            else
+            {
 
-                                                    byte[] first = new byte[16];
-                                                    byte[] second = new byte[16];
-                                                    Array.Copy(ss5, 0, first, 0, 16);
-                                                    Array.Copy(ss5, 16, second, 0, 16);
-                                                    str_to_show_5 += "[";
-                                                    str_to_show_5 += string.Join(", ", first);
-                                                    str_to_show_5 += "]\n";
-                                                    str_to_show_5 += "[";
-                                                    str_to_show_5 += string.Join(", ", second);
-                                                    str_to_show_5 += "]";
-                                                }
-                                                System.Timers.Timer timing2222 = new System.Timers.Timer(8000);
-                                                timing2222.AutoReset = false;
-                                                timing2222.Elapsed += (s, e) =>
-                                                {
-                                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                    {
-                                                        pad_show.Margin = new Thickness(pad_show.Margin.Left, 206, pad_show.Margin.Right, 0);
-                                                        pad_show.Content = str_to_show_5;
-                                                        opacity_anim(pad_show, 0.0, 1.0);
-                                                        opacity_anim(info, 0.0, 1.0);
-                                                        info.Content = "6. **Random Padding**:\n- Fills remaining bytes with random values.\n- Often combined with other encryption modes to add \nextra randomness.\n \n \nAfter padding, AES can safely encrypt the full 16-byte blocks, \nand the ciphertext can later be decrypted correctly, \nremoving the padding automatically.";
-                                                    });
-                                                }; timing2222.Start();
-                                                activeTimers.Add(timing2222);
-                                            });
+                       byte[] first = new byte[16];
+                       byte[] second = new byte[16];
+                       Array.Copy(ss5, 0, first, 0, 16);
+                       Array.Copy(ss5, 16, second, 0, 16);
+                       str_to_show_5 += "[";
+                       str_to_show_5 += string.Join(", ", first);
+                       str_to_show_5 += "]\n";
+                       str_to_show_5 += "[";
+                       str_to_show_5 += string.Join(", ", second);
+                       str_to_show_5 += "]";
+            }
+            await Task.Delay(8000);
+            
+            pad_show.Margin = new Thickness(pad_show.Margin.Left, 206, pad_show.Margin.Right, 0);
+            pad_show.Content = str_to_show_5;
+            opacity_anim(pad_show, 0.0, 1.0);
+            opacity_anim(info, 0.0, 1.0);
+            info.Content = "6. **Random Padding**:\n- Fills remaining bytes with random values.\n- Often combined with other encryption modes to add \nextra randomness.\n \n \nAfter padding, AES can safely encrypt the full 16-byte blocks, \nand the ciphertext can later be decrypted correctly, \nremoving the padding automatically.";
 
-                                        }; timing222.Start();
-                                        activeTimers.Add(timing222);
-                                    });
-                                };
-                                timing22.Start();
-                                activeTimers.Add(timing22);
-
-                            });
-
-                        });
-                    };
-                    timing2.Start();
-                    activeTimers.Add(timing2);
-
-                });
-            };
-            timing.Start();
-            activeTimers.Add(timing);
-
-
-
+            await Task.Delay(8000);
+            await action4();
         }
 
-        public void action4()
+        public async Task action4()
         {
-            foreach (var timer in activeTimers)
-            {
-                timer.Stop();
-                timer.Dispose();
-            }
-            activeTimers.Clear();
+           
             string password;
             string mss;
             string opassword;
@@ -491,24 +424,8 @@ namespace EncodeX
                 U1 = string.Join(", ", u1);
             }
 
-            DoubleAnimation oopac = new DoubleAnimation
-            {
-
-                To = 1.0,
-                Duration = TimeSpan.FromMilliseconds(1200)
-            };
-            DoubleAnimation oopac2 = new DoubleAnimation
-            {
-
-                To = 0.0,
-                Duration = TimeSpan.FromMilliseconds(1200)
-            };
-            DoubleAnimation oopac_h = new DoubleAnimation
-            {
-                From = 0.0,
-                To = 1.0,
-                Duration = TimeSpan.FromMilliseconds(1800)
-            };
+            
+            
             encr_steps_Copy4.BeginAnimation(OpacityProperty, oopac);
             move(encr_steps_Copy4, "0,161,0,0", "0,54,0,0", 1000);
             move(encr_steps, "0,54,0,0", "0,-54,0,0", 1000);
@@ -539,37 +456,26 @@ namespace EncodeX
 "PBKDF2 can derive a key of any length. You specify how many\nbytes you want.\r\n" +
 "Each block has a unique number called the block index.";
 
-
             info.BeginAnimation(OpacityProperty, oopac);
-            System.Timers.Timer tio = new System.Timers.Timer(3000);
-            tio.AutoReset = false;
-            tio.Elapsed += (s, e) =>
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    pad_info1_Copy.Foreground = (Brush)new BrushConverter().ConvertFromString("#22C55E");
-                    pad_info1.Foreground = (Brush)new BrushConverter().ConvertFromString("#F59E0B");
-                    pad_info2.Foreground = (Brush)new BrushConverter().ConvertFromString("#38BDF8");
-                    pad_info2.Content = "   Salt: **Some Random 16 Bytes** \n     (128bits => 2¹²⁸ possibilities!)";
-                    pad_info1_Copy.Content = "Password: " + password;
-                    pad_info1.Content = mss;
-                    pad_info2.BeginAnimation(OpacityProperty, oopac);
-                    pad_info1_Copy.BeginAnimation(OpacityProperty, oopac);
-                    pad_info1.BeginAnimation(OpacityProperty, oopac);
-                    pad_info2.Visibility = Visibility.Visible;
-                    pad_info1.Visibility = Visibility.Visible;
-                    pad_info1_Copy.Visibility = Visibility.Visible;
-                });
-            }; tio.Start();
-            activeTimers.Add(tio);
-            System.Timers.Timer gg = new System.Timers.Timer(25000);
-            gg.AutoReset = false;
-            gg.Elapsed += (s, e) =>
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    info.BeginAnimation(OpacityProperty, oopac2);
-                    info.Content = "Each block is computed like this:\n" +
+            await Task.Delay(3000);
+           
+            pad_info1_Copy.Foreground = (Brush)new BrushConverter().ConvertFromString("#22C55E");
+            pad_info1.Foreground = (Brush)new BrushConverter().ConvertFromString("#F59E0B");
+            pad_info2.Foreground = (Brush)new BrushConverter().ConvertFromString("#38BDF8");
+            pad_info2.Content = "   Salt: **Some Random 16 Bytes** \n     (128bits => 2¹²⁸ possibilities!)";
+            pad_info1_Copy.Content = "Password: " + password;
+            pad_info1.Content = mss;
+            pad_info2.BeginAnimation(OpacityProperty, oopac);
+            pad_info1_Copy.BeginAnimation(OpacityProperty, oopac);
+            pad_info1.BeginAnimation(OpacityProperty, oopac);
+            pad_info2.Visibility = Visibility.Visible;
+            pad_info1.Visibility = Visibility.Visible;
+            pad_info1_Copy.Visibility = Visibility.Visible;
+
+            await Task.Delay(25000);
+            
+            info.BeginAnimation(OpacityProperty, oopac2);
+            info.Content = "Each block is computed like this:\n" +
 "U1 = HMAC(password, salt || blockIndex)\r\n" +
 "U2 = HMAC(password, U1)\r\n" +
 "U3 = HMAC(password, U2)\r\n" +
@@ -584,195 +490,96 @@ namespace EncodeX
 "*AES-256 requires a 32-byte key, so only one PBKDF2 block \nis needed.(AES-192 => 24-bytes // AES-128 => 16-bytes)\nEven with long key provided, AES takes only the number \nof bytes needed"
 
 ;
-                    info.BeginAnimation(OpacityProperty, oopac_h);
+             info.BeginAnimation(OpacityProperty, oopac_h);
 
-                    HMAC.BeginAnimation(OpacityProperty, oopac_h);
-                    HMAC.Visibility = Visibility.Visible;
-                    System.Timers.Timer timing_s = new System.Timers.Timer(2000);
-                    timing_s.AutoReset = false;
-                    timing_s.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            DoubleAnimation o = new DoubleAnimation
-                            {
-                                From = 0.0,
-                                To = 1.0,
-                                Duration = TimeSpan.FromMilliseconds(800),
-                                AutoReverse = false
-                            };
-                            o.Completed += (s, e) =>
-                            {
-                                opacity_anim(indx_anim, 1.0, 0.0);
+             HMAC.BeginAnimation(OpacityProperty, oopac_h);
+             HMAC.Visibility = Visibility.Visible;
 
-                            };
-                            indx_anim.BeginAnimation(OpacityProperty, o);
-                            indx_anim.Visibility = Visibility.Visible;
-                            pss_anim.Visibility = Visibility.Visible;
-                            salt_anim.Content += " || 1";
-                            salt_anim.Visibility = Visibility.Visible;
-                            move(salt_anim, "737,136,0,0", "690,334,0,0", 3000);
-                            move(pss_anim, "574,136,0,0", "690,334,0,0", 3000);
-                            System.Timers.Timer timing_s2 = new System.Timers.Timer(3300);
-                            timing_s2.AutoReset = false;
-                            timing_s2.Elapsed += (s, e) =>
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    pss_anim.Visibility = Visibility.Hidden;
-                                    salt_anim.Visibility = Visibility.Hidden;
-                                    pss_anim.Margin = new Thickness(574, 136, 0, 0);
-
-
-
-                                });
-                            }; timing_s2.Start();
-                            activeTimers.Add(timing_s2);
-
-
-                            vibrate();
-                            System.Timers.Timer timing_s21 = new System.Timers.Timer(9000);
-                            timing_s21.AutoReset = false;
-                            timing_s21.Elapsed += (s, e) =>
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    salt_anim.Foreground = (Brush)new BrushConverter().ConvertFromString("#00CC99");
-                                    salt_anim.Content = "U1";
-                                    salt_anim.Visibility = Visibility.Visible;
-                                    move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
-                                    System.Timers.Timer timing_s211 = new System.Timers.Timer(1000);
-                                    timing_s211.AutoReset = false;
-                                    timing_s211.Elapsed += (s, e) =>
-                                    {
-                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                        {
-
-
-                                            opacity_anim(Hmac_im_arr, 0.0, 1.0);
-                                            Hmac_im_arr.Visibility = Visibility.Visible;
-                                            opacity_anim(U1_info, 0.0, 1.0);
-                                            U1_info.Visibility = Visibility.Visible;
-                                            U1_show.Content = "U1: [ " + U1.Substring(0, 40) + "..." + U1.Substring(U1.Length - 3) + " ]";
-                                            opacity_anim(U1_show, 0.0, 1.0);
-                                            U1_show.Visibility = Visibility.Visible;
-
-                                            System.Timers.Timer timing_s2111 = new System.Timers.Timer(8500);
-                                            timing_s2111.AutoReset = false;
-                                            timing_s2111.Elapsed += (s, e) =>
-                                            {
-                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                {
-
-
-                                                    opacity_anim(Hmac_im_arr, 1.0, 0.0);
-
-                                                    opacity_anim(U1_info, 1.0, 0.0);
-                                                    pss_anim.Visibility = Visibility.Visible;
-                                                    move(pss_anim, "574,136,0,0", "690,334,0,0", 1000);
-                                                    move(salt_anim, "710, 284, 0, 0", "710,334,0,0", 2000);
-
-                                                    opacity_anim(U1_show, 1.0, 0.0);
-                                                    System.Timers.Timer timing_s2 = new System.Timers.Timer(2300);
-                                                    timing_s2.AutoReset = false;
-                                                    timing_s2.Elapsed += (s, e) =>
-                                                    {
-                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                        {
-                                                            pss_anim.Visibility = Visibility.Hidden;
-                                                            salt_anim.Visibility = Visibility.Hidden;
-                                                            pss_anim.Margin = new Thickness(574, 136, 0, 0);
-                                                            System.Timers.Timer timing_ez = new System.Timers.Timer(7300);
-
-                                                            timing_ez.AutoReset = false;
-                                                            timing_ez.Elapsed += (s, e) =>
-                                                            {
-                                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                                {
-                                                                    salt_anim.Content = "U2";
-                                                                    salt_anim.Visibility = Visibility.Visible;
-                                                                    move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
-                                                                    System.Timers.Timer timing_ez1 = new System.Timers.Timer(3300);
-                                                                    timing_ez1.AutoReset = false;
-                                                                    timing_ez1.Elapsed += (s, e) =>
-                                                                    {
-                                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                                        {
-                                                                            pss_anim.Margin = new Thickness(574, 136, 0, 0);
-                                                                            pss_anim.Visibility = Visibility.Visible;
-                                                                            move(pss_anim, "574,136,0,0", "690,334,0,0", 1000);
-                                                                            move(salt_anim, "710, 284, 0, 0", "710,334,0,0", 2000);
-                                                                            System.Timers.Timer tim = new System.Timers.Timer(1300);
-
-                                                                            tim.AutoReset = false;
-                                                                            tim.Elapsed += (s, e) =>
-                                                                            {
-
-                                                                                vibrate();
-
-                                                                            }; tim.Start();
-                                                                            activeTimers.Add(tim);
-
-                                                                        });
-                                                                    }; timing_ez1.Start();
-                                                                    activeTimers.Add(timing_ez1);
-                                                                });
-                                                            }; timing_ez.Start();
-                                                            activeTimers.Add(timing_ez);
-
-
-                                                        });
-                                                    }; timing_s2.Start();
-                                                    activeTimers.Add(timing_s2);
-                                                    vibrate();
-
-
-                                                });
-                                            }; timing_s2111.Start();
-                                            activeTimers.Add(timing_s2111);
-
-
-                                        });
-                                    }; timing_s211.Start();
-                                    activeTimers.Add(timing_s211);
-
-
-                                });
-                            }; timing_s21.Start();
-                            activeTimers.Add(timing_s21);
-                        });
-                    }; timing_s.Start();
-                    activeTimers.Add(timing_s);
-                });
-            }; gg.Start();
-            activeTimers.Add(gg);
-
-            System.Timers.Timer timing_ez7 = new System.Timers.Timer(66000);
-
-            timing_ez7.AutoReset = false;
-            timing_ez7.Elapsed += (s, e) =>
+            await Task.Delay(2000);
+                    
+            DoubleAnimation o = new DoubleAnimation
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    pss_anim.Visibility = Visibility.Hidden;
-                    salt_anim.Content = "U3";
-                    salt_anim.Visibility = Visibility.Visible;
-                    move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
-
-                });
+                   From = 0.0,
+                   To = 1.0,
+                   Duration = TimeSpan.FromMilliseconds(800),
+                   AutoReverse = false
             };
-            timing_ez7.Start();
-            activeTimers.Add(timing_ez7);
-
-            System.Timers.Timer timing_ = new System.Timers.Timer(70000);
-
-            timing_.AutoReset = false;
-            timing_.Elapsed += (s, e) =>
+            o.Completed += (s, e) =>
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    U1_show.Content = "Block = U1 ⊕ U2 ⊕ U3 ⊕ ... ⊕ Uc";
-                    info.Content = "⊕ => XOR (exclusive OR) is a bitwise operation.\r\n\r\n" +
+                    opacity_anim(indx_anim, 1.0, 0.0);
+
+            };
+            indx_anim.BeginAnimation(OpacityProperty, o);
+            indx_anim.Visibility = Visibility.Visible;
+            pss_anim.Visibility = Visibility.Visible;
+            salt_anim.Content += " || 1";
+            salt_anim.Visibility = Visibility.Visible;
+            move(salt_anim, "737,136,0,0", "690,334,0,0", 2500);
+            move(pss_anim, "574,136,0,0", "690,334,0,0", 3000);
+            await Task.Delay(3300);
+
+            
+            pss_anim.Visibility = Visibility.Hidden;
+            salt_anim.Visibility = Visibility.Hidden;
+            pss_anim.Margin = new Thickness(574, 136, 0, 0);
+
+            vibrate();
+
+            await Task.Delay(7500);
+            
+            salt_anim.Foreground = (Brush)new BrushConverter().ConvertFromString("#00CC99");
+            salt_anim.Content = "U1";
+            salt_anim.Visibility = Visibility.Visible;
+            move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
+            await Task.Delay(1000);
+            
+            opacity_anim(Hmac_im_arr, 0.0, 1.0);
+            Hmac_im_arr.Visibility = Visibility.Visible;
+            opacity_anim(U1_info, 0.0, 1.0);
+            U1_info.Visibility = Visibility.Visible;
+            U1_show.Content = "U1: [ " + U1.Substring(0, 40) + "..." + U1.Substring(U1.Length - 3) + " ]";
+            opacity_anim(U1_show, 0.0, 1.0);
+            U1_show.Visibility = Visibility.Visible;
+            await Task.Delay(8500);
+            
+
+            opacity_anim(Hmac_im_arr, 1.0, 0.0);
+            opacity_anim(U1_info, 1.0, 0.0);
+            pss_anim.Visibility = Visibility.Visible;
+            move(pss_anim, "574,136,0,0", "690,334,0,0", 1000);
+            move(salt_anim, "710, 284, 0, 0", "710,334,0,0", 2000);
+            opacity_anim(U1_show, 1.0, 0.0);
+            await Task.Delay(2300);
+                                                    
+            pss_anim.Visibility = Visibility.Hidden;
+            salt_anim.Visibility = Visibility.Hidden;
+            pss_anim.Margin = new Thickness(574, 136, 0, 0);
+            vibrate();
+            await Task.Delay(7300);
+                                                            
+            salt_anim.Content = "U2";
+            salt_anim.Visibility = Visibility.Visible;
+            move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
+            await Task.Delay(3300);
+                                                                    
+            pss_anim.Margin = new Thickness(574, 136, 0, 0);
+            pss_anim.Visibility = Visibility.Visible;
+            move(pss_anim, "574,136,0,0", "690,334,0,0", 1000);
+            move(salt_anim, "710, 284, 0, 0", "710,334,0,0", 2000);
+            await Task.Delay(1300);
+            
+            vibrate();
+
+            await Task.Delay(7300);
+            pss_anim.Visibility = Visibility.Hidden;
+            salt_anim.Content = "U3";
+            salt_anim.Visibility = Visibility.Visible;
+            move(salt_anim, "710, 334, 0, 0", "710,284,0,0", 300);
+
+            await Task.Delay(4000);
+            
+            U1_show.Content = "Block = U1 ⊕ U2 ⊕ U3 ⊕ ... ⊕ Uc";
+            info.Content = "⊕ => XOR (exclusive OR) is a bitwise operation.\r\n\r\n" +
                     "For two bits:\r\n" +
                     "- The result is 1 if the bits are different\r\n" +
                     "- The result is 0 if the bits are the same\r\n\r\n" +
@@ -786,81 +593,63 @@ namespace EncodeX
                     "When applied to byte arrays, XOR is performed byte by \n" +
                     "byte at the same index.\r\n\r\n";
 
-                    U1_show.Margin = new Thickness(490, 330, 0, 0);
-                    opacity_anim(U1_show, 0.0, 1.0, null, 1200);
-                    opacity_anim(info, 0.0, 1.0, null, 1200);
-                    U1_show.Visibility = Visibility.Visible;
-                    info.Visibility = Visibility.Visible;
-                    opacity_anim(HMAC, 1.0, 0.0, null, 700);
-                    opacity_anim(salt_anim, 1.0, 0.0, null, 700);
+            U1_show.Margin = new Thickness(490, 330, 0, 0);
+            opacity_anim(U1_show, 0.0, 1.0, null, 1200);
+            opacity_anim(info, 0.0, 1.0, null, 1200);
+            U1_show.Visibility = Visibility.Visible;
+            info.Visibility = Visibility.Visible;
+            opacity_anim(HMAC, 1.0, 0.0, null, 700);
+            opacity_anim(salt_anim, 1.0, 0.0, null, 700);
 
-                    System.Timers.Timer ne = new System.Timers.Timer(15000);
-                    ne.AutoReset = false;
-                    ne.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
+            await Task.Delay(15000);
 
-                            opacity_anim(info, 1.0, 0.0, null, 800);
-                            opacity_anim(info, 0.0, 1.0, null, 800);
-                            info.Content = "Example: XOR of two bytes\r\n\r\nNumber A = 172  (binary: 10101100)\r\nNumber B = 197  (binary: 11000101)\r\n\r\nCompute XOR (A ⊕ B) bit by bit:\r\n\r\n  1 0 1 0 1 1 0 0   (A)\r\n⊕ 1 1 0 0 0 1 0 1   (B)\r\n-------------------\r\n  0 1 1 0 1 0 0 1   (Result)\r\n\r\nResult in decimal = 105\r\n\r\nSo:\r\n172 ⊕ 197 = 105\r\n";
+            
+            opacity_anim(info, 1.0, 0.0, null, 800);
+            opacity_anim(info, 0.0, 1.0, null, 800);
+            info.Content = "Example: XOR of two bytes\r\n\r\nNumber A = 172  (binary: 10101100)\r\nNumber B = 197  (binary: 11000101)\r\n\r\nCompute XOR (A ⊕ B) bit by bit:\r\n\r\n  1 0 1 0 1 1 0 0   (A)\r\n⊕ 1 1 0 0 0 1 0 1   (B)\r\n-------------------\r\n  0 1 1 0 1 0 0 1   (Result)\r\n\r\nResult in decimal = 105\r\n\r\nSo:\r\n172 ⊕ 197 = 105\r\n";
 
-                            System.Timers.Timer ne = new System.Timers.Timer(15000);
-                            ne.AutoReset = false;
-                            ne.Elapsed += (s, e) =>
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
+            await Task.Delay(15000);
+            
 
-                                    opacity_anim(info, 1.0, 0.0, null, 800);
-                                    opacity_anim(info, 0.0, 1.0, null, 800);
-                                    info.Content =
-                                     "In PBKDF2, all intermediate results (U1, U2, U3, …) have the \n" +
+            opacity_anim(info, 1.0, 0.0, null, 800);
+            opacity_anim(info, 0.0, 1.0, null, 800);
+            info.Content ="In PBKDF2, all intermediate results (U1, U2, U3, …) have the \n" +
                             "same length. The final block is computed by XORing all these \nvalues:\r\n\r\n" +
                             "Block = U1 ⊕ U2 ⊕ U3 ⊕ … ⊕ Uc\r\n\r\n" +
                             "XOR is used because it combines all iterations, preserves \nentropy, " +
                             "and ensures that every iteration influences the \nfinal derived key.\r\n";
-                                });
-                            }; ne.Start();
-                            activeTimers.Add(ne);
-                        });
-                    }; ne.Start();
-                    activeTimers.Add(ne);
 
+            await Task.Delay(3000);
+            await action5();
 
-                });
-            };
-            timing_.Start();
-            activeTimers.Add(timing_);
         }
         byte[] w8 = new byte[4];
         byte[] result = new byte[4];
-        byte[] SBox = new byte[256]
-{
-    99,124,119,123,242,107,111,197,48,1,103,43,254,215,171,118,
-    202,130,201,125,250,89,71,240,173,212,162,175,156,164,114,192,
-    183,253,147,38,54,63,247,204,52,165,229,241,113,216,49,21,
-    4,199,35,195,24,150,5,154,7,18,128,226,235,39,178,117,
-    9,131,44,26,27,110,90,160,82,59,214,179,41,227,47,132,
-    83,209,0,237,32,252,177,91,106,203,190,57,74,76,88,207,
-    208,239,170,251,67,77,51,133,69,249,2,127,80,60,159,168,
-    81,163,64,143,146,157,56,245,188,182,218,33,16,255,243,210,
-    205,12,19,236,95,151,68,23,196,167,126,61,100,93,25,115,
-    96,129,79,220,34,42,144,136,70,238,184,20,222,94,11,219,
-    224,50,58,10,73,6,36,92,194,211,172,98,145,149,228,121,
-    231,200,55,109,141,213,78,169,108,86,244,234,101,122,174,8,
-    186,120,37,46,28,166,180,198,232,221,116,31,75,189,139,138,
-    112,62,181,102,72,3,246,14,97,53,87,185,134,193,29,158,
-    225,248,152,17,105,217,142,148,155,30,135,233,206,85,40,223,
-    140,161,137,13,191,230,66,104,65,153,45,15,176,84,187,22
-};
-        public void action5()
+        byte[] SBox = new byte[256]{99,124,119,123,242,107,111,197,48,1,103,43,254,215,171,118,
+                                    202,130,201,125,250,89,71,240,173,212,162,175,156,164,114,192,
+                                    183,253,147,38,54,63,247,204,52,165,229,241,113,216,49,21,
+                                    4,199,35,195,24,150,5,154,7,18,128,226,235,39,178,117,
+                                    9,131,44,26,27,110,90,160,82,59,214,179,41,227,47,132,
+                                    83,209,0,237,32,252,177,91,106,203,190,57,74,76,88,207,
+                                    208,239,170,251,67,77,51,133,69,249,2,127,80,60,159,168,
+                                    81,163,64,143,146,157,56,245,188,182,218,33,16,255,243,210,
+                                    205,12,19,236,95,151,68,23,196,167,126,61,100,93,25,115,
+                                    96,129,79,220,34,42,144,136,70,238,184,20,222,94,11,219,
+                                    224,50,58,10,73,6,36,92,194,211,172,98,145,149,228,121,
+                                    231,200,55,109,141,213,78,169,108,86,244,234,101,122,174,8,
+                                    186,120,37,46,28,166,180,198,232,221,116,31,75,189,139,138,
+                                    112,62,181,102,72,3,246,14,97,53,87,185,134,193,29,158,
+                                    225,248,152,17,105,217,142,148,155,30,135,233,206,85,40,223,
+                                    140,161,137,13,191,230,66,104,65,153,45,15,176,84,187,22 };
+
+        public async Task action5()
         {
             string password;
             string text = input_field.Text;
             byte[] text_bytes = System.Text.Encoding.UTF8.GetBytes(text);
             byte[] first16Bytes1 = text_bytes.Take(16).ToArray();
             byte[] first16Bytes = pad1(first16Bytes1);
+
             if (password_field.Text == "")
             {
                 password = "password@1010^";
@@ -873,17 +662,13 @@ namespace EncodeX
 
             }
 
-            foreach (var time in activeTimers)
-            {
-                time.Stop();
-                time.Dispose();
-            }
-            activeTimers.Clear();
+            
             byte[] salt = new byte[16];
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);
             }
+
             pu_salt = salt;
             using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA256);
 
@@ -903,24 +688,8 @@ namespace EncodeX
             {
                 words_4_7.Add(key[i]);
             }
-            DoubleAnimation oopac = new DoubleAnimation
-            {
-                From = 0.0,
-                To = 1.0,
-                Duration = TimeSpan.FromMilliseconds(1200)
-            };
-            DoubleAnimation oopac2 = new DoubleAnimation
-            {
-
-                To = 0.0,
-                Duration = TimeSpan.FromMilliseconds(1200)
-            };
-            DoubleAnimation oopac_h = new DoubleAnimation
-            {
-                From = 0.0,
-                To = 1.0,
-                Duration = TimeSpan.FromMilliseconds(1800)
-            };
+            
+            
             encr_steps_Copy3.BeginAnimation(OpacityProperty, oopac);
             move(encr_steps_Copy3, "0,161,0,0", "0,54,0,0", 1000);
             move(encr_steps_Copy4, "0,54,0,0", "0,-54,0,0", 1000);
@@ -946,17 +715,11 @@ namespace EncodeX
                 "remaining round keys into the data.";
             info.BeginAnimation(OpacityProperty, oopac);
 
-            System.Timers.Timer timer = new System.Timers.Timer(20000);
-            timer.AutoReset = false;
-            timer.Elapsed += (s, e) =>
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
+            await Task.Delay(20000);
 
+            title.Content = "AES Key Expansion. How does it work ?";
 
-                    title.Content = "AES Key Expansion. How does it work ?";
-
-                    info.Content =
+            info.Content =
                                     "1.Start with the master key derived from the password.\n" +
                                     "   -The key is divided into fixed-size words (4 bytes).\n\n" +
                                     "2.The key expansion algorithm generates a sequence of words \nto form all round keys:\n" +
@@ -967,93 +730,51 @@ namespace EncodeX
                                     "   -The new word is combined with an earlier word in the \n    sequence using XOR to produce the next word.\n" +
                                     "   -This process is repeated until enough words are generated \n    for all round keys.\n\n";
 
-                    info.BeginAnimation(OpacityProperty, oopac);
-                    title.BeginAnimation(OpacityProperty, oopac);
-                    System.Timers.Timer timer2 = new System.Timers.Timer(20000);
-                    timer2.AutoReset = false;
-                    timer2.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
+            info.BeginAnimation(OpacityProperty, oopac);
+            title.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(20000);
 
+            info.Content = "3.All words are stored sequentially in a key schedule array.\n" +
+                           "   - Consecutive words are grouped to form round keys.\n\n" +
+                           "4.Outcome:\n" +
+                           "   -The master key is expanded into a complete set of \n    round keys.\n" +
+                           "   - These round keys will be used in order during the\n    AES encryption rounds.";
+            info.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(20000);
 
+            title.Content = "AES Key Schedule – Number of Words";
+            title.BeginAnimation(OpacityProperty, oopac);
+            info.Content = "- AES divides the key into 4-byte words.\r\n" +
+                           "- The total number of words required depends on the AES \nvariant and the number of rounds.\n" +
+                           "1. AES-128:\r\n   " +
+                           "- Master key: 16 bytes → 4 words\r\n" +
+                           "   - Number of rounds: 10\r\n" +
+                           "   - Round keys: 11 (1 extra for initial AddRoundKey)\r\n" +
+                           "   - Total words needed: 11 × 4 = 44 words\r\n" +
+                           "   - Words to generate: 44 − 4 = 40\r\n\r\n" +
+                           "2. AES-192:\r\n" +
+                           "   - Master key: 24 bytes → 6 words\r\n" +
+                           "   - Number of rounds: 12\r\n" +
+                           "   - Round keys: 13\r\n" +
+                           "   - Total words needed: 13 × 4 = 52 words\r\n" +
+                           "   - Words to generate: 52 − 6 = 46\r\n\r\n";
 
+            info.BeginAnimation(OpacityProperty, oopac);
 
-                            info.Content = "3.All words are stored sequentially in a key schedule array.\n" +
-                                           "   - Consecutive words are grouped to form round keys.\n\n" +
-                                           "4.Outcome:\n" +
-                                           "   -The master key is expanded into a complete set of \n    round keys.\n" +
-                                           "   - These round keys will be used in order during the\n    AES encryption rounds.";
-                            info.BeginAnimation(OpacityProperty, oopac);
-                            System.Timers.Timer timer3 = new System.Timers.Timer(20000);
-                            timer3.AutoReset = false;
-                            timer3.Elapsed += (s, e) =>
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-
-
-                                    title.Content = "AES Key Schedule – Number of Words";
-                                    title.BeginAnimation(OpacityProperty, oopac);
-                                    info.Content =
-                                    "- AES divides the key into 4-byte words.\r\n" +
-                                    "- The total number of words required depends on the AES \nvariant and the number of rounds.\n" +
-                                    "1. AES-128:\r\n   " +
-                                    "- Master key: 16 bytes → 4 words\r\n" +
-                                    "   - Number of rounds: 10\r\n" +
-                                    "   - Round keys: 11 (1 extra for initial AddRoundKey)\r\n" +
-                                    "   - Total words needed: 11 × 4 = 44 words\r\n" +
-                                    "   - Words to generate: 44 − 4 = 40\r\n\r\n" +
-                                    "2. AES-192:\r\n" +
-                                    "   - Master key: 24 bytes → 6 words\r\n" +
-                                    "   - Number of rounds: 12\r\n" +
-                                    "   - Round keys: 13\r\n" +
-                                    "   - Total words needed: 13 × 4 = 52 words\r\n" +
-                                    "   - Words to generate: 52 − 6 = 46\r\n\r\n";
-
-                                    info.BeginAnimation(OpacityProperty, oopac);
-
-
-                                });
-                            }; timer3.Start();
-                            activeTimers.Add(timer3);
-
-
-                        });
-                    }; timer2.Start();
-                    activeTimers.Add(timer2);
-
-                });
-            }; timer.Start();
-            activeTimers.Add(timer);
-
-            System.Timers.Timer timer4 = new System.Timers.Timer(80000);
-            timer4.AutoReset = false;
-            timer4.Elapsed += (s, e) =>
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    info.Content = "3. AES-256:\r\n" +
+            await Task.Delay(20000);
+            
+            info.Content = "3. AES-256:\r\n" +
             "   - Master key: 32 bytes → 8 words\r\n" +
             "   - Number of rounds: 14\r\n" +
             "   - Round keys: 15\r\n" +
             "   - Total words needed: 15 × 4 = 60 words\r\n" +
             "   - Words to generate: 60 − 8 = 52\r\n";
-                    info.BeginAnimation(OpacityProperty, oopac);
-                });
-
-            }; timer4.Start();
-            activeTimers.Add(timer4);
-            System.Timers.Timer timer1 = new System.Timers.Timer(92000);
-            timer1.AutoReset = false;
-            timer1.Elapsed += (s, e) =>
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    title.Content = "Example of AES-256 Key Expansion";
-                    title.BeginAnimation(OpacityProperty, oopac);
-
-                    info.Content = "   ____Step 0: Definitions____\r\n\r\n" +
+            info.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(12000);
+            
+            title.Content = "Example of AES-256 Key Expansion";
+            title.BeginAnimation(OpacityProperty, oopac);
+            info.Content = "   ____Step 0: Definitions____\r\n\r\n" +
                     "W[i] = i-th word (4 bytes / 32 bits) in the key schedule array." +
                     "\r\n\r\nNk = number of words in master key = 8 for AES-256." +
                     "\r\n\r\nNr = number of rounds = 14 for AES-256.\r\n\r\n" +
@@ -1061,604 +782,283 @@ namespace EncodeX
                     "RotWord(x) = rotate 4-byte word x left by 1 byte.\r\n\r\n" +
                     "SubWord(x) = apply AES S-box to each byte.\r\n\r\n" +
                     "⊕ = bitwise XOR of bytes.";
-                    info.BeginAnimation(OpacityProperty, oopac);
-                    System.Timers.Timer timer1_1 = new System.Timers.Timer(12000);
-                    timer1_1.AutoReset = false;
-                    timer1_1.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
+            info.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(12000);
 
+            info.Content = "\n\n\n\nGoal: Expand the 32-byte master key into 60 words → 15 round keys \n(4 words each, 16 bytes).";
+            info.BeginAnimation(OpacityProperty, oopac);
 
-                            info.Content = "\n\n\n\nGoal: Expand the 32-byte master key into 60 words → 15 round keys \n(4 words each, 16 bytes).";
-                            info.BeginAnimation(OpacityProperty, oopac);
-                            System.Timers.Timer timer1_2 = new System.Timers.Timer(9000);
-                            timer1_2.AutoReset = false;
-                            timer1_2.Elapsed += (s, e) =>
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    U1_show.Margin = new Thickness(490, 170, 0, 0);
-                                    U1_show.Content = to_show;
-                                    info.Content = "\n\n\n\n   ____Step 1: Split Master Key into Words____\n" +
-                                    "";
-                                    info.BeginAnimation(OpacityProperty, oopac);
-                                    U1_show.Visibility = Visibility.Visible;
-                                    U1_show.BeginAnimation(OpacityProperty, oopac);
-                                    System.Timers.Timer timer1_3 = new System.Timers.Timer(5000);
-                                    timer1_3.AutoReset = false;
-                                    timer1_3.Elapsed += (s, e) =>
-                                    {
-                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                        {
-                                            W0.Content += "[ " + string.Join(", ", lst[0]) + " ]";
-                                            W1.Content += "[ " + string.Join(", ", lst[1]) + " ]";
-                                            W2.Content += "[ " + string.Join(", ", lst[2]) + " ]";
-                                            W3.Content += "[ " + string.Join(", ", lst[3]) + " ]";
-                                            W4.Content += "[ " + string.Join(", ", lst[4]) + " ]";
-                                            W5.Content += "[ " + string.Join(", ", lst[5]) + " ]";
-                                            W6.Content += "[ " + string.Join(", ", lst[6]) + " ]";
-                                            W7.Content += "[ " + string.Join(", ", lst[7]) + " ]";
-                                            List<Label> li = new List<Label> { W0, W1, W2, W3, W4, W5, W6, W7 };
-                                            List<Label> l2 = new List<Label> { rule1, if1, rule2, if2, rule3, if3 };
-                                            foreach (Label i in li)
-                                            {
-                                                i.BeginAnimation(OpacityProperty, oopac);
-                                                i.Visibility = Visibility.Visible;
-                                            }
-                                            System.Timers.Timer timer1_4 = new System.Timers.Timer(8000);
-                                            timer1_4.AutoReset = false;
-                                            timer1_4.Elapsed += (s, e) =>
-                                            {
-                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                {
-                                                    foreach (Label i in li)
-                                                    {
-                                                        i.BeginAnimation(OpacityProperty, oopac2);
-
-                                                    }
-                                                    info.BeginAnimation(OpacityProperty, oopac2);
-                                                    info.Content = "   ____Step 2: Generate a New Word W[i]____\r\n\r\n" +
-                                                    "Rule for each new word in the AES-256 key schedule:\r\n\r\n\n\n\n\n\n" +
-
-                                                    "W[i] =";
-
-
-                                                    info.BeginAnimation(OpacityProperty, oopac);
-                                                    foreach (Label i in l2)
-                                                    {
-                                                        i.BeginAnimation(OpacityProperty, oopac);
-                                                        i.Visibility = Visibility.Visible;
-                                                    }
-                                                    U1_show.BeginAnimation(OpacityProperty, oopac2);
-
-
-                                                });
-
-
-                                            };
-                                            timer1_4.Start();
-                                            activeTimers.Add(timer1_4);
-                                        });
-
-
-                                    };
-                                    timer1_3.Start();
-                                    activeTimers.Add(timer1_3);
-                                });
-
-
-                            };
-                            timer1_2.Start();
-                            activeTimers.Add(timer1_2);
-                        });
-
-
-                    };
-                    timer1_1.Start();
-                    activeTimers.Add(timer1_1);
-                });
-
-
-
-            };
-            timer1.Start();
-            activeTimers.Add(timer1);
-
-            System.Timers.Timer timer1_5 = new System.Timers.Timer(142000);
-            timer1_5.AutoReset = false;
-            timer1_5.Elapsed += (s, e) =>
+            await Task.Delay(9000);
+            
+            U1_show.Margin = new Thickness(490, 170, 0, 0);
+            U1_show.Content = to_show;
+            info.Content = "\n\n\n\n   ____Step 1: Split Master Key into Words____\n" + "";
+            info.BeginAnimation(OpacityProperty, oopac);
+            U1_show.Visibility = Visibility.Visible;
+            U1_show.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(5000);
+            
+            W0.Content += "[ " + string.Join(", ", lst[0]) + " ]";
+            W1.Content += "[ " + string.Join(", ", lst[1]) + " ]";
+            W2.Content += "[ " + string.Join(", ", lst[2]) + " ]";
+            W3.Content += "[ " + string.Join(", ", lst[3]) + " ]";
+            W4.Content += "[ " + string.Join(", ", lst[4]) + " ]";
+            W5.Content += "[ " + string.Join(", ", lst[5]) + " ]";
+            W6.Content += "[ " + string.Join(", ", lst[6]) + " ]";
+            W7.Content += "[ " + string.Join(", ", lst[7]) + " ]";
+            List<Label> li = new List<Label> { W0, W1, W2, W3, W4, W5, W6, W7 };
+            List<Label> l2 = new List<Label> { rule1, if1, rule2, if2, rule3, if3 };
+            foreach (Label i in li)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    W8.BeginAnimation(OpacityProperty, oopac);
-                    W8.Visibility = Visibility.Visible;
-                    System.Timers.Timer timer1_7 = new System.Timers.Timer(900);
-                    timer1_7.AutoReset = false;
-                    timer1_7.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            W8_i.BeginAnimation(OpacityProperty, oopac);
-                            W8_i.Visibility = Visibility.Visible;
-                            change_color(rule1, "#22C55E", 2000);
-                            change_color(if1, "#22C55E", 2000);
-                            System.Timers.Timer timer1_6 = new System.Timers.Timer(4000);
-                            timer1_6.AutoReset = false;
-                            timer1_6.Elapsed += (s, e) =>
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    W8_i.BeginAnimation(OpacityProperty, oopac2);
-                                    W8.Content = "W[8] = W[0] ⊕ SubWord(RotWord(W[7])) ⊕ Rcon[1]";
-                                    System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
-                                    timer1_8.AutoReset = false;
-                                    timer1_8.Elapsed += (s, e) =>
-                                    {
-                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                        {
-                                            move(W8, "490,170,0,0", "490,140,0,0", 600);
-                                            W8_r.BeginAnimation(OpacityProperty, oopac);
-                                            W8_r.Visibility = Visibility.Visible;
-                                            System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
-                                            timer1_8.AutoReset = false;
-                                            timer1_8.Elapsed += (s, e) =>
-                                            {
-                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                {
-                                                    W8.Margin = new Thickness(490, 140, 0, 0);
-                                                    W8_app.BeginAnimation(OpacityProperty, oopac);
-                                                    W8_app.Visibility = Visibility.Visible;
-                                                    W8_app.Content = "W[7] = " + "[ " + string.Join(", ", lst[7]) + " ]";
-                                                    System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
-                                                    timer1_8.AutoReset = false;
-                                                    timer1_8.Elapsed += (s, e) =>
-                                                    {
-                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                        {
-
-                                                            W8_re.BeginAnimation(OpacityProperty, oopac);
-                                                            W8_re.Visibility = Visibility.Visible;
-                                                            W8_re.Content = "RotWord(W[7]) = " + RotWord(lst[7]);
-                                                            System.Timers.Timer timer1_8 = new System.Timers.Timer(3000);
-                                                            timer1_8.AutoReset = false;
-                                                            timer1_8.Elapsed += (s, e) =>
-                                                            {
-                                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                                {
-                                                                    W8_r.Content = "SubWord(W) => SBox";
-                                                                    W8_r.BeginAnimation(OpacityProperty, oopac);
-                                                                    W8_app.BeginAnimation(OpacityProperty, oopac2);
-                                                                    W8_r.Visibility = Visibility.Visible;
-
-                                                                    activeTimers.Add(timer1_8);
-
-
-
-                                                                });
-
-
-                                                            };
-                                                            timer1_8.Start();
-                                                            activeTimers.Add(timer1_8);
-
-
-                                                        });
-
-
-                                                    };
-                                                    timer1_8.Start();
-                                                    activeTimers.Add(timer1_8);
-
-
-                                                });
-
-
-                                            };
-                                            timer1_8.Start();
-                                            activeTimers.Add(timer1_8);
-
-
-
-                                        });
-
-
-                                    };
-                                    timer1_8.Start();
-                                    activeTimers.Add(timer1_8);
-
-
-                                });
-
-
-                            };
-                            timer1_6.Start();
-                            activeTimers.Add(timer1_6);
-                        });
-
-
-                    };
-                    timer1_7.Start();
-                    activeTimers.Add(timer1_7);
-
-                });
-
-
-            };
-            timer1_5.Start();
-            activeTimers.Add(timer1_5);
-
-
-            System.Timers.Timer timer1_8 = new System.Timers.Timer(165000);
-            timer1_8.AutoReset = false;
-            timer1_8.Elapsed += (s, e) =>
+                     i.BeginAnimation(OpacityProperty, oopac);
+                     i.Visibility = Visibility.Visible;
+            }
+            await Task.Delay(8000);
+             
+            foreach (Label i in li)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
+                   i.BeginAnimation(OpacityProperty, oopac2);
+
+            }
+            info.BeginAnimation(OpacityProperty, oopac2);
+            info.Content = "   ____Step 2: Generate a New Word W[i]____\r\n\r\n" +
+                           "Rule for each new word in the AES-256 key schedule:\r\n\r\n\n\n\n\n\n" +
+                           "W[i] =";
 
 
-                    W8_app.BeginAnimation(OpacityProperty, oopac);
-                    W8_app.Visibility = Visibility.Visible;
-                    W8_app.Content = lst[7][1].ToString() + " => " + SBox[lst[7][1]].ToString() + "\t" +
-                       lst[7][2].ToString() + " => " + SBox[lst[7][2]].ToString() + "\n" +
-                       lst[7][3].ToString() + " => " + SBox[lst[7][3]].ToString() + "\t" +
-                    lst[7][0].ToString() + " => " + SBox[lst[7][0]].ToString();
-                    System.Timers.Timer timer1_8 = new System.Timers.Timer(5000);
-                    timer1_8.AutoReset = false;
-                    timer1_8.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-
-                            W8_re1.BeginAnimation(OpacityProperty, oopac);
-                            W8_re1.Visibility = Visibility.Visible;
-                            W8_re1.Content = "SubWord(RotWord(W[7])) = [ " + string.Join(", ", SubWord(RotWord_2(lst[7]))) + " ]";
-
-                            System.Timers.Timer timer1_8 = new System.Timers.Timer(5000);
-                            timer1_8.AutoReset = false;
-                            timer1_8.Elapsed += (s, e) =>
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    W8_r.Content = "Rcon[i] = [rᵢ, 0, 0, 0]";
-                                    W8_r.BeginAnimation(OpacityProperty, oopac);
-                                    W8_app.BeginAnimation(OpacityProperty, oopac2);
-                                    W8_r.Visibility = Visibility.Visible;
-                                    System.Timers.Timer timer1_8 = new System.Timers.Timer(5000);
-                                    timer1_8.AutoReset = false;
-                                    timer1_8.Elapsed += (s, e) =>
-                                    {
-                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                        {
-
-
-                                            W8_app.BeginAnimation(OpacityProperty, oopac);
-                                            W8_app.Visibility = Visibility.Visible;
-                                            W8_app.Content = "r₁ = 1        rᵢ = { 2·rᵢ₋₁                  if rᵢ₋₁ < 128\r\n                        (2·rᵢ₋₁ − 256) ⊕ 27     if rᵢ₋₁ ≥ 128 }\r\n";
-                                            System.Timers.Timer timer1_8 = new System.Timers.Timer(5000);
-                                            timer1_8.AutoReset = false;
-                                            timer1_8.Elapsed += (s, e) =>
-                                            {
-                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                {
-
-                                                    W8_re2.BeginAnimation(OpacityProperty, oopac);
-                                                    W8_re2.Visibility = Visibility.Visible;
-                                                    W8_re2.Content = "Rcon[1] = [1, 0, 0, 0] ";
-
-                                                    System.Timers.Timer timi = new System.Timers.Timer(5000);
-                                                    timi.AutoReset = false;
-                                                    timi.Elapsed += (s, e) =>
-                                                    {
-                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                        {
-                                                            W8_r.BeginAnimation(OpacityProperty, oopac2);
-                                                            W8_app.BeginAnimation(OpacityProperty, oopac2);
-                                                            W8_app.Content = "W[8] = [" + string.Join(", ", lst[0]) + "] ⊕ [" + string.Join(", ", SubWord(RotWord_2(lst[7]))) + "] ⊕ [1, 0, 0, 0]";
-                                                            W8_app.BeginAnimation(OpacityProperty, oopac);
-                                                        });
-                                                    }; timi.Start();
-                                                    activeTimers.Add(timi);
-                                                    System.Timers.Timer timi2 = new System.Timers.Timer(9000);
-                                                    timi2.AutoReset = false;
-                                                    timi2.Elapsed += (s, e) =>
-                                                    {
-                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                        {
-                                                            byte[] Rcon = new byte[] { 1, 0, 0, 0 };
-
-                                                            for (int i = 0; i < 4; i++)
-                                                            {
-                                                                byte s = (byte)(lst[0][i] ^ SubWord(RotWord_2(lst[7]))[i]);
-                                                                byte n = (byte)(s ^ Rcon[i]);
-                                                                w8[i] = n;
-
-                                                            }
-                                                            W8_re.BeginAnimation(OpacityProperty, oopac2);
-                                                            W8_re1.BeginAnimation(OpacityProperty, oopac2);
-                                                            W8_re2.BeginAnimation(OpacityProperty, oopac2);
-
-
-                                                            System.Timers.Timer timi2 = new System.Timers.Timer(1000);
-                                                            timi2.AutoReset = false;
-                                                            timi2.Elapsed += (s, e) =>
-                                                            {
-                                                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                                {
-                                                                    W8_re1.Content = "W[8] = [" + string.Join(", ", w8) + " ]";
-                                                                    W8_re1.BeginAnimation(OpacityProperty, oopac);
-                                                                });
-                                                            }; timi2.Start();
-                                                            activeTimers.Add(timi2);
-
-                                                        });
-                                                    }; timi2.Start();
-                                                    activeTimers.Add(timi2);
-                                                    System.Timers.Timer timi3 = new System.Timers.Timer(15000);
-                                                    timi3.AutoReset = false;
-                                                    timi3.Elapsed += (s, e) =>
-                                                    {
-                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                        {
-                                                            change_color(rule1, "#F0F8FF", 2000);
-                                                            change_color(if1, "#FACC15", 2000);
-                                                            W8_re1.BeginAnimation(OpacityProperty, oopac2);
-                                                            W8_app.BeginAnimation(OpacityProperty, oopac2);
-                                                            W8.BeginAnimation(OpacityProperty, oopac2);
-                                                        });
-                                                    }; timi3.Start();
-                                                    activeTimers.Add(timi3);
-                                                    System.Timers.Timer timi4 = new System.Timers.Timer(20000);
-                                                    timi4.AutoReset = false;
-                                                    timi4.Elapsed += (s, e) =>
-                                                    {
-                                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                                        {
-                                                            W8.Margin = new Thickness(490, 170, 0, 0);
-                                                            move(W8, "490,140,0,0", "490,170,0,0", 600);
-                                                            W8.Content = "W[9] = ?";
-                                                            W8.BeginAnimation(OpacityProperty, oopac);
-
-                                                        });
-
-                                                    }; timi4.Start();
-                                                    activeTimers.Add(timi4);
-
-
-
-                                                });
-
-
-                                            };
-                                            timer1_8.Start();
-                                            activeTimers.Add(timer1_8);
-
-
-                                        });
-
-
-                                    };
-                                    timer1_8.Start();
-                                    activeTimers.Add(timer1_8);
-
-
-
-                                });
-
-
-                            };
-                            timer1_8.Start();
-                            activeTimers.Add(timer1_8);
-
-
-
-
-
-                        });
-
-
-                    };
-                    timer1_8.Start();
-                    activeTimers.Add(timer1_8);
-
-
-                });
-
-
-            };
-            timer1_8.Start();
-            activeTimers.Add(timer1_8);
-
-            System.Timers.Timer timi4 = new System.Timers.Timer(226000);
-            timi4.AutoReset = false;
-            timi4.Elapsed += (s1, e1) =>
+            info.BeginAnimation(OpacityProperty, oopac);
+            foreach (Label i in l2)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    W8_i.Content = "9 mod 8 = 1";
-                    W8_i.BeginAnimation(OpacityProperty, oopac);
-                    change_color(rule3, "#22C55E", 4000);
-                    change_color(if3, "#22C55E", 4000);
+                    i.BeginAnimation(OpacityProperty, oopac);
+                    i.Visibility = Visibility.Visible;
+            }
+            U1_show.BeginAnimation(OpacityProperty, oopac2);
 
-                });
+            await Task.Delay(10000);
 
+            W8.BeginAnimation(OpacityProperty, oopac);
+            W8.Visibility = Visibility.Visible;
 
-            }; timi4.Start();
-            activeTimers.Add(timi4);
-            System.Timers.Timer timi41 = new System.Timers.Timer(232000);
-            timi41.AutoReset = false;
-            timi41.Elapsed += (s2, e2) =>
+            await Task.Delay(900);
+                    
+            W8_i.BeginAnimation(OpacityProperty, oopac);
+            W8_i.Visibility = Visibility.Visible;
+            change_color(rule1, "#22C55E", 2000);
+            change_color(if1, "#22C55E", 2000);
+
+            await Task.Delay(4000);
+                            
+            W8_i.BeginAnimation(OpacityProperty, oopac2);
+            W8.Content = "W[8] = W[0] ⊕ SubWord(RotWord(W[7])) ⊕ Rcon[1]";
+
+            await Task.Delay(3000);
+                                    
+            move(W8, "490,170,0,0", "490,140,0,0", 600);
+            W8_r.BeginAnimation(OpacityProperty, oopac);
+            W8_r.Visibility = Visibility.Visible;
+
+            await Task.Delay(3000);
+            
+            W8.Margin = new Thickness(490, 140, 0, 0);
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+            W8_app.Visibility = Visibility.Visible;
+            W8_app.Content = "W[7] = " + "[ " + string.Join(", ", lst[7]) + " ]";
+            await Task.Delay(3000);
+
+            W8_re.BeginAnimation(OpacityProperty, oopac);
+            W8_re.Visibility = Visibility.Visible;
+            W8_re.Content = "RotWord(W[7]) = " + RotWord(lst[7]);
+
+            await Task.Delay(3000);
+
+            W8_r.Content = "SubWord(W) => SBox";
+            W8_r.BeginAnimation(OpacityProperty, oopac);
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            W8_r.Visibility = Visibility.Visible;
+
+            await Task.Delay(10000);
+
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+            W8_app.Visibility = Visibility.Visible;
+            W8_app.Content = lst[7][1].ToString() + " => " + SBox[lst[7][1]].ToString() + "\t" +
+                             lst[7][2].ToString() + " => " + SBox[lst[7][2]].ToString() + "\n" +
+                             lst[7][3].ToString() + " => " + SBox[lst[7][3]].ToString() + "\t" +
+                             lst[7][0].ToString() + " => " + SBox[lst[7][0]].ToString();
+            await Task.Delay(5000);
+
+            W8_re1.BeginAnimation(OpacityProperty, oopac);
+            W8_re1.Visibility = Visibility.Visible;
+            W8_re1.Content = "SubWord(RotWord(W[7])) = [ " + string.Join(", ", SubWord(RotWord_2(lst[7]))) + " ]";
+            await Task.Delay(5000);
+
+            
+            W8_r.Content = "Rcon[i] = [rᵢ, 0, 0, 0]";
+            W8_r.BeginAnimation(OpacityProperty, oopac);
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            W8_r.Visibility = Visibility.Visible;
+            await Task.Delay(5000);
+
+           
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+            W8_app.Visibility = Visibility.Visible;
+            W8_app.Content = "r₁ = 1        rᵢ = { 2·rᵢ₋₁                  if rᵢ₋₁ < 128\r\n                        (2·rᵢ₋₁ − 256) ⊕ 27     if rᵢ₋₁ ≥ 128 }\r\n";
+            await Task.Delay(5000);
+
+            
+            W8_re2.BeginAnimation(OpacityProperty, oopac);
+            W8_re2.Visibility = Visibility.Visible;
+            W8_re2.Content = "Rcon[1] = [1, 0, 0, 0] ";
+
+            await Task.Delay(5000);
+
+            
+            W8_r.BeginAnimation(OpacityProperty, oopac2);
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            W8_app.Content = "W[8] = [" + string.Join(", ", lst[0]) + "] ⊕ [" + string.Join(", ", SubWord(RotWord_2(lst[7]))) + "] ⊕ [1, 0, 0, 0]";
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(4000);
+
+            
+            byte[] Rcon = new byte[] { 1, 0, 0, 0 };
+
+            for (int i = 0; i < 4; i++)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    W8_i.BeginAnimation(OpacityProperty, oopac2);
-                    move(W8, "490,170,0,0", "490,140,0,0", 600);
-                    W8_r.Content = "W[9] = W[9-8] ⊕ W[9-1]";
-                    W8_r.BeginAnimation(OpacityProperty, oopac);
-                    W8_r.Visibility = Visibility.Visible;
-                    W8_app.Visibility = Visibility.Visible;
-                    W8_app.Content = "W[9-8] = W[1] = [ " + string.Join(", ", lst[1]) + " ]   \nW[9-1] = W[8] = [ " + string.Join(", ", w8) + " ]";
-                    W8_app.BeginAnimation(OpacityProperty, oopac);
+                 byte s = (byte)(lst[0][i] ^ SubWord(RotWord_2(lst[7]))[i]);
+                 byte n = (byte)(s ^ Rcon[i]);
+                 w8[i] = n;
 
-                });
-            }; timi41.Start();
-            activeTimers.Add(timi41);
-            System.Timers.Timer timi42 = new System.Timers.Timer(242000);
-            timi42.AutoReset = false;
-            timi42.Elapsed += (s3, e3) =>
+            }
+            W8_re.BeginAnimation(OpacityProperty, oopac2);
+            W8_re1.BeginAnimation(OpacityProperty, oopac2);
+            W8_re2.BeginAnimation(OpacityProperty, oopac2);
+            await Task.Delay(1000);
+
+
+            W8_re1.Content = "W[8] = [" + string.Join(", ", w8) + " ]";
+            W8_re1.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(6000);
+
+
+            change_color(rule1, "#F0F8FF", 2000);
+            change_color(if1, "#FACC15", 2000);
+            W8_re1.BeginAnimation(OpacityProperty, oopac2);
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            await Task.Delay(5000);
+
+            W8.Margin = new Thickness(490, 170, 0, 0);
+            move(W8, "490,140,0,0", "490,170,0,0", 600);
+            W8.Content = "W[9] = ?";
+            W8.BeginAnimation(OpacityProperty, oopac);
+
+            await Task.Delay(9000);
+
+            W8_i.Content = "9 mod 8 = 1";
+            W8_i.BeginAnimation(OpacityProperty, oopac);
+            change_color(rule3, "#22C55E", 4000);
+            change_color(if3, "#22C55E", 4000);
+
+                
+            await Task.Delay(6000);
+
+            W8_i.BeginAnimation(OpacityProperty, oopac2);
+            move(W8, "490,170,0,0", "490,140,0,0", 600);
+            W8_r.Content = "W[9] = W[9-8] ⊕ W[9-1]";
+            W8_r.BeginAnimation(OpacityProperty, oopac);
+            W8_r.Visibility = Visibility.Visible;
+            W8_app.Visibility = Visibility.Visible;
+            W8_app.Content = "W[9-8] = W[1] = [ " + string.Join(", ", lst[1]) + " ]   \nW[9-1] = W[8] = [ " + string.Join(", ", w8) + " ]";
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+
+                
+            await Task.Delay(10000);
+
+            for (int i = 0; i < 4; i++)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
+                 byte s = (byte)(lst[1][i] ^ w8[i]);
+                 result[i] = s;
+
+            }
+            W8_re.Content = "W[9] = [ " + string.Join(", ", result) + " ]";
+            W8_re.Visibility = Visibility.Visible;
+            W8_re.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(10000);
+            
+            W8_re.BeginAnimation(OpacityProperty, oopac2);
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            W8_r.BeginAnimation(OpacityProperty, oopac2);
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            change_color(rule3, "#F0F8FF", 2000);
+            change_color(if3, "#FACC15", 2000);
 
 
-                    for (int i = 0; i < 4; i++)
-                    {
-                        byte s = (byte)(lst[1][i] ^ w8[i]);
-                        result[i] = s;
+            await Task.Delay(10000);
+            
+            W8.Margin = new Thickness(490, 170, 0, 0);
+            move(W8, "490,140,0,0", "490,170,0,0", 600);
+            W8.Content = "W[12] = ?";
+            W8.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(6000);
+                   
+            W8_i.Content = "Nk = 8 > 6 and 12 mod 8 = 4";
+            W8_i.BeginAnimation(OpacityProperty, oopac);
+            change_color(rule2, "#22C55E", 4000);
+            change_color(if2, "#22C55E", 4000);
 
-                    }
-                    W8_re.Content = "W[9] = [ " + string.Join(", ", result) + " ]";
-                    W8_re.Visibility = Visibility.Visible;
-                    W8_re.BeginAnimation(OpacityProperty, oopac);
-                    System.Timers.Timer timi42 = new System.Timers.Timer(10000);
-                    timi42.AutoReset = false;
-                    timi42.Elapsed += (s3, e3) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            W8_re.BeginAnimation(OpacityProperty, oopac2);
-                            W8.BeginAnimation(OpacityProperty, oopac2);
-                            W8_r.BeginAnimation(OpacityProperty, oopac2);
-                            W8_app.BeginAnimation(OpacityProperty, oopac2);
-                            change_color(rule3, "#F0F8FF", 2000);
-                            change_color(if3, "#FACC15", 2000);
+            await Task.Delay(5000);
 
-
-                        });
-                    }; timi42.Start();
-                    activeTimers.Add(timi42);
-
-
-                });
-            }; timi42.Start();
-            activeTimers.Add(timi42);
-
-            System.Timers.Timer timi46 = new System.Timers.Timer(262000);
-            timi46.AutoReset = false;
-            timi46.Elapsed += (s, e) =>
+            byte[] result_10 = new byte[4];
+            byte[] result_11 = new byte[4];
+            for (int i = 0; i < 4; i++)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    W8.Margin = new Thickness(490, 170, 0, 0);
-                    move(W8, "490,140,0,0", "490,170,0,0", 600);
-                    W8.Content = "W[12] = ?";
-                    W8.BeginAnimation(OpacityProperty, oopac);
-                    System.Timers.Timer timi4 = new System.Timers.Timer(6000);
-                    timi4.AutoReset = false;
-                    timi4.Elapsed += (s1, e1) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            W8_i.Content = "Nk = 8 > 6 and 12 mod 8 = 4";
-                            W8_i.BeginAnimation(OpacityProperty, oopac);
-                            change_color(rule2, "#22C55E", 4000);
-                            change_color(if2, "#22C55E", 4000);
-
-                        });
-
-
-                    }; timi4.Start();
-                    activeTimers.Add(timi4);
-                    System.Timers.Timer timi411 = new System.Timers.Timer(11000);
-                    timi411.AutoReset = false;
-                    timi411.Elapsed += (s2, e2) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            byte[] result_10 = new byte[4];
-                            byte[] result_11 = new byte[4];
-                            for (int i = 0; i < 4; i++)
-                            {
-                                byte s = (byte)(lst[2][i] ^ result[i]);
-                                result_10[i] = s;
-                            }
-                            for (int i = 0; i < 4; i++)
-                            {
-                                byte s = (byte)(lst[3][i] ^ result_10[i]);
-                                result_11[i] = s;
-                            }
-                            W8_i.BeginAnimation(OpacityProperty, oopac2);
-                            move(W8, "490,170,0,0", "490,140,0,0", 600);
-                            W8_r.Content = "W[12] = W[12-8] ⊕ SubWord(W[12-1])";
-                            W8_r.BeginAnimation(OpacityProperty, oopac);
-                            W8_r.Visibility = Visibility.Visible;
-                            W8_app.Visibility = Visibility.Visible;
-                            W8_app.Content = "W[12-8] = W[4] = [ " + string.Join(", ", lst[4]) + " ]   \nW[12-1] = W[11] = [ " + string.Join(", ", result_11) + " ]";
-                            W8_app.BeginAnimation(OpacityProperty, oopac);
-                            System.Timers.Timer timi421 = new System.Timers.Timer(6000);
-                            timi421.AutoReset = false;
-                            timi421.Elapsed += (s3, e3) =>
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-
-                                    byte[] result_12 = new byte[4];
-                                    for (int i = 0; i < 4; i++)
-                                    {
-                                        byte s = (byte)(lst[4][i] ^ SubWord(result_11)[i]);
-                                        result_12[i] = s;
-                                    }
-                                    W8_re.Content = "W[12] = [ " + string.Join(", ", result_12) + " ]";
-                                    W8_re.Visibility = Visibility.Visible;
-                                    W8_re.BeginAnimation(OpacityProperty, oopac);
-                                    System.Timers.Timer timi47 = new System.Timers.Timer(10000);
-                                    timi47.AutoReset = false;
-                                    timi47.Elapsed += (s3, e3) =>
-                                    {
-                                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                        {
-                                            W8_re.BeginAnimation(OpacityProperty, oopac2);
-                                            W8.BeginAnimation(OpacityProperty, oopac2);
-                                            W8_r.BeginAnimation(OpacityProperty, oopac2);
-                                            W8_app.BeginAnimation(OpacityProperty, oopac2);
-                                            change_color(rule2, "#F0F8FF", 2000);
-                                            change_color(if2, "#FACC15", 2000);
-
-
-                                        });
-                                    }; timi47.Start();
-                                    activeTimers.Add(timi47);
-
-
-                                });
-                            }; timi421.Start();
-                            activeTimers.Add(timi421);
-
-                        });
-                    }; timi411.Start();
-                    activeTimers.Add(timi41);
-
-
-                });
-
-            }; timi46.Start();
-            activeTimers.Add(timi46);
-
-            System.Timers.Timer tt = new System.Timers.Timer(290000);
-            tt.AutoReset = false;
-            tt.Elapsed += (s, e) =>
+                  byte s = (byte)(lst[2][i] ^ result[i]);
+                  result_10[i] = s;
+            }
+            for (int i = 0; i < 4; i++)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    title.BeginAnimation(OpacityProperty, oopac2);
-                    info.BeginAnimation(OpacityProperty, oopac2);
-                    rule1.BeginAnimation(OpacityProperty, oopac2);
-                    if1.BeginAnimation(OpacityProperty, oopac2);
-                    rule2.BeginAnimation(OpacityProperty, oopac2);
-                    if2.BeginAnimation(OpacityProperty, oopac2);
-                    rule3.BeginAnimation(OpacityProperty, oopac2);
-                    if3.BeginAnimation(OpacityProperty, oopac2);
-                    info.Content = "After the key schedule generates all the round keys, AES begins \n" +
+                  byte s = (byte)(lst[3][i] ^ result_10[i]);
+                  result_11[i] = s;
+            }
+            W8_i.BeginAnimation(OpacityProperty, oopac2);
+            move(W8, "490,170,0,0", "490,140,0,0", 600);
+            W8_r.Content = "W[12] = W[12-8] ⊕ SubWord(W[12-1])";
+            W8_r.BeginAnimation(OpacityProperty, oopac);
+            W8_r.Visibility = Visibility.Visible;
+            W8_app.Visibility = Visibility.Visible;
+            W8_app.Content = "W[12-8] = W[4] = [ " + string.Join(", ", lst[4]) + " ]   \nW[12-1] = W[11] = [ " + string.Join(", ", result_11) + " ]";
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(6000);
+                            
+            byte[] result_12 = new byte[4];
+            for (int i = 0; i < 4; i++)
+            { 
+                 byte s = (byte)(lst[4][i] ^ SubWord(result_11)[i]);
+                 result_12[i] = s;
+            }
+            W8_re.Content = "W[12] = [ " + string.Join(", ", result_12) + " ]";
+            W8_re.Visibility = Visibility.Visible;
+            W8_re.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(10000);
+                                    
+            W8_re.BeginAnimation(OpacityProperty, oopac2);
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            W8_r.BeginAnimation(OpacityProperty, oopac2);
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            change_color(rule2, "#F0F8FF", 2000);
+            change_color(if2, "#FACC15", 2000);
+
+            await Task.Delay(10000);
+            
+            title.BeginAnimation(OpacityProperty, oopac2);
+            info.BeginAnimation(OpacityProperty, oopac2);
+            rule1.BeginAnimation(OpacityProperty, oopac2);
+            if1.BeginAnimation(OpacityProperty, oopac2);
+            rule2.BeginAnimation(OpacityProperty, oopac2);
+            if2.BeginAnimation(OpacityProperty, oopac2);
+            rule3.BeginAnimation(OpacityProperty, oopac2);
+            if3.BeginAnimation(OpacityProperty, oopac2);
+            await Task.Delay(200);
+            info.Content = "After the key schedule generates all the round keys, AES begins \n" +
                     "the encryption process by combining the plaintext data with \n" +
                     "the first round key. \n\n" +
                     "This is done using a bitwise XOR operation, where each byte \n" +
@@ -1668,204 +1068,142 @@ namespace EncodeX
                     "This initial key mixing ensures that the plaintext is immediately \n“masked” by " +
                     "the secret key, providing the first layer of \nsecurity before the main rounds " +
                     "of SubBytes, \nShiftRows, and MixColumns begin.";
+            await Task.Delay(900);
 
-                    System.Timers.Timer tt2 = new System.Timers.Timer(900);
-                    tt2.AutoReset = false;
-                    tt2.Elapsed += (s, e) =>
+            info.BeginAnimation(OpacityProperty, oopac);
+            await Task.Delay(900);
+
+            text_title.BeginAnimation(OpacityProperty, oopac);
+            key_title.BeginAnimation(OpacityProperty, oopac);
+            text_title.Visibility = Visibility.Visible;
+            key_title.Visibility = Visibility.Visible;
+
+            await Task.Delay(900);
+            
+            List<Label> matrix_txt = new List<Label> { t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9, t_10, t_11, t_12, t_13, t_14, t_15, t_16 };
+            List<Label> matrix_k = new List<Label> { k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, k_12, k_13, k_14, k_15, k_16 };
+
+            for (int i = 0; i < 16; i++)
+            {
+                   matrix_txt[i].Content = first16Bytes[i].ToString();
+            }
+
+            for (int word = 0; word < 4; word++)
+            {
+                   for (int byteInWord = 0; byteInWord < 4; byteInWord++)
+                   {
+                           matrix_k[word * 4 + byteInWord].Content = lst[word][byteInWord].ToString();
+                   }
+            }
+
+
+            for (int i = 0; i < 16; i++)
+            {
+                await Task.Delay(600);
+                int index = i;
+
+                matrix_txt[index].BeginAnimation(OpacityProperty, oopac);
+                matrix_txt[index].Visibility = Visibility.Visible;
+
+                matrix_k[index].BeginAnimation(OpacityProperty, oopac);
+                matrix_k[index].Visibility = Visibility.Visible;
+            }
+
+            await Task.Delay(10000);
+            
+            text_title.BeginAnimation(OpacityProperty, oopac2);
+            key_title.BeginAnimation(OpacityProperty, oopac2);
+            foreach (Label myControl in matrix_txt)
+            {
+                   ThicknessAnimation moveUp = new ThicknessAnimation
+                   {
+                           From = myControl.Margin,
+                           To = new Thickness(myControl.Margin.Left, myControl.Margin.Top - 60, myControl.Margin.Right,myControl.Margin.Bottom),
+
+                           Duration = TimeSpan.FromMilliseconds(800),
+                           EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                   };
+
+                   myControl.BeginAnimation(FrameworkElement.MarginProperty, moveUp);
+            }
+            foreach (Label myControl in matrix_k)
+            {
+                ThicknessAnimation moveUp = new ThicknessAnimation
+                {
+                    From = myControl.Margin,
+                    To = new Thickness(
+                                           myControl.Margin.Left,
+                                              myControl.Margin.Top - 60,
+                                   myControl.Margin.Right,
+                           myControl.Margin.Bottom),
+
+                    Duration = TimeSpan.FromMilliseconds(800),
+                    EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                };
+
+                myControl.BeginAnimation(FrameworkElement.MarginProperty, moveUp);
+            }
+            for (int i = 0; i < 17; i++)
+            {
+                int index = i;
+                System.Timers.Timer showing = new System.Timers.Timer(6500 * (index + 1));
+                showing.AutoReset = false;
+                showing.Elapsed += (s, e) =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        if (index != 0 || index == 16)
                         {
+                            change_color(matrix_txt[index - 1], "#33E0C9", 500);
+                            change_color(matrix_k[index - 1], "#FFFFFF", 500);
 
-                            info.BeginAnimation(OpacityProperty, oopac);
-                        });
-
-
-                    }; tt2.Start();
-                    activeTimers.Add(tt2);
-                    System.Timers.Timer tt3 = new System.Timers.Timer(1800);
-                    tt3.AutoReset = false;
-                    tt3.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        }
+                        if (index != 16)
                         {
-                            text_title.BeginAnimation(OpacityProperty, oopac);
-                            key_title.BeginAnimation(OpacityProperty, oopac);
-                            text_title.Visibility = Visibility.Visible;
-                            key_title.Visibility = Visibility.Visible;
+                            change_color(matrix_txt[index], "#FF0000", 500);
+                            change_color(matrix_k[index], "#FF0000", 500);
+                        }
 
-                        });
+                    });
+                };
+                showing.Start();
+                activeTimers.Add(showing);
+            }
+            List<byte> ldr = new List<byte> { };
+            foreach (byte[] elem in lst)
+            {
+                for (int y = 0; y < 4; y++)
+                {
+                    ldr.Add(elem[y]);
+                }
+            }
+            List<Label> matrix_r = new List<Label> { r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, r_9, r_10, r_11, r_12, r_13, r_14, r_15, r_16 };
+            for (int i = 0; i < 17; i++)
+            {
+                await Task.Delay(6500);
+                int index = i;
+                if (index != 0 || index == 16)
+                {
+                    matrix_r[index - 1].Foreground = Brushes.White;
+                    byte res = (byte)(first16Bytes[index - 1] ^ ldr[index - 1]);
+                    matrix_r[index - 1].Content = res.ToString();
+                }
+                if (index != 16)
+                {
+                    matrix_r[index].Foreground = Brushes.Red;
+                    matrix_r[index].Content = matrix_txt[index].Content + " ⊕ " + matrix_k[index].Content;
+                    matrix_r[index].Visibility = Visibility.Visible;
+                    matrix_r[index].BeginAnimation(OpacityProperty, oopac);
+                }
 
-
-                    }; tt3.Start();
-                    activeTimers.Add(tt3);
-                    System.Timers.Timer tt4 = new System.Timers.Timer(2700);
-                    tt4.AutoReset = false;
-                    tt4.Elapsed += (s, e) =>
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            List<Label> matrix_txt = new List<Label> { t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9, t_10, t_11, t_12, t_13, t_14, t_15, t_16 };
-                            List<Label> matrix_k = new List<Label> { k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, k_12, k_13, k_14, k_15, k_16 };
-
-                            for (int i = 0; i < 16; i++)
-                            {
-                                matrix_txt[i].Content = first16Bytes[i].ToString();
-                            }
-
-
-                            for (int word = 0; word < 4; word++)
-                            {
-                                for (int byteInWord = 0; byteInWord < 4; byteInWord++)
-                                {
-                                    matrix_k[word * 4 + byteInWord].Content = lst[word][byteInWord].ToString();
-                                }
-                            }
-
-
-                            for (int i = 0; i < 16; i++)
-                            {
-                                int index = i;
-                                System.Timers.Timer showing = new System.Timers.Timer(600 * (index + 1));
-                                showing.AutoReset = false;
-                                showing.Elapsed += (s, e) =>
-                                {
-                                    Application.Current.Dispatcher.Invoke(() =>
-                                    {
-                                        matrix_txt[index].BeginAnimation(OpacityProperty, oopac);
-                                        matrix_txt[index].Visibility = Visibility.Visible;
-
-                                        matrix_k[index].BeginAnimation(OpacityProperty, oopac);
-                                        matrix_k[index].Visibility = Visibility.Visible;
-                                    });
-                                };
-                                showing.Start();
-                                activeTimers.Add(showing);
-                            }
-                            System.Timers.Timer tt6 = new System.Timers.Timer(10000);
-                            tt6.AutoReset = false;
-                            tt6.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    text_title.BeginAnimation(OpacityProperty, oopac2);
-                                    key_title.BeginAnimation(OpacityProperty, oopac2);
-                                    foreach (Label myControl in matrix_txt)
-                                    {
-                                        ThicknessAnimation moveUp = new ThicknessAnimation
-                                        {
-                                            From = myControl.Margin,
-                                            To = new Thickness(
-                                                                   myControl.Margin.Left,
-                                                                      myControl.Margin.Top - 60,
-                                                           myControl.Margin.Right,
-                                                   myControl.Margin.Bottom),
-
-                                            Duration = TimeSpan.FromMilliseconds(800),
-                                            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
-                                        };
-
-                                        myControl.BeginAnimation(FrameworkElement.MarginProperty, moveUp);
-                                    }
-                                    foreach (Label myControl in matrix_k)
-                                    {
-                                        ThicknessAnimation moveUp = new ThicknessAnimation
-                                        {
-                                            From = myControl.Margin,
-                                            To = new Thickness(
-                                                                   myControl.Margin.Left,
-                                                                      myControl.Margin.Top - 60,
-                                                           myControl.Margin.Right,
-                                                   myControl.Margin.Bottom),
-
-                                            Duration = TimeSpan.FromMilliseconds(800),
-                                            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
-                                        };
-
-                                        myControl.BeginAnimation(FrameworkElement.MarginProperty, moveUp);
-                                    }
-                                    for (int i = 0; i < 17; i++)
-                                    {
-                                        int index = i;
-                                        System.Timers.Timer showing = new System.Timers.Timer(6500 * (index + 1));
-                                        showing.AutoReset = false;
-                                        showing.Elapsed += (s, e) =>
-                                        {
-                                            Application.Current.Dispatcher.Invoke(() =>
-                                            {
-                                                if (index != 0 || index == 16)
-                                                {
-                                                    change_color(matrix_txt[index - 1], "#33E0C9", 500);
-                                                    change_color(matrix_k[index - 1], "#FFFFFF", 500);
-
-                                                }
-                                                if (index != 16)
-                                                {
-                                                    change_color(matrix_txt[index], "#FF0000", 500);
-                                                    change_color(matrix_k[index], "#FF0000", 500);
-                                                }
-
-                                            });
-                                        };
-                                        showing.Start();
-                                        activeTimers.Add(showing);
-                                    }
-                                    List<byte> ldr = new List<byte> { };
-                                    foreach (byte[] elem in lst)
-                                    {
-                                        for (int y = 0; y < 4; y++)
-                                        {
-                                            ldr.Add(elem[y]);
-                                        }
-                                    }
-                                    List<Label> matrix_r = new List<Label> { r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, r_9, r_10, r_11, r_12, r_13, r_14, r_15, r_16 };
-                                    for (int i = 0; i < 17; i++)
-                                    {
-                                        int index = i;
-                                        System.Timers.Timer showing = new System.Timers.Timer(6500 * (index + 1));
-                                        showing.AutoReset = false;
-                                        showing.Elapsed += (s, e) =>
-                                        {
-                                            Application.Current.Dispatcher.Invoke(() =>
-                                            {
-                                                if (index != 0 || index == 16)
-                                                {
-                                                    matrix_r[index - 1].Foreground = Brushes.White;
-                                                    byte res = (byte)(first16Bytes[index - 1] ^ ldr[index - 1]);
-                                                    matrix_r[index - 1].Content = res.ToString();
-                                                }
-                                                if (index != 16)
-                                                {
-                                                    matrix_r[index].Foreground = Brushes.Red;
-                                                    matrix_r[index].Content = matrix_txt[index].Content + " ⊕ " + matrix_k[index].Content;
-                                                    matrix_r[index].Visibility = Visibility.Visible;
-                                                    matrix_r[index].BeginAnimation(OpacityProperty, oopac);
-                                                }
-                                            });
-                                        };
-                                        showing.Start();
-                                        activeTimers.Add(showing);
-                                    }
-
-                                });
-                            };
-                            tt6.Start();
-                            activeTimers.Add(tt6);
-
-                        });
-
-
-                    }; tt4.Start();
-                    activeTimers.Add(tt4);
-                });
-
-
-            }; tt.Start();
-            activeTimers.Add(tt);
+            }
+            await action6();
 
         }
 
-        public void action6()
+        public async Task action6()
         {
+
             title.Visibility = Visibility.Hidden;
             rule1.Visibility = Visibility.Hidden;
             rule2.Visibility = Visibility.Hidden;
@@ -1873,12 +1211,7 @@ namespace EncodeX
             if1.Visibility = Visibility.Hidden;
             if2.Visibility = Visibility.Hidden;
             if3.Visibility = Visibility.Hidden;
-            foreach (var time in activeTimers)
-            {
-                time.Stop();
-                time.Dispose();
-            }
-            activeTimers.Clear();
+            
             List<byte[]> lst = new List<byte[]> { };
             for (int i = 0; i < 32; i += 4)
             {
@@ -1907,11 +1240,7 @@ namespace EncodeX
                 ThicknessAnimation moveUp = new ThicknessAnimation
                 {
                     From = myControl.Margin,
-                    To = new Thickness(
-                                                                   myControl.Margin.Left,
-                                                                      myControl.Margin.Top - 90,
-                                                           myControl.Margin.Right,
-                                                   myControl.Margin.Bottom),
+                    To = new Thickness(myControl.Margin.Left, myControl.Margin.Top - 90, myControl.Margin.Right, myControl.Margin.Bottom),
 
                     Duration = TimeSpan.FromMilliseconds(1000),
                     EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
@@ -1928,18 +1257,7 @@ namespace EncodeX
 
 
             }
-            DoubleAnimation oopac = new DoubleAnimation
-            {
-                From = 0.0,
-                To = 1.0,
-                Duration = TimeSpan.FromMilliseconds(1200)
-            };
-            DoubleAnimation oopac2 = new DoubleAnimation
-            {
-
-                To = 0.0,
-                Duration = TimeSpan.FromMilliseconds(1200)
-            };
+            
             DoubleAnimation oopac3 = new DoubleAnimation
             {
 
@@ -1979,946 +1297,611 @@ namespace EncodeX
             info_sub.Visibility = Visibility.Visible;
             info_shif.Visibility = Visibility.Visible;
             info_mix.Visibility = Visibility.Visible;
-            System.Timers.Timer tm = new System.Timers.Timer(8000);
-            tm.AutoReset = false;
-            tm.Elapsed += (s, e) =>
+            await Task.Delay(8000);
+
+            change_color(info_sub, "#22C55E", 2000);
+            for (int i = 0; i < 17; i++)
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                int index = i;
+                await Task.Delay(6000);
+
+                if (index != 16)
                 {
-                    change_color(info_sub, "#22C55E", 2000);
-                    for (int i = 0; i < 17; i++)
-                    {
-                        int index = i;
-
-                        System.Timers.Timer tm2 = new System.Timers.Timer(6000 * (index + 1));
-                        tm2.AutoReset = false;
-                        tm2.Elapsed += (s, e) =>
-                        {
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                if (index != 16)
-                                {
-                                    string contentStr = matrix_r[index].Content.ToString();
-                                    byte value = byte.Parse(contentStr);
+                    string contentStr = matrix_r[index].Content.ToString();
+                    byte value = byte.Parse(contentStr);
 
 
 
-                                    change_color(matrix_r[index], "#FF0000", 500);
-                                    W8.Content = contentStr + " => " + SBox[value].ToString();
-                                    W8.BeginAnimation(OpacityProperty, oopac);
-                                    W8.Visibility = Visibility.Visible;
-                                }
+                    change_color(matrix_r[index], "#FF0000", 500);
+                    W8.Content = contentStr + " => " + SBox[value].ToString();
+                    W8.BeginAnimation(OpacityProperty, oopac);
+                    W8.Visibility = Visibility.Visible;
+                }
 
-                                if (index != 0 || index == 16)
-                                {
-                                    string contentStr = matrix_r[index - 1].Content.ToString();
-
-
-                                    byte value = byte.Parse(contentStr);
-                                    change_color(matrix_r[index - 1], "#FFFFFF", 500);
-                                    matrix_r[index - 1].Content = SBox[value].ToString();
-                                }
-                                if (index == 16)
-                                {
-                                    W8.BeginAnimation(OpacityProperty, oopac2);
-                                }
-                            });
-
-                        };
-                        tm2.Start();
-                        activeTimers.Add(tm2);
-
-
-
-                    }
-                });
-
-            };
-            tm.Start();
-            activeTimers.Add(tm);
-
-            System.Timers.Timer tt7 = new System.Timers.Timer(109000);
-            tt7.AutoReset = false;
-            tt7.Elapsed += (s, r) =>
-            {
-                Application.Current.Dispatcher.Invoke(() =>
+                if (index != 0 || index == 16)
                 {
-                    change_color(info_shif, "#22C55E", 2000);
-                    change_color(info_sub, "#F0F8FF", 2000);
-                    System.Timers.Timer tt8 = new System.Timers.Timer(5000);
-                    tt8.AutoReset = false;
-                    tt8.Elapsed += (s, r) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            change_color(matrix_r[0], "#FF0000", 2000);
-                            change_color(matrix_r[1], "#FF0000", 2000);
-                            change_color(matrix_r[2], "#FF0000", 2000);
-                            change_color(matrix_r[3], "#FF0000", 2000);
-                            W8.BeginAnimation(OpacityProperty, oopac2);
-                            W8.Content = "Row[0] => No Shift";
-                            W8.BeginAnimation(OpacityProperty, oopac);
-                        });
-                    };
-                    tt8.Start();
-                    activeTimers.Add(tt8);
-                    System.Timers.Timer tt9 = new System.Timers.Timer(9000);
-                    tt9.AutoReset = false;
-                    tt9.Elapsed += (s, r) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            change_color(matrix_r[0], "#FFFFFF", 2000);
-                            change_color(matrix_r[1], "#FFFFFF", 2000);
-                            change_color(matrix_r[2], "#FFFFFF", 2000);
-                            change_color(matrix_r[3], "#FFFFFF", 2000);
-                            change_color(matrix_r[4], "#FF0000", 2000);
-                            change_color(matrix_r[5], "#FF0000", 2000);
-                            change_color(matrix_r[6], "#FF0000", 2000);
-                            change_color(matrix_r[7], "#FF0000", 2000);
-                            W8.BeginAnimation(OpacityProperty, oopac2);
-                            W8.Content = "Row[1] => Shift Left 1";
-                            W8.BeginAnimation(OpacityProperty, oopac);
-                            System.Timers.Timer timer = new System.Timers.Timer(4000);
-                            timer.AutoReset = false;
-                            timer.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[4], "604,300,0,0", "529,300,0,0", 500);
-                                    move(matrix_r[5], "677,300,0,0", "604,300,0,0", 500);
-                                    move(matrix_r[6], "753,300,0,0", "677,300,0,0", 500);
-                                    move(matrix_r[7], "829,300,0,0", "753,300,0,0", 500);
+                    string contentStr = matrix_r[index - 1].Content.ToString();
 
 
-                                });
-                            }; timer.Start();
-                            activeTimers.Add(timer);
-                            System.Timers.Timer timer2 = new System.Timers.Timer(5000);
-                            timer2.AutoReset = false;
-                            timer2.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[4], "529,300,0,0", "529,200,0,0", 500);
-
-                                });
-                            }; timer2.Start();
-                            activeTimers.Add(timer2);
-                            System.Timers.Timer timer3 = new System.Timers.Timer(6000);
-                            timer3.AutoReset = false;
-                            timer3.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[4], "529,200,0,0", "901,200,0,0", 500);
-
-                                });
-                            }; timer3.Start();
-                            activeTimers.Add(timer3);
-                            System.Timers.Timer timer4 = new System.Timers.Timer(7000);
-                            timer4.AutoReset = false;
-                            timer4.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[4], "901,200,0,0", "901,300,0,0", 500);
-
-                                });
-                            }; timer4.Start();
-                            activeTimers.Add(timer4);
-                            System.Timers.Timer timer5 = new System.Timers.Timer(8000);
-                            timer5.AutoReset = false;
-                            timer5.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[4], "901,300,0,0", "826,300,0,0", 500);
-
-                                });
-                            }; timer5.Start();
-                            activeTimers.Add(timer5);
-                        });
-                    }; tt9.Start();
-                    activeTimers.Add(tt9);
-
-                    System.Timers.Timer tt10 = new System.Timers.Timer(32500);
-                    tt10.AutoReset = false;
-                    tt10.Elapsed += (s, r) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            change_color(matrix_r[4], "#FFFFFF", 2000);
-                            change_color(matrix_r[5], "#FFFFFF", 2000);
-                            change_color(matrix_r[6], "#FFFFFF", 2000);
-                            change_color(matrix_r[7], "#FFFFFF", 2000);
-                            change_color(matrix_r[8], "#FF0000", 2000);
-                            change_color(matrix_r[9], "#FF0000", 2000);
-                            change_color(matrix_r[10], "#FF0000", 2000);
-                            change_color(matrix_r[11], "#FF0000", 2000);
-                            W8.BeginAnimation(OpacityProperty, oopac2);
-                            W8.Content = "Row[2] => Shift Left 2";
-                            W8.BeginAnimation(OpacityProperty, oopac);
-                            System.Timers.Timer timer11 = new System.Timers.Timer(4000);
-                            timer11.AutoReset = false;
-                            timer11.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[8], "604,350,0,0", "529,350,0,0", 500);
-                                    move(matrix_r[9], "677,350,0,0", "604,350,0,0", 500);
-                                    move(matrix_r[10], "753,350,0,0", "677,350,0,0", 500);
-                                    move(matrix_r[11], "829,350,0,0", "753,350,0,0", 500);
+                    byte value = byte.Parse(contentStr);
+                    change_color(matrix_r[index - 1], "#FFFFFF", 500);
+                    matrix_r[index - 1].Content = SBox[value].ToString();
+                }
+                if (index == 16)
+                {
+                    W8.BeginAnimation(OpacityProperty, oopac2);
+                }
 
 
-                                });
-                            }; timer11.Start();
-                            activeTimers.Add(timer11);
-                            System.Timers.Timer timer211 = new System.Timers.Timer(5000);
-                            timer211.AutoReset = false;
-                            timer211.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[8], "529,350,0,0", "529,200,0,0", 500);
-
-                                    move(matrix_r[9], "604,350,0,0", "529,350,0,0", 500);
-                                    move(matrix_r[10], "677,350,0,0", "604,350,0,0", 500);
-                                    move(matrix_r[11], "753,350,0,0", "677,350,0,0", 500);
-
-                                });
-                            }; timer211.Start();
-                            activeTimers.Add(timer211);
-                            System.Timers.Timer timer311 = new System.Timers.Timer(6000);
-                            timer311.AutoReset = false;
-                            timer311.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[8], "529,200,0,0", "901,200,0,0", 500);
-                                    move(matrix_r[9], "529,350,0,0", "529,200,0,0", 500);
-
-                                });
-                            }; timer311.Start();
-                            activeTimers.Add(timer311);
-                            System.Timers.Timer timer411 = new System.Timers.Timer(7000);
-                            timer411.AutoReset = false;
-                            timer411.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[8], "901,200,0,0", "901,350,0,0", 500);
-                                    move(matrix_r[9], "529,200,0,0", "901,200,0,0", 500);
-
-                                });
-                            }; timer411.Start();
-                            activeTimers.Add(timer411);
-                            System.Timers.Timer timer511 = new System.Timers.Timer(8000);
-                            timer511.AutoReset = false;
-                            timer511.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[8], "901,350,0,0", "753,350,0,0", 500);
-                                    move(matrix_r[9], "901,200,0,0", "901,350,0,0", 500);
-                                });
-                            }; timer511.Start();
-                            activeTimers.Add(timer511);
-                            System.Timers.Timer timer611 = new System.Timers.Timer(9000);
-                            timer611.AutoReset = false;
-                            timer611.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[9], "901,350,0,0", "826,350,0,0", 500);
-
-                                });
-                            }; timer611.Start();
-                            activeTimers.Add(timer611);
-                        });
-                    };
-                    tt10.Start();
-                    activeTimers.Add(tt10);
-
-                    System.Timers.Timer tt11 = new System.Timers.Timer(70000);
-                    tt11.AutoReset = false;
-                    tt11.Elapsed += (s, r) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            change_color(matrix_r[8], "#FFFFFF", 2000);
-                            change_color(matrix_r[9], "#FFFFFF", 2000);
-                            change_color(matrix_r[10], "#FFFFFF", 2000);
-                            change_color(matrix_r[11], "#FFFFFF", 2000);
-                            change_color(matrix_r[12], "#FF0000", 2000);
-                            change_color(matrix_r[13], "#FF0000", 2000);
-                            change_color(matrix_r[14], "#FF0000", 2000);
-                            change_color(matrix_r[15], "#FF0000", 2000);
-                            W8.BeginAnimation(OpacityProperty, oopac2);
-                            W8.Content = "Row[3] => Shift Left 3";
-                            W8.BeginAnimation(OpacityProperty, oopac);
-                            System.Timers.Timer timer111 = new System.Timers.Timer(4000);
-                            timer111.AutoReset = false;
-                            timer111.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[12], "604,400,0,0", "529,400,0,0", 500);
-                                    move(matrix_r[13], "677,400,0,0", "604,400,0,0", 500);
-                                    move(matrix_r[14], "753,400,0,0", "677,400,0,0", 500);
-                                    move(matrix_r[15], "826,400,0,0", "753,400,0,0", 500);
 
 
-                                });
-                            }; timer111.Start();
-                            activeTimers.Add(timer111);
-                            System.Timers.Timer timer2111 = new System.Timers.Timer(5000);
-                            timer2111.AutoReset = false;
-                            timer2111.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[12], "529,400,0,0", "529,200,0,0", 500);
-                                    move(matrix_r[13], "604,400,0,0", "529,400,0,0", 500);
-                                    move(matrix_r[14], "677,400,0,0", "604,400,0,0", 500);
-                                    move(matrix_r[15], "753,400,0,0", "677,400,0,0", 500);
 
-                                });
-                            }; timer2111.Start();
-                            activeTimers.Add(timer2111);
-                            System.Timers.Timer timerx = new System.Timers.Timer(6000);
-                            timerx.AutoReset = false;
-                            timerx.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[12], "529,200,0,0", "901,200,0,0", 500);
-                                    move(matrix_r[13], "529,400,0,0", "529,200,0,0", 500);
-                                    move(matrix_r[14], "604,400,0,0", "529,400,0,0", 500);
-                                    move(matrix_r[15], "677,400,0,0", "604,400,0,0", 500);
 
-                                });
-                            }; timerx.Start();
-                            activeTimers.Add(timerx);
-                            System.Timers.Timer timer3111 = new System.Timers.Timer(7000);
-                            timer3111.AutoReset = false;
-                            timer3111.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[12], "901,200,0,0", "901,400,0,0", 500);
-                                    move(matrix_r[13], "529,200,0,0", "901,200,0,0", 500);
-                                    move(matrix_r[14], "529,400,0,0", "529,200,0,0", 500);
+            }
+        
 
-                                });
-                            }; timer3111.Start();
-                            activeTimers.Add(timer3111);
-                            System.Timers.Timer timer4111 = new System.Timers.Timer(8000);
-                            timer4111.AutoReset = false;
-                            timer4111.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[12], "901,400,0,0", "677,400,0,0", 500);
-                                    move(matrix_r[13], "901,200,0,0", "901,400,0,0", 500);
-                                    move(matrix_r[14], "529,200,0,0", "901,200,0,0", 500);
+            await Task.Delay(6000);
+            change_color(info_shif, "#22C55E", 2000);
+            change_color(info_sub, "#F0F8FF", 2000);
+            await Task.Delay(5000);
 
-                                });
-                            }; timer4111.Start();
-                            activeTimers.Add(timer4111);
-                            System.Timers.Timer timer5111 = new System.Timers.Timer(9000);
-                            timer5111.AutoReset = false;
-                            timer5111.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
+            change_color(matrix_r[0], "#FF0000", 2000);
+            change_color(matrix_r[1], "#FF0000", 2000);
+            change_color(matrix_r[2], "#FF0000", 2000);
+            change_color(matrix_r[3], "#FF0000", 2000);
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            W8.Content = "Row[0] => No Shift";
+            W8.BeginAnimation(OpacityProperty, oopac);
 
-                                    move(matrix_r[13], "901,400,0,0", "753,400,0,0", 500);
-                                    move(matrix_r[14], "901,200,0,0", "901,400,0,0", 500);
-                                });
-                            }; timer5111.Start();
-                            activeTimers.Add(timer5111);
-                            System.Timers.Timer timer6111 = new System.Timers.Timer(10000);
-                            timer6111.AutoReset = false;
-                            timer6111.Elapsed += (s, e) =>
-                            {
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    move(matrix_r[14], "901,400,0,0", "826,400,0,0", 500);
+            await Task.Delay(9000);
+            change_color(matrix_r[0], "#FFFFFF", 2000);
+            change_color(matrix_r[1], "#FFFFFF", 2000);
+            change_color(matrix_r[2], "#FFFFFF", 2000);
+            change_color(matrix_r[3], "#FFFFFF", 2000);
+            change_color(matrix_r[4], "#FF0000", 2000);
+            change_color(matrix_r[5], "#FF0000", 2000);
+            change_color(matrix_r[6], "#FF0000", 2000);
+            change_color(matrix_r[7], "#FF0000", 2000);
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            W8.Content = "Row[1] => Shift Left 1";
+            W8.BeginAnimation(OpacityProperty, oopac);
 
-                                });
-                            }; timer6111.Start();
-                            activeTimers.Add(timer6111);
-                        });
-                    };
-                    tt11.Start();
-                    activeTimers.Add(tt11);
+            await Task.Delay(4000);
+            move(matrix_r[4], "604,300,0,0", "529,300,0,0", 500);
+            move(matrix_r[5], "677,300,0,0", "604,300,0,0", 500);
+            move(matrix_r[6], "753,300,0,0", "677,300,0,0", 500);
+            move(matrix_r[7], "829,300,0,0", "753,300,0,0", 500);
 
-                });
-            };
-            tt7.Start();
-            activeTimers.Add(tt7);
+
+            await Task.Delay(1000);
+
+            move(matrix_r[4], "529,300,0,0", "529,200,0,0", 500);
+
+            await Task.Delay(1000);
+
+            move(matrix_r[4], "529,200,0,0", "901,200,0,0", 500);
+
+            await Task.Delay(1000);
+
+            move(matrix_r[4], "901,200,0,0", "901,300,0,0", 500);
+
+            await Task.Delay(1000);
+
+            move(matrix_r[4], "901,300,0,0", "826,300,0,0", 500);
+
+            await Task.Delay(3000);
+
+            change_color(matrix_r[4], "#FFFFFF", 2000);
+            change_color(matrix_r[5], "#FFFFFF", 2000);
+            change_color(matrix_r[6], "#FFFFFF", 2000);
+            change_color(matrix_r[7], "#FFFFFF", 2000);
+            change_color(matrix_r[8], "#FF0000", 2000);
+            change_color(matrix_r[9], "#FF0000", 2000);
+            change_color(matrix_r[10], "#FF0000", 2000);
+            change_color(matrix_r[11], "#FF0000", 2000);
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            W8.Content = "Row[2] => Shift Left 2";
+            W8.BeginAnimation(OpacityProperty, oopac);
+
+            await Task.Delay(4000);
+
+            move(matrix_r[8], "604,350,0,0", "529,350,0,0", 500);
+            move(matrix_r[9], "677,350,0,0", "604,350,0,0", 500);
+            move(matrix_r[10], "753,350,0,0", "677,350,0,0", 500);
+            move(matrix_r[11], "829,350,0,0", "753,350,0,0", 500);
+
+
+            await Task.Delay(1000);
+
+            move(matrix_r[8], "529,350,0,0", "529,200,0,0", 500);
+
+            move(matrix_r[9], "604,350,0,0", "529,350,0,0", 500);
+            move(matrix_r[10], "677,350,0,0", "604,350,0,0", 500);
+            move(matrix_r[11], "753,350,0,0", "677,350,0,0", 500);
+            await Task.Delay(2000);
+
+            move(matrix_r[8], "529,200,0,0", "901,200,0,0", 500);
+            move(matrix_r[9], "529,350,0,0", "529,200,0,0", 500);
+
+            await Task.Delay(1000);
+
+            move(matrix_r[8], "901,200,0,0", "901,350,0,0", 500);
+            move(matrix_r[9], "529,200,0,0", "901,200,0,0", 500);
+            await Task.Delay(1000);
+
+            move(matrix_r[8], "901,350,0,0", "753,350,0,0", 500);
+            move(matrix_r[9], "901,200,0,0", "901,350,0,0", 500);
+
+            await Task.Delay(1000);
+            move(matrix_r[9], "901,350,0,0", "826,350,0,0", 500);
+
+            await Task.Delay(5000);
+            change_color(matrix_r[8], "#FFFFFF", 2000);
+            change_color(matrix_r[9], "#FFFFFF", 2000);
+            change_color(matrix_r[10], "#FFFFFF", 2000);
+            change_color(matrix_r[11], "#FFFFFF", 2000);
+            change_color(matrix_r[12], "#FF0000", 2000);
+            change_color(matrix_r[13], "#FF0000", 2000);
+            change_color(matrix_r[14], "#FF0000", 2000);
+            change_color(matrix_r[15], "#FF0000", 2000);
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            W8.Content = "Row[3] => Shift Left 3";
+            W8.BeginAnimation(OpacityProperty, oopac);
+
+            await Task.Delay(4000);
+            move(matrix_r[12], "604,400,0,0", "529,400,0,0", 500);
+            move(matrix_r[13], "677,400,0,0", "604,400,0,0", 500);
+            move(matrix_r[14], "753,400,0,0", "677,400,0,0", 500);
+            move(matrix_r[15], "826,400,0,0", "753,400,0,0", 500);
+
+            await Task.Delay(1000);
+            move(matrix_r[12], "529,400,0,0", "529,200,0,0", 500);
+            move(matrix_r[13], "604,400,0,0", "529,400,0,0", 500);
+            move(matrix_r[14], "677,400,0,0", "604,400,0,0", 500);
+            move(matrix_r[15], "753,400,0,0", "677,400,0,0", 500);
+
+
+            await Task.Delay(1000);
+
+            move(matrix_r[12], "529,200,0,0", "901,200,0,0", 500);
+            move(matrix_r[13], "529,400,0,0", "529,200,0,0", 500);
+            move(matrix_r[14], "604,400,0,0", "529,400,0,0", 500);
+            move(matrix_r[15], "677,400,0,0", "604,400,0,0", 500);
+
+
+            await Task.Delay(1000);
+
+            move(matrix_r[12], "901,200,0,0", "901,400,0,0", 500);
+            move(matrix_r[13], "529,200,0,0", "901,200,0,0", 500);
+            move(matrix_r[14], "529,400,0,0", "529,200,0,0", 500);
+
+            await Task.Delay(1000);
+
+            move(matrix_r[12], "901,400,0,0", "677,400,0,0", 500);
+            move(matrix_r[13], "901,200,0,0", "901,400,0,0", 500);
+            move(matrix_r[14], "529,200,0,0", "901,200,0,0", 500);
+
+            await Task.Delay(1000);
+
+
+            move(matrix_r[13], "901,400,0,0", "753,400,0,0", 500);
+            move(matrix_r[14], "901,200,0,0", "901,400,0,0", 500);
+            await Task.Delay(1000);
+
+            move(matrix_r[14], "901,400,0,0", "826,400,0,0", 500);
+
+             
 
             List<Label> matrix_mix = new List<Label> { mix_1, mix_2, mix_3, mix_4, mix_5, mix_6, mix_7, mix_8, mix_9, mix_10, mix_11, mix_12, mix_13, mix_14, mix_15, mix_16 };
-            System.Timers.Timer timi = new System.Timers.Timer(200000);
-            timi.AutoReset = false;
-            timi.Elapsed += (s, e) =>
+            
+            await Task.Delay(5000);
+            change_color(info_shif, "#F0F8FF", 800);
+            change_color(info_mix, "#22C55E", 800);
+            foreach (Label lbl in matrix_r)
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    change_color(info_shif, "#F0F8FF", 800);
-                    change_color(info_mix, "#22C55E", 800);
-                    foreach (Label lbl in matrix_r)
-                    {
-                        change_color(lbl, "#FFFFFF", 800);
-                    }
-                    foreach (Label lbl in matrix_mix)
-                    {
-                        lbl.BeginAnimation(OpacityProperty, oopac);
-                        lbl.Visibility = Visibility.Visible;
-                    }
-                    symbol.BeginAnimation(OpacityProperty, oopac);
-                    symbol.Visibility = Visibility.Visible;
-                    a_0.BeginAnimation(OpacityProperty, oopac);
-                    a_0.Visibility = Visibility.Visible;
-                    a_1.BeginAnimation(OpacityProperty, oopac);
-                    a_1.Visibility = Visibility.Visible;
-                    a_2.BeginAnimation(OpacityProperty, oopac);
-                    a_2.Visibility = Visibility.Visible;
-                    a_3.BeginAnimation(OpacityProperty, oopac);
-                    a_3.Visibility = Visibility.Visible;
-                    W8.BeginAnimation(OpacityProperty, oopac2);
-                    title_matrix.BeginAnimation(OpacityProperty, oopac);
-                    mix.BeginAnimation(OpacityProperty, oopac);
-                    mix.Visibility = Visibility.Visible;
-                    title_matrix.Visibility = Visibility.Visible;
-                    info.Content = "After the initial AddRoundKey, AES enters the main rounds of \nencryption.\r\n\r\n" +
-                "Each round applies the following transformations to the state \nmatrix:\r\n\r\n" +
-                "      \t   →    \t             →   \t          →    \t         \r\n\r\n";
-
-                    System.Timers.Timer tt = new System.Timers.Timer(6000);
-                    tt.AutoReset = false;
-                    tt.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            W8.Content = "MixColumns works column by column";
-                            change_color(matrix_r[0], "#FF0000", 800);
-                            change_color(matrix_r[5], "#FF0000", 800);
-                            change_color(matrix_r[10], "#FF0000", 800);
-                            change_color(matrix_r[15], "#FF0000", 800);
-                            W8.BeginAnimation(OpacityProperty, oopac);
-
-                        });
-                    }; tt.Start();
-                    activeTimers.Add(tt);
-
-                    System.Timers.Timer tt2 = new System.Timers.Timer(9000);
-                    tt2.AutoReset = false;
-                    tt2.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            con = matrix_r[0].Content.ToString();
-                            W8.BeginAnimation(OpacityProperty, oopac2);
-                            W8.Content = "a0 = " + matrix_r[0].Content + "    a1 = " + matrix_r[5].Content + "    a2 = " + matrix_r[10].Content + "    a3 = " + matrix_r[15].Content;
-                            matrix_r[0].Content = "b0";
-                            W8.BeginAnimation(OpacityProperty, oopac);
-
-                        });
-                    }; tt2.Start();
-                    activeTimers.Add(tt2);
-
-                    System.Timers.Timer tt3 = new System.Timers.Timer(11000);
-                    tt3.AutoReset = false;
-                    tt3.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            change_color(mix_1, "#FF0000", 800);
-                            change_color(mix_2, "#FF0000", 800);
-                            change_color(mix_3, "#FF0000", 800);
-                            change_color(mix_4, "#FF0000", 800);
-                            move(W8, "490,170,0,0", "490,120,0,0", 800);
-                            move(W8_app, "490,200,0,0", "490,170,0,0", 800);
-                            W8_app.Visibility = Visibility.Visible;
-                            W8_app.Content = "b0 = (2·a0) ⊕ (3·a1) ⊕ (1·a2) ⊕ (1·a3)";
-
-
-                            W8_app.BeginAnimation(OpacityProperty, oopac);
-
-                        });
-                    }; tt3.Start();
-                    activeTimers.Add(tt3);
-
-                    System.Timers.Timer tt4 = new System.Timers.Timer(14000);
-                    tt4.AutoReset = false;
-                    tt4.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            string a0 = con.ToString();
-                            string a1 = matrix_r[5].Content.ToString();
-                            string a2 = matrix_r[10].Content.ToString();
-                            string a3 = matrix_r[15].Content.ToString();
-                            byte a_0 = byte.Parse(a0);
-                            byte a_1 = byte.Parse(a1);
-                            byte a_2 = byte.Parse(a2);
-                            byte a_3 = byte.Parse(a3);
-
-                            byte b0 = (byte)(Mul2(a_0) ^ Mul3(a_1) ^ a_2 ^ a_3);
-                            matrix_r[0].Content = b0.ToString();
-                            change_color(matrix_r[0], "#00FF9C", 800);
-
-                            W8_app.BeginAnimation(OpacityProperty, oopac2);
-                            W8_app.Content = "b1 = (1·a0) ⊕ (2·a1) ⊕ (3·a2) ⊕ (1·a3)";
-                            W8_app.BeginAnimation(OpacityProperty, oopac);
-                            change_color(mix_1, "#FFFFFF", 800);
-                            change_color(mix_2, "#FFFFFF", 800);
-                            change_color(mix_3, "#FFFFFF", 800);
-                            change_color(mix_4, "#FFFFFF", 800);
-                            change_color(mix_5, "#FF0000", 800);
-                            change_color(mix_6, "#FF0000", 800);
-                            change_color(mix_7, "#FF0000", 800);
-                            change_color(mix_8, "#FF0000", 800);
-                            con1 = matrix_r[5].Content.ToString();
-                            matrix_r[5].Content = "b1";
-                        });
-                    }; tt4.Start();
-                    activeTimers.Add(tt4);
-                    System.Timers.Timer tt5 = new System.Timers.Timer(17000);
-                    tt5.AutoReset = false;
-                    tt5.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            string a0 = con.ToString();
-                            string a1 = con1.ToString();
-                            string a2 = matrix_r[10].Content.ToString();
-                            string a3 = matrix_r[15].Content.ToString();
-                            byte a_0 = byte.Parse(a0);
-                            byte a_1 = byte.Parse(a1);
-                            byte a_2 = byte.Parse(a2);
-                            byte a_3 = byte.Parse(a3);
-
-                            byte b1 = (byte)(a_0 ^ Mul2(a_1) ^ Mul3(a_2) ^ a_3);
-                            matrix_r[5].Content = b1.ToString();
-                            change_color(matrix_r[5], "#00FF9C", 800);
-
-                            W8_app.BeginAnimation(OpacityProperty, oopac2);
-                            W8_app.Content = "b2 = (1·a0) ⊕ (1·a1) ⊕ (2·a2) ⊕ (3·a3)";
-                            W8_app.BeginAnimation(OpacityProperty, oopac);
-                            change_color(mix_5, "#FFFFFF", 800);
-                            change_color(mix_6, "#FFFFFF", 800);
-                            change_color(mix_7, "#FFFFFF", 800);
-                            change_color(mix_8, "#FFFFFF", 800);
-                            change_color(mix_9, "#FF0000", 800);
-                            change_color(mix_10, "#FF0000", 800);
-                            change_color(mix_11, "#FF0000", 800);
-                            change_color(mix_12, "#FF0000", 800);
-                            con2 = matrix_r[10].Content.ToString();
-                            matrix_r[10].Content = "b2";
-                        });
-                    }; tt5.Start();
-                    activeTimers.Add(tt5);
-
-                    System.Timers.Timer tt6 = new System.Timers.Timer(20000);
-                    tt6.AutoReset = false;
-                    tt6.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            string a0 = con.ToString();
-                            string a1 = con1.ToString();
-                            string a2 = con2.ToString();
-                            string a3 = matrix_r[15].Content.ToString();
-                            byte a_0 = byte.Parse(a0);
-                            byte a_1 = byte.Parse(a1);
-                            byte a_2 = byte.Parse(a2);
-                            byte a_3 = byte.Parse(a3);
-
-                            byte b2 = (byte)(a_0 ^ a_1 ^ Mul2(a_2) ^ Mul3(a_3));
-                            matrix_r[10].Content = b2.ToString();
-                            change_color(matrix_r[10], "#00FF9C", 800);
-
-                            W8_app.BeginAnimation(OpacityProperty, oopac2);
-                            W8_app.Content = "b3 = (3·a0) ⊕ (1·a1) ⊕ (1·a2) ⊕ (2·a3)";
-                            W8_app.BeginAnimation(OpacityProperty, oopac);
-                            change_color(mix_9, "#FFFFFF", 800);
-                            change_color(mix_10, "#FFFFFF", 800);
-                            change_color(mix_11, "#FFFFFF", 800);
-                            change_color(mix_12, "#FFFFFF", 800);
-                            change_color(mix_13, "#FF0000", 800);
-                            change_color(mix_14, "#FF0000", 800);
-                            change_color(mix_15, "#FF0000", 800);
-                            change_color(mix_16, "#FF0000", 800);
-                            con3 = matrix_r[15].Content.ToString();
-                            matrix_r[15].Content = "b3";
-                        });
-                    }; tt6.Start();
-                    activeTimers.Add(tt6);
-                    System.Timers.Timer tt7 = new System.Timers.Timer(23000);
-                    tt7.AutoReset = false;
-                    tt7.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            string a0 = con.ToString();
-                            string a1 = con1.ToString();
-                            string a2 = con2.ToString();
-                            string a3 = con3.ToString();
-                            byte a_0 = byte.Parse(a0);
-                            byte a_1 = byte.Parse(a1);
-                            byte a_2 = byte.Parse(a2);
-                            byte a_3 = byte.Parse(a3);
-
-                            byte b3 = (byte)(Mul3(a_0) ^ a_1 ^ a_2 ^ Mul2(a_3));
-                            matrix_r[15].Content = b3.ToString();
-                            change_color(matrix_r[15], "#00FF9C", 800);
-
-                        });
-                    }; tt7.Start();
-                    activeTimers.Add(tt7);
-
-                    System.Timers.Timer tt8 = new System.Timers.Timer(26000);
-                    tt8.AutoReset = false;
-                    tt8.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            change_color(mix_13, "#FFFFFF", 800);
-                            change_color(mix_14, "#FFFFFF", 800);
-                            change_color(mix_15, "#FFFFFF", 800);
-                            change_color(mix_16, "#FFFFFF", 800);
-                        });
-                    }; tt8.Start();
-                    activeTimers.Add(tt8);
-
-                    System.Timers.Timer timi2 = new System.Timers.Timer(31000);
-                    timi2.AutoReset = false;
-                    timi2.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            W8.BeginAnimation(OpacityProperty, oopac2);
-                            W8.Content = "Same with other Columns";
-                            W8.BeginAnimation(OpacityProperty, oopac);
-                            W8_app.BeginAnimation(OpacityProperty, oopac2);
-                            for (int i = 1; i < 16; i++)
-                            {
-                                if (i % 5 != 0)
-                                {
-                                    change_color(matrix_r[i], "#FF0000", 800);
-                                }
-                            }
-
-                        });
-                    }; timi2.Start();
-                    activeTimers.Add(timi2);
-
-                    System.Timers.Timer timi3 = new System.Timers.Timer(35000);
-                    timi3.AutoReset = false;
-                    timi3.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            string a_0 = matrix_r[1].Content.ToString();
-                            string a_1 = matrix_r[6].Content.ToString();
-                            string a_2 = matrix_r[11].Content.ToString();
-                            string a_3 = matrix_r[12].Content.ToString();
-
-                            byte a0 = byte.Parse(a_0);
-                            byte a1 = byte.Parse(a_1);
-                            byte a2 = byte.Parse(a_2);
-                            byte a3 = byte.Parse(a_3);
-                            byte b0 = (byte)(Mul2(a0) ^ Mul3(a1) ^ a2 ^ a3);
-                            byte b1 = (byte)(a0 ^ Mul2(a1) ^ Mul3(a2) ^ a3);
-                            byte b2 = (byte)(a0 ^ a1 ^ Mul2(a2) ^ Mul3(a3));
-                            byte b3 = (byte)(Mul3(a0) ^ a1 ^ a2 ^ Mul2(a3));
-
-                            matrix_r[1].Content = b0.ToString();
-                            matrix_r[6].Content = b1.ToString();
-                            matrix_r[11].Content = b2.ToString();
-                            matrix_r[12].Content = b3.ToString();
-                            change_color(matrix_r[1], "#00FF9C", 800);
-                            change_color(matrix_r[6], "#00FF9C", 800);
-                            change_color(matrix_r[11], "#00FF9C", 800);
-                            change_color(matrix_r[12], "#00FF9C", 800);
-
-                        });
-                    }; timi3.Start();
-                    activeTimers.Add(timi3);
-
-                    System.Timers.Timer timi4 = new System.Timers.Timer(39000);
-                    timi4.AutoReset = false;
-                    timi4.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            string a_0 = matrix_r[2].Content.ToString();
-                            string a_1 = matrix_r[7].Content.ToString();
-                            string a_2 = matrix_r[8].Content.ToString();
-                            string a_3 = matrix_r[13].Content.ToString();
-
-                            byte a0 = byte.Parse(a_0);
-                            byte a1 = byte.Parse(a_1);
-                            byte a2 = byte.Parse(a_2);
-                            byte a3 = byte.Parse(a_3);
-                            byte b0 = (byte)(Mul2(a0) ^ Mul3(a1) ^ a2 ^ a3);
-                            byte b1 = (byte)(a0 ^ Mul2(a1) ^ Mul3(a2) ^ a3);
-                            byte b2 = (byte)(a0 ^ a1 ^ Mul2(a2) ^ Mul3(a3));
-                            byte b3 = (byte)(Mul3(a0) ^ a1 ^ a2 ^ Mul2(a3));
-
-                            matrix_r[2].Content = b0.ToString();
-                            matrix_r[7].Content = b1.ToString();
-                            matrix_r[8].Content = b2.ToString();
-                            matrix_r[13].Content = b3.ToString();
-                            change_color(matrix_r[2], "#00FF9C", 800);
-                            change_color(matrix_r[7], "#00FF9C", 800);
-                            change_color(matrix_r[8], "#00FF9C", 800);
-                            change_color(matrix_r[13], "#00FF9C", 800);
-
-                        });
-                    }; timi4.Start();
-                    activeTimers.Add(timi4);
-
-                    System.Timers.Timer timi5 = new System.Timers.Timer(43000);
-                    timi5.AutoReset = false;
-                    timi5.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            string a_0 = matrix_r[3].Content.ToString();
-                            string a_1 = matrix_r[4].Content.ToString();
-                            string a_2 = matrix_r[9].Content.ToString();
-                            string a_3 = matrix_r[14].Content.ToString();
-
-                            byte a0 = byte.Parse(a_0);
-                            byte a1 = byte.Parse(a_1);
-                            byte a2 = byte.Parse(a_2);
-                            byte a3 = byte.Parse(a_3);
-                            byte b0 = (byte)(Mul2(a0) ^ Mul3(a1) ^ a2 ^ a3);
-                            byte b1 = (byte)(a0 ^ Mul2(a1) ^ Mul3(a2) ^ a3);
-                            byte b2 = (byte)(a0 ^ a1 ^ Mul2(a2) ^ Mul3(a3));
-                            byte b3 = (byte)(Mul3(a0) ^ a1 ^ a2 ^ Mul2(a3));
-
-                            matrix_r[3].Content = b0.ToString();
-                            matrix_r[4].Content = b1.ToString();
-                            matrix_r[9].Content = b2.ToString();
-                            matrix_r[14].Content = b3.ToString();
-                            change_color(matrix_r[3], "#00FF9C", 800);
-                            change_color(matrix_r[4], "#00FF9C", 800);
-                            change_color(matrix_r[9], "#00FF9C", 800);
-                            change_color(matrix_r[14], "#00FF9C", 800);
-
-                        });
-                    }; timi5.Start();
-                    activeTimers.Add(timi5);
-                });
-            };
-            timi.Start();
-            activeTimers.Add(timi);
-
-            System.Timers.Timer timi10 = new System.Timers.Timer(250000);
-            timi10.AutoReset = false;
-            timi10.Elapsed += (s, e) =>
+                change_color(lbl, "#FFFFFF", 800);
+            }
+            foreach (Label lbl in matrix_mix)
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                lbl.BeginAnimation(OpacityProperty, oopac);
+                lbl.Visibility = Visibility.Visible;
+            }
+            symbol.BeginAnimation(OpacityProperty, oopac);
+            symbol.Visibility = Visibility.Visible;
+            a_0.BeginAnimation(OpacityProperty, oopac);
+            a_0.Visibility = Visibility.Visible;
+            a_1.BeginAnimation(OpacityProperty, oopac);
+            a_1.Visibility = Visibility.Visible;
+            a_2.BeginAnimation(OpacityProperty, oopac);
+            a_2.Visibility = Visibility.Visible;
+            a_3.BeginAnimation(OpacityProperty, oopac);
+            a_3.Visibility = Visibility.Visible;
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            title_matrix.BeginAnimation(OpacityProperty, oopac);
+            mix.BeginAnimation(OpacityProperty, oopac);
+            mix.Visibility = Visibility.Visible;
+            title_matrix.Visibility = Visibility.Visible;
+            info.Content = "After the initial AddRoundKey, AES enters the main rounds of \nencryption.\r\n\r\n" +
+        "Each round applies the following transformations to the state \nmatrix:\r\n\r\n" +
+        "      \t   →    \t             →   \t          →    \t         \r\n\r\n";
+
+
+            await Task.Delay(6000);
+
+            W8.Content = "MixColumns works column by column";
+            change_color(matrix_r[0], "#FF0000", 800);
+            change_color(matrix_r[5], "#FF0000", 800);
+            change_color(matrix_r[10], "#FF0000", 800);
+            change_color(matrix_r[15], "#FF0000", 800);
+            W8.BeginAnimation(OpacityProperty, oopac);
+
+            await Task.Delay(9000);
+
+            con = matrix_r[0].Content.ToString();
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            W8.Content = "a0 = " + matrix_r[0].Content + "    a1 = " + matrix_r[5].Content + "    a2 = " + matrix_r[10].Content + "    a3 = " + matrix_r[15].Content;
+            matrix_r[0].Content = "b0";
+            W8.BeginAnimation(OpacityProperty, oopac);
+
+            await Task.Delay(2000);
+            change_color(mix_1, "#FF0000", 800);
+            change_color(mix_2, "#FF0000", 800);
+            change_color(mix_3, "#FF0000", 800);
+            change_color(mix_4, "#FF0000", 800);
+            move(W8, "490,170,0,0", "490,120,0,0", 800);
+            move(W8_app, "490,200,0,0", "490,170,0,0", 800);
+            W8_app.Visibility = Visibility.Visible;
+            W8_app.Content = "b0 = (2·a0) ⊕ (3·a1) ⊕ (1·a2) ⊕ (1·a3)";
+
+
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+
+            await Task.Delay(3000);
+
+
+            string A0 = con.ToString();
+            string A1 = matrix_r[5].Content.ToString();
+            string A2 = matrix_r[10].Content.ToString();
+            string A3 = matrix_r[15].Content.ToString();
+            byte A_0 = byte.Parse(A0);
+            byte A_1 = byte.Parse(A1);
+            byte A_2 = byte.Parse(A2);
+            byte A_3 = byte.Parse(A3);
+
+            byte b0 = (byte)(Mul2(A_0) ^ Mul3(A_1) ^ A_2 ^ A_3);
+            matrix_r[0].Content = b0.ToString();
+            change_color(matrix_r[0], "#00FF9C", 800);
+
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            W8_app.Content = "b1 = (1·a0) ⊕ (2·a1) ⊕ (3·a2) ⊕ (1·a3)";
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+            change_color(mix_1, "#FFFFFF", 800);
+            change_color(mix_2, "#FFFFFF", 800);
+            change_color(mix_3, "#FFFFFF", 800);
+            change_color(mix_4, "#FFFFFF", 800);
+            change_color(mix_5, "#FF0000", 800);
+            change_color(mix_6, "#FF0000", 800);
+            change_color(mix_7, "#FF0000", 800);
+            change_color(mix_8, "#FF0000", 800);
+            con1 = matrix_r[5].Content.ToString();
+            matrix_r[5].Content = "b1";
+
+            await Task.Delay(3000);
+
+            string a0_ = con.ToString();
+            string a1_ = con1.ToString();
+            string a2_ = matrix_r[10].Content.ToString();
+            string a3_ = matrix_r[15].Content.ToString();
+            byte a_0_ = byte.Parse(a0_);
+            byte a_1_ = byte.Parse(a1_);
+            byte a_2_ = byte.Parse(a2_);
+            byte a_3_ = byte.Parse(a3_);
+
+            byte b1 = (byte)(a_0_ ^ Mul2(a_1_) ^ Mul3(a_2_) ^ a_3_);
+            matrix_r[5].Content = b1.ToString();
+            change_color(matrix_r[5], "#00FF9C", 800);
+
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            W8_app.Content = "b2 = (1·a0) ⊕ (1·a1) ⊕ (2·a2) ⊕ (3·a3)";
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+            change_color(mix_5, "#FFFFFF", 800);
+            change_color(mix_6, "#FFFFFF", 800);
+            change_color(mix_7, "#FFFFFF", 800);
+            change_color(mix_8, "#FFFFFF", 800);
+            change_color(mix_9, "#FF0000", 800);
+            change_color(mix_10, "#FF0000", 800);
+            change_color(mix_11, "#FF0000", 800);
+            change_color(mix_12, "#FF0000", 800);
+            con2 = matrix_r[10].Content.ToString();
+            matrix_r[10].Content = "b2";
+
+
+            await Task.Delay(3000);
+
+            string a0_1 = con.ToString();
+            string a1_1 = con1.ToString();
+            string a2_1 = con2.ToString();
+            string a3_1 = matrix_r[15].Content.ToString();
+            byte a_0_1 = byte.Parse(a0_1);
+            byte a_1_1 = byte.Parse(a1_1);
+            byte a_2_1 = byte.Parse(a2_1);
+            byte a_3_1 = byte.Parse(a3_1);
+
+            byte b2 = (byte)(a_0_1 ^ a_1_1 ^ Mul2(a_2_1) ^ Mul3(a_3_1));
+            matrix_r[10].Content = b2.ToString();
+            change_color(matrix_r[10], "#00FF9C", 800);
+
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            W8_app.Content = "b3 = (3·a0) ⊕ (1·a1) ⊕ (1·a2) ⊕ (2·a3)";
+            W8_app.BeginAnimation(OpacityProperty, oopac);
+            change_color(mix_9, "#FFFFFF", 800);
+            change_color(mix_10, "#FFFFFF", 800);
+            change_color(mix_11, "#FFFFFF", 800);
+            change_color(mix_12, "#FFFFFF", 800);
+            change_color(mix_13, "#FF0000", 800);
+            change_color(mix_14, "#FF0000", 800);
+            change_color(mix_15, "#FF0000", 800);
+            change_color(mix_16, "#FF0000", 800);
+            con3 = matrix_r[15].Content.ToString();
+            matrix_r[15].Content = "b3";
+
+            await Task.Delay(3000);
+
+            string a0_2 = con.ToString();
+            string a1_2 = con1.ToString();
+            string a2_2 = con2.ToString();
+            string a3_2 = con3.ToString();
+            byte a_0_2 = byte.Parse(a0_2);
+            byte a_1_2 = byte.Parse(a1_2);
+            byte a_2_2 = byte.Parse(a2_2);
+            byte a_3_2 = byte.Parse(a3_2);
+
+            byte b3 = (byte)(Mul3(a_0_2) ^ a_1_2 ^ a_2_2 ^ Mul2(a_3_2));
+            matrix_r[15].Content = b3.ToString();
+            change_color(matrix_r[15], "#00FF9C", 800);
+
+            await Task.Delay(3000);
+
+            change_color(mix_13, "#FFFFFF", 800);
+            change_color(mix_14, "#FFFFFF", 800);
+            change_color(mix_15, "#FFFFFF", 800);
+            change_color(mix_16, "#FFFFFF", 800);
+
+
+            await Task.Delay(7000);
+
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            W8.Content = "Same with other Columns";
+            W8.BeginAnimation(OpacityProperty, oopac);
+            W8_app.BeginAnimation(OpacityProperty, oopac2);
+            for (int i = 1; i < 16; i++)
+            {
+                if (i % 5 != 0)
                 {
-                    foreach (Label mix_lbl in matrix_mix)
-                    {
-                        mix_lbl.BeginAnimation(OpacityProperty, oopac2);
-                    }
-                    symbol.BeginAnimation(OpacityProperty, oopac2);
-                    a_0.BeginAnimation(OpacityProperty, oopac2);
-                    a_1.BeginAnimation(OpacityProperty, oopac2);
-                    a_2.BeginAnimation(OpacityProperty, oopac2);
-                    a_3.BeginAnimation(OpacityProperty, oopac2);
-                    mix.BeginAnimation(OpacityProperty, oopac2);
-                    title_matrix.BeginAnimation(OpacityProperty, oopac2);
-                    title_matrix.Content = "Round key 1 = W[4] W[5] W[6] W[7]";
-                    title_matrix.BeginAnimation(OpacityProperty, oopac);
-                    change_color(info_mix, "#F0F8FF", 800);
-                    change_color(info_add, "#22C55E", 800);
-                    W8.BeginAnimation(OpacityProperty, oopac2);
-                    System.Timers.Timer tim = new System.Timers.Timer(4000);
-                    tim.AutoReset = false;
-                    tim.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            W8.BeginAnimation(OpacityProperty, oopac);
-                            W8.Content = "W[4] = [ " + string.Join(", ", lst[4]) + " ]";
-                            change_color(matrix_r[0], "#FF0000", 800);
-                            change_color(matrix_r[2], "#FF0000", 800);
-                            change_color(matrix_r[1], "#FF0000", 800);
-                            change_color(matrix_r[3], "#FF0000", 800);
-                            mix.Content = "\nRow0 ⊕ W4\tRow1 ⊕ W5\nRow2 ⊕ W6\tRow3 ⊕ W7";
-                            mix.BeginAnimation(OpacityProperty, oopac);
+                    change_color(matrix_r[i], "#FF0000", 800);
+                }
+            }
 
-                        });
-                    };
-                    tim.Start();
-                    activeTimers.Add(tim);
-                    System.Timers.Timer tim2 = new System.Timers.Timer(8000);
-                    tim2.AutoReset = false;
-                    tim2.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
+            await Task.Delay(4000);
 
-                            change_color(matrix_r[4], "#FF0000", 800);
-                            change_color(matrix_r[5], "#FF0000", 800);
-                            change_color(matrix_r[6], "#FF0000", 800);
-                            change_color(matrix_r[7], "#FF0000", 800);
+            string a_0_3 = matrix_r[1].Content.ToString();
+            string a_1_3 = matrix_r[6].Content.ToString();
+            string a_2_3 = matrix_r[11].Content.ToString();
+            string a_3_3 = matrix_r[12].Content.ToString();
 
-                            change_color(matrix_r[0], "#FFFFFF", 800);
-                            change_color(matrix_r[1], "#FFFFFF", 800);
-                            change_color(matrix_r[3], "#FFFFFF", 800);
-                            change_color(matrix_r[2], "#FFFFFF", 800);
-                            W8.Content = "W[5] = [ " + string.Join(", ", lst[5]) + " ]";
-                            W8.BeginAnimation(OpacityProperty, oopac);
-                            byte a = byte.Parse(matrix_r[0].Content.ToString());
-                            byte b = byte.Parse(matrix_r[1].Content.ToString());
-                            byte c = byte.Parse(matrix_r[2].Content.ToString());
-                            byte d = byte.Parse(matrix_r[3].Content.ToString());
+            byte a0_3 = byte.Parse(a_0_3);
+            byte a1_3 = byte.Parse(a_1_3);
+            byte a2_3 = byte.Parse(a_2_3);
+            byte a3_3 = byte.Parse(a_3_3    );
+            byte b0_ = (byte)(Mul2(a0_3) ^ Mul3(a1_3) ^ a2_3 ^ a3_3 );
+            byte b1_ = (byte)(a0_3 ^ Mul2(a1_3) ^ Mul3(a2_3) ^ a3_3);
+            byte b2_ = (byte)(a0_3 ^ a1_3 ^ Mul2(a2_3) ^ Mul3(a3_3));
+            byte b3_ = (byte)(Mul3(a0_3) ^ a1_3 ^ a2_3 ^ Mul2(a3_3));
 
-
-                            matrix_r[0].Content = (a ^ words_4_7[0]).ToString();
-                            matrix_r[1].Content = (b ^ words_4_7[1]).ToString();
-                            matrix_r[2].Content = (c ^ words_4_7[2]).ToString();
-                            matrix_r[3].Content = (d ^ words_4_7[3]).ToString();
-
-                        });
-                    };
-                    tim2.Start();
-                    activeTimers.Add(tim2);
-                    System.Timers.Timer tim3 = new System.Timers.Timer(12000);
-                    tim3.AutoReset = false;
-                    tim3.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-
-                            change_color(matrix_r[8], "#FF0000", 800);
-                            change_color(matrix_r[9], "#FF0000", 800);
-                            change_color(matrix_r[10], "#FF0000", 800);
-                            change_color(matrix_r[11], "#FF0000", 800);
-
-                            change_color(matrix_r[4], "#FFFFFF", 800);
-                            change_color(matrix_r[5], "#FFFFFF", 800);
-                            change_color(matrix_r[6], "#FFFFFF", 800);
-                            change_color(matrix_r[7], "#FFFFFF", 800);
-                            W8.Content = "W[6] = [ " + string.Join(", ", lst[6]) + " ]";
-                            W8.BeginAnimation(OpacityProperty, oopac);
-                            byte a = byte.Parse(matrix_r[4].Content.ToString());
-                            byte b = byte.Parse(matrix_r[5].Content.ToString());
-                            byte c = byte.Parse(matrix_r[6].Content.ToString());
-                            byte d = byte.Parse(matrix_r[7].Content.ToString());
-
-
-                            matrix_r[4].Content = (a ^ words_4_7[7]).ToString();
-                            matrix_r[5].Content = (b ^ words_4_7[4]).ToString();
-                            matrix_r[6].Content = (c ^ words_4_7[5]).ToString();
-                            matrix_r[7].Content = (d ^ words_4_7[6]).ToString();
-
-                        });
-                    };
-                    tim3.Start();
-                    activeTimers.Add(tim3);
-                    System.Timers.Timer tim4 = new System.Timers.Timer(16000);
-                    tim4.AutoReset = false;
-                    tim4.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-
-                            change_color(matrix_r[12], "#FF0000", 800);
-                            change_color(matrix_r[13], "#FF0000", 800);
-                            change_color(matrix_r[14], "#FF0000", 800);
-                            change_color(matrix_r[15], "#FF0000", 800);
-
-                            change_color(matrix_r[8], "#FFFFFF", 800);
-                            change_color(matrix_r[9], "#FFFFFF", 800);
-                            change_color(matrix_r[10], "#FFFFFF", 800);
-                            change_color(matrix_r[11], "#FFFFFF", 800);
-                            W8.Content = "W[7] = [ " + string.Join(", ", lst[7]) + " ]";
-                            W8.BeginAnimation(OpacityProperty, oopac);
-                            byte a = byte.Parse(matrix_r[8].Content.ToString());
-                            byte b = byte.Parse(matrix_r[9].Content.ToString());
-                            byte c = byte.Parse(matrix_r[10].Content.ToString());
-                            byte d = byte.Parse(matrix_r[11].Content.ToString());
-
-
-                            matrix_r[8].Content = (a ^ words_4_7[10]).ToString();
-                            matrix_r[9].Content = (b ^ words_4_7[11]).ToString();
-                            matrix_r[10].Content = (c ^ words_4_7[8]).ToString();
-                            matrix_r[11].Content = (d ^ words_4_7[9]).ToString();
-
-                        });
-                    };
-                    tim4.Start();
-                    activeTimers.Add(tim4);
-                    System.Timers.Timer tim5 = new System.Timers.Timer(20000);
-                    tim5.AutoReset = false;
-                    tim5.Elapsed += (s, e) =>
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
+            matrix_r[1].Content = b0_.ToString();
+            matrix_r[6].Content = b1_.ToString();
+            matrix_r[11].Content = b2_.ToString();
+            matrix_r[12].Content = b3_.ToString();
+            change_color(matrix_r[1], "#00FF9C", 800);
+            change_color(matrix_r[6], "#00FF9C", 800);
+            change_color(matrix_r[11], "#00FF9C", 800);
+            change_color(matrix_r[12], "#00FF9C", 800);
 
 
 
-                            change_color(matrix_r[12], "#FFFFFF", 800);
-                            change_color(matrix_r[13], "#FFFFFF", 800);
-                            change_color(matrix_r[14], "#FFFFFF", 800);
-                            change_color(matrix_r[15], "#FFFFFF", 800);
+            await Task.Delay(3000);
 
-                            W8.BeginAnimation(OpacityProperty, oopac2);
-                            byte a = byte.Parse(matrix_r[12].Content.ToString());
-                            byte b = byte.Parse(matrix_r[13].Content.ToString());
-                            byte c = byte.Parse(matrix_r[14].Content.ToString());
-                            byte d = byte.Parse(matrix_r[15].Content.ToString());
+            string a_0_4 = matrix_r[2].Content.ToString();
+            string a_1_4 = matrix_r[7].Content.ToString();
+            string a_2_4 = matrix_r[8].Content.ToString();
+            string a_3_4 = matrix_r[13].Content.ToString();
 
-
-                            matrix_r[12].Content = (a ^ words_4_7[13]).ToString();
-                            matrix_r[13].Content = (b ^ words_4_7[14]).ToString();
-                            matrix_r[14].Content = (c ^ words_4_7[15]).ToString();
-                            matrix_r[15].Content = (d ^ words_4_7[12]).ToString();
-
-                        });
-                    };
-                    tim5.Start();
-                    activeTimers.Add(tim5);
-
-                });
-            };
-            timi10.Start();
-            activeTimers.Add(timi10);
+            byte a0_4 = byte.Parse(a_0_4);
+            byte a1_4 = byte.Parse(a_1_4);
+            byte a2_4 = byte.Parse(a_2_4);
+            byte a3_4 = byte.Parse(a_3_4);
+            byte b0_4 = (byte)(Mul2(a0_4) ^ Mul3(a1_4) ^ a2_4 ^ a3_4);
+            byte b1_4 = (byte)(a0_4 ^ Mul2(a1_4) ^ Mul3(a2_4) ^ a3_4);
+            byte b2_4 = (byte)(a0_4 ^ a1_4 ^ Mul2(a2_4) ^ Mul3(a3_4));
+            byte b3_4 = (byte)(Mul3(a0_4) ^ a1_4 ^ a2_4 ^ Mul2(a3_4));
+            matrix_r[2].Content = b0_4.ToString();
+            matrix_r[7].Content = b1_4.ToString();
+            matrix_r[8].Content = b2_4.ToString();
+            matrix_r[13].Content = b3_4.ToString();
+            change_color(matrix_r[2], "#00FF9C", 800);
+            change_color(matrix_r[7], "#00FF9C", 800);
+            change_color(matrix_r[8], "#00FF9C", 800);
+            change_color(matrix_r[13], "#00FF9C", 800);
 
 
+
+            await Task.Delay(9000);
+
+
+            string a_0_5 = matrix_r[3].Content.ToString();
+            string a_1_5 = matrix_r[4].Content.ToString();
+            string a_2_5 = matrix_r[9].Content.ToString();
+            string a_3_5 = matrix_r[14].Content.ToString();
+
+            byte a0_5 = byte.Parse(a_0_5);
+            byte a1_5 = byte.Parse(a_1_5);
+            byte a2_5 = byte.Parse(a_2_5);
+            byte a3_5 = byte.Parse(a_3_5);
+            byte b0_5 = (byte)(Mul2(a0_5) ^ Mul3(a1_5) ^ a2_5 ^ a3_5);
+            byte b1_5 = (byte)(a0_5 ^ Mul2(a1_5) ^ Mul3(a2_5) ^ a3_5);
+            byte b2_5 = (byte)(a0_5 ^ a1_5 ^ Mul2(a2_5) ^ Mul3(a3_5));
+            byte b3_5 = (byte)(Mul3(a0_5) ^ a1_5 ^ a2_5 ^ Mul2(a3_5));
+            matrix_r[3].Content = b0_5.ToString();
+            matrix_r[4].Content = b1_5.ToString();
+            matrix_r[9].Content = b2_5.ToString();
+            matrix_r[14].Content = b3_5.ToString();
+            change_color(matrix_r[3], "#00FF9C", 800);
+            change_color(matrix_r[4], "#00FF9C", 800);
+            change_color(matrix_r[9], "#00FF9C", 800);
+            change_color(matrix_r[14], "#00FF9C", 800);
+
+
+            await Task.Delay(5000);
+
+
+            foreach (Label mix_lbl in matrix_mix)
+            {
+                mix_lbl.BeginAnimation(OpacityProperty, oopac2);
+            }
+            symbol.BeginAnimation(OpacityProperty, oopac2);
+            a_0.BeginAnimation(OpacityProperty, oopac2);
+            a_1.BeginAnimation(OpacityProperty, oopac2);
+            a_2.BeginAnimation(OpacityProperty, oopac2);
+            a_3.BeginAnimation(OpacityProperty, oopac2);
+            mix.BeginAnimation(OpacityProperty, oopac2);
+            title_matrix.BeginAnimation(OpacityProperty, oopac2);
+            title_matrix.Content = "Round key 1 = W[4] W[5] W[6] W[7]";
+            title_matrix.BeginAnimation(OpacityProperty, oopac);
+            change_color(info_mix, "#F0F8FF", 800);
+            change_color(info_add, "#22C55E", 800);
+            W8.BeginAnimation(OpacityProperty, oopac2);
+
+            await Task.Delay(4000);
+
+            W8.BeginAnimation(OpacityProperty, oopac);
+            W8.Content = "W[4] = [ " + string.Join(", ", lst[4]) + " ]";
+            change_color(matrix_r[0], "#FF0000", 800);
+            change_color(matrix_r[2], "#FF0000", 800);
+            change_color(matrix_r[1], "#FF0000", 800);
+            change_color(matrix_r[3], "#FF0000", 800);
+            mix.Content = "\nRow0 ⊕ W4\tRow1 ⊕ W5\nRow2 ⊕ W6\tRow3 ⊕ W7";
+            mix.BeginAnimation(OpacityProperty, oopac);
+
+
+
+            await Task.Delay(4000);
+
+            change_color(matrix_r[4], "#FF0000", 800);
+            change_color(matrix_r[5], "#FF0000", 800);
+            change_color(matrix_r[6], "#FF0000", 800);
+            change_color(matrix_r[7], "#FF0000", 800);
+
+            change_color(matrix_r[0], "#FFFFFF", 800);
+            change_color(matrix_r[1], "#FFFFFF", 800);
+            change_color(matrix_r[3], "#FFFFFF", 800);
+            change_color(matrix_r[2], "#FFFFFF", 800);
+            W8.Content = "W[5] = [ " + string.Join(", ", lst[5]) + " ]";
+            W8.BeginAnimation(OpacityProperty, oopac);
+            byte a = byte.Parse(matrix_r[0].Content.ToString());
+            byte b = byte.Parse(matrix_r[1].Content.ToString());
+            byte c = byte.Parse(matrix_r[2].Content.ToString());
+            byte d = byte.Parse(matrix_r[3].Content.ToString());
+
+
+            matrix_r[0].Content = (a ^ words_4_7[0]).ToString();
+            matrix_r[1].Content = (b ^ words_4_7[1]).ToString();
+            matrix_r[2].Content = (c ^ words_4_7[2]).ToString();
+            matrix_r[3].Content = (d ^ words_4_7[3]).ToString();
+
+
+
+            await Task.Delay(4000);
+
+            change_color(matrix_r[8], "#FF0000", 800);
+            change_color(matrix_r[9], "#FF0000", 800);
+            change_color(matrix_r[10], "#FF0000", 800);
+            change_color(matrix_r[11], "#FF0000", 800);
+
+            change_color(matrix_r[4], "#FFFFFF", 800);
+            change_color(matrix_r[5], "#FFFFFF", 800);
+            change_color(matrix_r[6], "#FFFFFF", 800);
+            change_color(matrix_r[7], "#FFFFFF", 800);
+            W8.Content = "W[6] = [ " + string.Join(", ", lst[6]) + " ]";
+            W8.BeginAnimation(OpacityProperty, oopac);
+            byte a__2 = byte.Parse(matrix_r[4].Content.ToString());
+            byte b_2 = byte.Parse(matrix_r[5].Content.ToString());
+            byte c_2 = byte.Parse(matrix_r[6].Content.ToString());
+            byte d_2 = byte.Parse(matrix_r[7].Content.ToString());
+
+
+            matrix_r[4].Content = (a__2 ^ words_4_7[7]).ToString();
+            matrix_r[5].Content = (b_2 ^ words_4_7[4]).ToString();
+            matrix_r[6].Content = (c_2 ^ words_4_7[5]).ToString();
+            matrix_r[7].Content = (d_2 ^ words_4_7[6]).ToString();
+
+
+
+            await Task.Delay(4000);
+
+
+
+            change_color(matrix_r[12], "#FF0000", 800);
+            change_color(matrix_r[13], "#FF0000", 800);
+            change_color(matrix_r[14], "#FF0000", 800);
+            change_color(matrix_r[15], "#FF0000", 800);
+
+            change_color(matrix_r[8], "#FFFFFF", 800);
+            change_color(matrix_r[9], "#FFFFFF", 800);
+            change_color(matrix_r[10], "#FFFFFF", 800);
+            change_color(matrix_r[11], "#FFFFFF", 800);
+            W8.Content = "W[7] = [ " + string.Join(", ", lst[7]) + " ]";
+            W8.BeginAnimation(OpacityProperty, oopac);
+            byte a__3 = byte.Parse(matrix_r[8].Content.ToString());
+            byte b_3 = byte.Parse(matrix_r[9].Content.ToString());
+            byte c_3 = byte.Parse(matrix_r[10].Content.ToString());
+            byte d_3 = byte.Parse(matrix_r[11].Content.ToString());
+
+
+            matrix_r[8].Content = (a__3 ^ words_4_7[10]).ToString();
+            matrix_r[9].Content = (b_3 ^ words_4_7[11]).ToString();
+            matrix_r[10].Content = (c_3 ^ words_4_7[8]).ToString();
+            matrix_r[11].Content = (d_3 ^ words_4_7[9]).ToString();
+
+            await Task.Delay(4000);
+
+
+
+            change_color(matrix_r[12], "#FFFFFF", 800);
+            change_color(matrix_r[13], "#FFFFFF", 800);
+            change_color(matrix_r[14], "#FFFFFF", 800);
+            change_color(matrix_r[15], "#FFFFFF", 800);
+
+            W8.BeginAnimation(OpacityProperty, oopac2);
+            byte a__4 = byte.Parse(matrix_r[12].Content.ToString());
+            byte b_4 = byte.Parse(matrix_r[13].Content.ToString());
+            byte c_4 = byte.Parse(matrix_r[14].Content.ToString());
+            byte d_4 = byte.Parse(matrix_r[15].Content.ToString());
+
+            matrix_r[12].Content = (a__4 ^ words_4_7[13]).ToString();
+            matrix_r[13].Content = (b_4 ^ words_4_7[14]).ToString();
+            matrix_r[14].Content = (c_4 ^ words_4_7[15]).ToString();
+            matrix_r[15].Content = (d_4 ^ words_4_7[12]).ToString();
+
+
+
+
+            await action7();
 
         }
 
-        public void action7()
+        public async Task action7()
         {
-            foreach (var time in activeTimers)
-            {
-                time.Stop();
-                time.Dispose();
-            }
-            activeTimers.Clear();
-            DoubleAnimation oopac = new DoubleAnimation
-            {
-                From = 0.0,
-                To = 1.0,
-                Duration = TimeSpan.FromMilliseconds(1200)
-            };
-            DoubleAnimation oopac2 = new DoubleAnimation
-            {
-
-                To = 0.0,
-                Duration = TimeSpan.FromMilliseconds(1200)
-            };
+            
             List<Label> matrix_r = new List<Label> { r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, r_9, r_10, r_11, r_12, r_13, r_14, r_15, r_16 };
 
             skip_btn.Content = "End";
@@ -2954,71 +1937,65 @@ namespace EncodeX
             "message until the entire plaintext is fully encrypted.";
             info.BeginAnimation(OpacityProperty, oopac);
 
-            System.Timers.Timer final = new System.Timers.Timer(30000);
-            final.AutoReset = false;
-            final.Elapsed += (s, e) =>
+            await Task.Delay(30000);
+
+            encr_steps.Visibility = Visibility.Hidden;
+            encr_steps_Copy1.Visibility = Visibility.Hidden;
+            encr_steps_Copy2.Visibility = Visibility.Hidden;
+            encr_steps_Copy3.Visibility = Visibility.Hidden;
+            encr_steps_Copy4.Visibility = Visibility.Hidden;
+            move(encr_steps_Copy1, "0,54,0,0", "0,377,0,0", 1000);
+            move(encr_steps_Copy2, "0,54,0,0", "0,323,0,0", 1000);
+            move(encr_steps_Copy3, "0,54,0,0", "0,269,0,0", 1000);
+            move(encr_steps_Copy4, "0,54,0,0", "0,215,0,0", 1000);
+            move(encr_steps, "0,54,0,0", "0,161,0,0", 1000);
+            change_color(encr_steps, "#FFFFFF", 200);
+            change_color(encr_steps_Copy1, "#FFFFFF", 200);
+            change_color(encr_steps_Copy2, "#FFFFFF", 200);
+            change_color(encr_steps_Copy3, "#FFFFFF", 200);
+            change_color(encr_steps_Copy4, "#FFFFFF", 200);
+            Entry.Visibility = Visibility.Hidden;
+            info.Visibility = Visibility.Hidden;
+
+            arrow.Visibility = Visibility.Visible;
+            ScaleTransform scale = new ScaleTransform(1.0, 1.0);
+            RotateTransform rotate = new RotateTransform(180);
+
+            TransformGroup group = new TransformGroup();
+            group.Children.Add(scale);
+            group.Children.Add(rotate);
+
+            arrow.RenderTransform = group;
+
+
+            DoubleAnimation scaleAnim = new DoubleAnimation
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    encr_steps.Visibility = Visibility.Hidden;
-                    encr_steps_Copy1.Visibility = Visibility.Hidden;
-                    encr_steps_Copy2.Visibility = Visibility.Hidden;
-                    encr_steps_Copy3.Visibility = Visibility.Hidden;
-                    encr_steps_Copy4.Visibility = Visibility.Hidden;
-                    move(encr_steps_Copy1, "0,54,0,0", "0,377,0,0", 1000);
-                    move(encr_steps_Copy2, "0,54,0,0", "0,323,0,0", 1000);
-                    move(encr_steps_Copy3, "0,54,0,0", "0,269,0,0", 1000);
-                    move(encr_steps_Copy4, "0,54,0,0", "0,215,0,0", 1000);
-                    move(encr_steps, "0,54,0,0", "0,161,0,0", 1000);
-                    change_color(encr_steps, "#FFFFFF", 200);
-                    change_color(encr_steps_Copy1, "#FFFFFF", 200);
-                    change_color(encr_steps_Copy2, "#FFFFFF", 200);
-                    change_color(encr_steps_Copy3, "#FFFFFF", 200);
-                    change_color(encr_steps_Copy4, "#FFFFFF", 200);
-                    Entry.Visibility = Visibility.Hidden;
-                    info.Visibility = Visibility.Hidden;
+                From = 30.0,
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(800),
+                FillBehavior = FillBehavior.HoldEnd
+            };
+            DoubleAnimation scaleAnim2 = new DoubleAnimation
+            {
+                From = 30.0,
+                To = 1.0,
+                Duration = TimeSpan.FromMilliseconds(800),
+                FillBehavior = FillBehavior.HoldEnd
+            };
 
-                    arrow.Visibility = Visibility.Visible;
-                    ScaleTransform scale = new ScaleTransform(1.0, 1.0);
-                    RotateTransform rotate = new RotateTransform(180);
+            scale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
+            scale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim2);
+            skip_btn.Content = "Skip";
 
-                    TransformGroup group = new TransformGroup();
-                    group.Children.Add(scale);
-                    group.Children.Add(rotate);
-
-                    arrow.RenderTransform = group;
+            string password = "password@1010^";
+            if (password_field.IsReadOnly == false)
+            {
+                password = password_field.Text;
+            }
+            string text = input_field.Text;
+            encrypted_field.Text = encrypt(password, text);
 
 
-                    DoubleAnimation scaleAnim = new DoubleAnimation
-                    {
-                        From = 30.0,
-                        To = 1.0,
-                        Duration = TimeSpan.FromMilliseconds(800),
-                        FillBehavior = FillBehavior.HoldEnd
-                    };
-                    DoubleAnimation scaleAnim2 = new DoubleAnimation
-                    {
-                        From = 30.0,
-                        To = 1.0,
-                        Duration = TimeSpan.FromMilliseconds(800),
-                        FillBehavior = FillBehavior.HoldEnd
-                    };
-
-                    skipping = 0;
-                    scale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
-                    scale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim2);
-                    skip_btn.Content = "Skip";
-
-                    string password = "password@1010^";
-                    if (password_field.IsReadOnly == false)
-                    {
-                        password = password_field.Text;
-                    }
-                    string text = input_field.Text;
-                    encrypted_field.Text = encrypt(password, text);
-                });
-            }; final.Start();
-            activeTimers.Add(final);
         }
     }
 }
