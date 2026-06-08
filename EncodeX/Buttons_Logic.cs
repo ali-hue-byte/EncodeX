@@ -266,8 +266,8 @@ namespace EncodeX
                     };
                     intro.BeginAnimation(OpacityProperty, oopac);
                     intro.Visibility = Visibility.Visible;
-
-                    await Task.Delay(20000);
+                    try { await Task.Delay(22000, _skip.Token); }
+                    catch (TaskCanceledException) { }
                     await action0();
 
 
@@ -283,9 +283,10 @@ namespace EncodeX
         }
 
 
-        public async void Skipping_btn(object sender, EventArgs e)
+        public async void Skipping_btn(object sender, RoutedEventArgs e)
         {
-            return;
+            _skip.Cancel();
+            _skip = new();
         }
 
         public void decrypt_clicked(object sender, RoutedEventArgs e)
