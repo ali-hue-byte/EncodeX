@@ -75,7 +75,7 @@ namespace EncodeX
             timer.Tick += (s, e) =>
             {
                 foreach (KeyValuePair<Label, List<int>> label in dict)
-                    Timer_text(label.Key, Random_text()); // Updates matrix letters text every 100ms
+                    label.Key.Content = Random_text(); // Updates matrix letters text every 100ms
             };
 
             foreach (KeyValuePair<Label, List<int>> label in dict)
