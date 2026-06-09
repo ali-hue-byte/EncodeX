@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace EncodeX
@@ -15,32 +9,36 @@ namespace EncodeX
 
     public partial class MainWindow : Window
     {
+        // Token used to skip the current simulation step
         private CancellationTokenSource _skip = new();
 
+        // Flag to indicate if the key has been obtained
         bool gotten_key = false;
+
+        // App state variables
         string mode = "encrypt";
         string choice = "text";
+
+        // Global variables for the application
         Brush color = Brushes.Green;
-        int skipping = 0;
         byte[] pu_key = new byte[32];
         byte[] pu_salt = new byte[16];
         List<byte> words_4_7 = new List<byte>();
-        string con;
+        string con;  // Used in MixColumns (Simulation)
         string con1;
         string con2;
         string con3;
         List<byte[]> lst = new List<byte[]> { };
-        List<Func<Task>> functions = new List<Func<Task>> { };
 
         public MainWindow()
         {
-            functions = new List<Func<Task>> { action0, action1, action2, actions3, action4, action5, action6, action7 };
 
             InitializeComponent();
-
+            // Lock button hover effects
             btn_lock.MouseEnter += (s, e) => { Lock_Hovered(s, e); };
             btn_lock.MouseLeave += (s, e) => { Lock_unHovered(s, e); };
 
+            // Matrix components
             Dictionary<Label, List<int>> dict = new Dictionary<Label, List<int>>
         {
             { first,        new List<int> { 206 - 400, 206 + 500, 1200} },
@@ -70,21 +68,22 @@ namespace EncodeX
             { first_Copy23, new List<int> { -106 - 400, -106 + 800, 2400 } },
             { first_Copy24, new List<int> { 112 - 400, 112 + 800, 2400 } },
         };
-
+            
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(100);
 
             timer.Tick += (s, e) =>
             {
                 foreach (KeyValuePair<Label, List<int>> label in dict)
-                    Timer_text(label.Key, Random_text());
+                    Timer_text(label.Key, Random_text()); // Updates matrix letters text every 100ms
             };
 
             foreach (KeyValuePair<Label, List<int>> label in dict)
-                animate(label.Key, label.Value[0], label.Value[1], label.Value[2]);
+                animate(label.Key, label.Value[0], label.Value[1], label.Value[2]); // Animates the matrix 
 
             timer.Start();
 
+            // Shifts UI elements when hovering over the main border
             Border_haha.MouseEnter += (s, e) =>
             {
                 animation(encrypt_btn);
@@ -105,15 +104,11 @@ namespace EncodeX
                 animation(paste2);
                 animation(Save2);
                 animation(Copy2);
-                DoubleAnimation animX = new DoubleAnimation
-                {
-                    From = 339,
-                    To = 439,
-                    Duration = TimeSpan.FromMilliseconds(300),
-                };
+                
                 errorLabel.BeginAnimation(Canvas.LeftProperty, animX);
             };
 
+            // Shifts UI elements back to their original position when the mouse leaves the main border
             Border_haha.MouseLeave += (s, e) =>
             {
                 animation2(encrypt_btn, "319,223,71,66");
@@ -134,13 +129,8 @@ namespace EncodeX
                 animation2(Save2, "192,0,0,0");
                 animation2(paste2, "68,0,0,0");
                 animation2(Save, "108,0,0,0");
-                DoubleAnimation animX = new DoubleAnimation
-                {
-                    From = 439,
-                    To = 339,
-                    Duration = TimeSpan.FromMilliseconds(300),
-                };
-                errorLabel.BeginAnimation(Canvas.LeftProperty, animX);
+                
+                errorLabel.BeginAnimation(Canvas.LeftProperty, animX2);
             };
         }
     }
