@@ -1,16 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq; 
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Threading;
-
 
 namespace EncodeX
 {
@@ -36,6 +29,7 @@ namespace EncodeX
         public async Task action1()
         {
             bool skiped= false;
+            // Slides out the inactive steps, highlights the first step, and shows the info text
             enc_steps.BeginAnimation(OpacityProperty, oopac2);
             move(encr_steps, "0,161,0,0", "0,54,0,0", 1000);
             change_color(encr_steps, "#22C55E", 800);
@@ -60,6 +54,8 @@ namespace EncodeX
             {
                 txt_len = 16;
             }
+            // Shows the text written in the input field, character by character, and shows the corresponding byte values,
+            // while moving the arrow to point at the current character being processed 
             for (int i = 0; i < txt_len; i++)
             {
                 Rune c = runes[i];
@@ -126,8 +122,8 @@ namespace EncodeX
 
         public async Task action2()
         {
+            // Shows the padding step of the encryption process 
 
-            
             Arr.Visibility = Visibility.Hidden;
             List<Label> labels_txt = new List<Label> { str_1, str_2, str_3, str_4, str_5, str_6, str_7, str_8, str_9, str_10, str_11, str_12, str_13, str_14, str_15, str_16 };
             List<Label> labels_b = new List<Label> { str_1_b, str_2_b, str_3_b, str_4_b, str_5_b, str_6_b, str_7_b, str_8_b, str_9_b, str_10_b, str_11_b, str_12_b, str_13_b, str_14_b, str_15_b, str_16_b };
@@ -172,6 +168,7 @@ namespace EncodeX
 
         public async Task actions3()
         {
+            // Shows the different padding schemes and how they work on the last block of the input text
             String txt = input_field.Text;
             byte[] c = Encoding.UTF8.GetBytes(txt);
             opacity_anim(info, 1.0, 0.0);
@@ -215,7 +212,7 @@ namespace EncodeX
             }
 
             opacity_anim(info, 0.0, 1.0);
-
+            // 1st padding scheme
             String str_to_show = "";
             byte[] bytes_last16 = Encoding.UTF8.GetBytes(last16);
             byte[] ss = pad1(bytes_last16);
@@ -257,7 +254,7 @@ namespace EncodeX
             pad_info1.Visibility = Visibility.Visible;
             opacity_anim(pad_info2, 0.0, 1.0);
             pad_info2.Visibility = Visibility.Visible;
-
+            // 2nd padding scheme
             String str_to_show_2 = "";
             byte[] ss2 = pad2(bytes_last16);
             if (ss2.Length == 16)
@@ -296,7 +293,7 @@ namespace EncodeX
 
             pad_show.Visibility = Visibility.Visible;
 
-
+            // 3rd padding scheme
             String str_to_show_3 = "";
             byte[] ss3 = pad3(bytes_last16);
             if (ss3.Length == 16)
@@ -328,7 +325,7 @@ namespace EncodeX
 
             pad_show.Visibility = Visibility.Visible;
 
-
+            // 4th padding scheme
             String str_to_show_4 = "";
             byte[] ss4 = pad4(bytes_last16);
             if (ss4.Length == 16)
@@ -361,7 +358,7 @@ namespace EncodeX
 
             pad_show.Visibility = Visibility.Visible;
 
-
+            // 5th padding scheme
             String str_to_show_5 = "";
             byte[] ss5 = pad5(bytes_last16);
             if (ss5.Length == 16)
@@ -400,10 +397,11 @@ namespace EncodeX
 
         public async Task action4()
         {
-           
-            string password;
+            // Demonstrates how the password is processed by the PBKDF2 key derivation function
+            // to produce a secure key for AES encryption, and shows the intermediate values and steps of the process
+            string password; // used for display purposes
             string mss;
-            string opassword;
+            string opassword; // used for the actual key derivation and hashing
             if (password_field.Text == "")
             {
                 password = "password@1010^";
@@ -436,9 +434,6 @@ namespace EncodeX
                 byte[] u1 = smh.ComputeHash(msg);
                 U1 = string.Join(", ", u1);
             }
-
-            
-            
             encr_steps_Copy4.BeginAnimation(OpacityProperty, oopac);
             move(encr_steps_Copy4, "0,161,0,0", "0,54,0,0", 1000);
             move(encr_steps, "0,54,0,0", "0,-54,0,0", 1000);
@@ -449,25 +444,24 @@ namespace EncodeX
             pad_info1.BeginAnimation(OpacityProperty, oopac2);
             pad_info2.BeginAnimation(OpacityProperty, oopac2);
             pad_info1_Copy.BeginAnimation(OpacityProperty, oopac2);
-            info.Content =
-"Passwords cannot be used directly as AES keys.\n" +
-"AES requires a fixed-length, random-looking key.\n" +
-"A Key Derivation Function (KDF) transforms your password\n" +
-"into a secure key.\n" +
-"One common KDF is PBKDF2 (Password-Based Key Derivation \n" +
-"Function 2).\n" +
+            info.Content ="Passwords cannot be used directly as AES keys.\n" +
+                          "AES requires a fixed-length, random-looking key.\n" +
+                          "A Key Derivation Function (KDF) transforms your password\n" +
+                          "into a secure key.\n" +
+                          "One common KDF is PBKDF2 (Password-Based Key Derivation \n" +
+                          "Function 2).\n" +
 
-"The password is combined with a random salt and processed\n" +
-"through many hash iterations.\n" +
-"The salt is public and ensures identical passwords produce\n" +
-"different keys.\n" +
-"Each iteration depends on the previous one, creating a \n" +
-"chain of hashes.\n" +
+                          "The password is combined with a random salt and processed\n" +
+                          "through many hash iterations.\n" +
+                          "The salt is public and ensures identical passwords produce\n" +
+                          "different keys.\n" +
+                          "Each iteration depends on the previous one, creating a \n" +
+                          "chain of hashes.\n" +
 
-"PBKDF2 produces the final key in blocks (only if \n" +
-"more bytes are required !!!).\n" +
-"PBKDF2 can derive a key of any length. You specify how many\nbytes you want.\r\n" +
-"Each block has a unique number called the block index.";
+                          "PBKDF2 produces the final key in blocks (only if \n" +
+                          "more bytes are required !!!).\n" +
+                          "PBKDF2 can derive a key of any length. You specify how many\nbytes you want.\r\n" +
+                          "Each block has a unique number called the block index.";
 
             info.BeginAnimation(OpacityProperty, oopac);
             try { await Task.Delay(3000, _skip.Token); }
@@ -491,24 +485,25 @@ namespace EncodeX
             
             info.BeginAnimation(OpacityProperty, oopac2);
             info.Content = "Each block is computed like this:\n" +
-"U1 = HMAC(password, salt || blockIndex)\r\n" +
-"U2 = HMAC(password, U1)\r\n" +
-"U3 = HMAC(password, U2)\r\n" +
-"...\r\n" +
-"Uc = HMAC(password, Uc-1)\n" +
-"\n" +
-"*HMAC: a secure way to hash data using a secret key.\n" +
-"*PBKDF2 combines all the U-values (usually via XOR) \n" +
-"to produce each block of the final key.\n" +
-"*The block index ensures that each block is unique, even\n" +
-"if the password and salt are the same.\n" +
-"*AES-256 requires a 32-byte key, so only one PBKDF2 block \nis needed.(AES-192 => 24-bytes // AES-128 => 16-bytes)\nEven with long key provided, AES takes only the number \nof bytes needed"
+                          "U1 = HMAC(password, salt || blockIndex)\r\n" +
+                          "U2 = HMAC(password, U1)\r\n" +
+                          "U3 = HMAC(password, U2)\r\n" +
+                          "...\r\n" +
+                          "Uc = HMAC(password, Uc-1)\n" +
+                          "\n" +
+                          "*HMAC: a secure way to hash data using a secret key.\n" +
+                          "*PBKDF2 combines all the U-values (usually via XOR) \n" +
+                          "to produce each block of the final key.\n" +
+                          "*The block index ensures that each block is unique, even\n" +
+                          "if the password and salt are the same.\n" +
+                          "*AES-256 requires a 32-byte key, so only one PBKDF2 block \nis needed.(AES-192 => 24-bytes // AES-128 => 16-bytes)\nEven with long key provided, AES takes only the number \nof bytes needed"
 
 ;
              info.BeginAnimation(OpacityProperty, oopac_h);
 
-             HMAC.BeginAnimation(OpacityProperty, oopac_h);
-             HMAC.Visibility = Visibility.Visible;
+            // Animation to show the computation of HMAC and the intermediate values U1, U2, U3
+            HMAC.BeginAnimation(OpacityProperty, oopac_h);
+            HMAC.Visibility = Visibility.Visible;
 
             try { await Task.Delay(2000, _skip.Token); }
             catch (TaskCanceledException) { }
@@ -602,7 +597,7 @@ namespace EncodeX
 
             try { await Task.Delay(4000, _skip.Token); }
             catch (TaskCanceledException) { }
-            
+            // Explains XOR operation with truth table, concrete example, and its role in PBKDF2 
             U1_show.Content = "Block = U1 ⊕ U2 ⊕ U3 ⊕ ... ⊕ Uc";
             info.Content = "⊕ => XOR (exclusive OR) is a bitwise operation.\r\n\r\n" +
                     "For two bits:\r\n" +
@@ -652,8 +647,10 @@ namespace EncodeX
             await action5();
 
         }
-        byte[] w8 = new byte[4];
-        byte[] result = new byte[4];
+
+        byte[] w8 = new byte[4]; // used to store 4 bytes words during the AES key expansion
+        byte[] result = new byte[4]; // used to store the result of the SubWord and RotWord operations 
+        // AES S-box used in the SubBytes step of AES encryption
         byte[] SBox = new byte[256]{99,124,119,123,242,107,111,197,48,1,103,43,254,215,171,118,
                                     202,130,201,125,250,89,71,240,173,212,162,175,156,164,114,192,
                                     183,253,147,38,54,63,247,204,52,165,229,241,113,216,49,21,
@@ -675,20 +672,17 @@ namespace EncodeX
         {
             string password;
             string text = input_field.Text;
-            byte[] text_bytes = System.Text.Encoding.UTF8.GetBytes(text);
+            byte[] text_bytes = Encoding.UTF8.GetBytes(text);
             byte[] first16Bytes1 = text_bytes.Take(16).ToArray();
             byte[] first16Bytes = pad1(first16Bytes1);
 
             if (password_field.Text == "")
             {
                 password = "password@1010^";
-
-
             }
             else
             {
                 password = password_field.Text;
-
             }
 
             
@@ -718,7 +712,7 @@ namespace EncodeX
                 words_4_7.Add(key[i]);
             }
             
-            
+            // Animates the transition to the AES key expansion step
             encr_steps_Copy3.BeginAnimation(OpacityProperty, oopac);
             move(encr_steps_Copy3, "0,161,0,0", "0,54,0,0", 1000);
             move(encr_steps_Copy4, "0,54,0,0", "0,-54,0,0", 1000);
@@ -834,7 +828,7 @@ namespace EncodeX
             U1_show.BeginAnimation(OpacityProperty, oopac);
             try { await Task.Delay(5000, _skip.Token); }
             catch (TaskCanceledException) { }
-
+            // Displays the initial 8 words (W[0] to W[7]) derived from the master key
             W0.Content += "[ " + string.Join(", ", lst[0]) + " ]";
             W1.Content += "[ " + string.Join(", ", lst[1]) + " ]";
             W2.Content += "[ " + string.Join(", ", lst[2]) + " ]";
@@ -858,6 +852,7 @@ namespace EncodeX
                    i.BeginAnimation(OpacityProperty, oopac2);
 
             }
+            // Explains the process of generating a new word W[i] based on previous words
             info.BeginAnimation(OpacityProperty, oopac2);
             info.Content = "   ____Step 2: Generate a New Word W[i]____\r\n\r\n" +
                            "Rule for each new word in the AES-256 key schedule:\r\n\r\n\n\n\n\n\n" +
@@ -1113,7 +1108,7 @@ namespace EncodeX
 
             try { await Task.Delay(10000, _skip.Token); }
             catch (TaskCanceledException) { }
-
+            // After demonstrating the key expansion process, the animation transitions to the initial AddRoundKey step of AES encryption
             title.BeginAnimation(OpacityProperty, oopac2);
             info.BeginAnimation(OpacityProperty, oopac2);
             rule1.BeginAnimation(OpacityProperty, oopac2);
@@ -1147,6 +1142,7 @@ namespace EncodeX
 
             try { await Task.Delay(900, _skip.Token); }
             catch (TaskCanceledException) { }
+            // Displays the first 16 bytes of the plaintext and the first round key in a matrix format
             List<Label> matrix_txt = new List<Label> { t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9, t_10, t_11, t_12, t_13, t_14, t_15, t_16 };
             List<Label> matrix_k = new List<Label> { k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, k_12, k_13, k_14, k_15, k_16 };
 
@@ -1181,6 +1177,7 @@ namespace EncodeX
             catch (TaskCanceledException) { }
             text_title.BeginAnimation(OpacityProperty, oopac2);
             key_title.BeginAnimation(OpacityProperty, oopac2);
+            // Animates the movement of the plaintext and key matrices to the top of the screen for the XOR demonstration
             foreach (Label myControl in matrix_txt)
             {
                    ThicknessAnimation moveUp = new ThicknessAnimation
@@ -1216,7 +1213,7 @@ namespace EncodeX
                 }
             }
             List<Label> matrix_r = new List<Label> { r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, r_9, r_10, r_11, r_12, r_13, r_14, r_15, r_16 };
-
+            // Animates the XOR operation between the plaintext bytes and the key bytes, showing the intermediate steps and results
             for (int i = 0; i < 17; i++)
             {
                 int index = i;
@@ -1262,7 +1259,7 @@ namespace EncodeX
             if1.Visibility = Visibility.Hidden;
             if2.Visibility = Visibility.Hidden;
             if3.Visibility = Visibility.Hidden;
-            
+            // Prepares the data for the AES rounds demonstration
             List<byte[]> lst = new List<byte[]> { };
             for (int i = 0; i < 32; i += 4)
             {
@@ -1279,13 +1276,15 @@ namespace EncodeX
                 }
             }
             string text = input_field.Text;
-            byte[] text_bytes = System.Text.Encoding.UTF8.GetBytes(text);
+            byte[] text_bytes = Encoding.UTF8.GetBytes(text);
             byte[] first16Bytes1 = text_bytes.Take(16).ToArray();
             byte[] first16Bytes = pad1(first16Bytes1);
             List<Label> matrix_r = new List<Label> { r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, r_9, r_10, r_11, r_12, r_13, r_14, r_15, r_16 };
             List<Label> matrix_txt = new List<Label> { t_1, t_2, t_3, t_4, t_5, t_6, t_7, t_8, t_9, t_10, t_11, t_12, t_13, t_14, t_15, t_16 };
             List<Label> matrix_k = new List<Label> { k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, k_12, k_13, k_14, k_15, k_16 };
 
+
+            // Animates the movement of the plaintext and key matrices
             foreach (Label myControl in matrix_r)
             {
                 ThicknessAnimation moveUp = new ThicknessAnimation
@@ -1324,7 +1323,7 @@ namespace EncodeX
                 matrix_r[i].Content = res.ToString();
             }
 
-
+            // Transitions to the AES rounds demonstration
             encr_steps_Copy2.BeginAnimation(OpacityProperty, oopac);
             move(encr_steps_Copy2, "0,161,0,0", "0,54,0,0", 1000);
             move(encr_steps_Copy3, "0,54,0,0", "0,-54,0,0", 1000);
@@ -1351,6 +1350,8 @@ namespace EncodeX
             try { await Task.Delay(8000, _skip.Token); }
             catch (TaskCanceledException) { }
             change_color(info_sub, "#22C55E", 2000);
+
+            // Animates the SubBytes step
             for (int i = 0; i < 17; i++)
             {
                 int index = i;
@@ -1385,7 +1386,7 @@ namespace EncodeX
 
             }
 
-
+            // Animates the ShiftRows step
             try { await Task.Delay(6000, _skip.Token); }
             catch (TaskCanceledException) { }
             change_color(info_shif, "#22C55E", 2000);
@@ -1550,7 +1551,7 @@ namespace EncodeX
              
 
             List<Label> matrix_mix = new List<Label> { mix_1, mix_2, mix_3, mix_4, mix_5, mix_6, mix_7, mix_8, mix_9, mix_10, mix_11, mix_12, mix_13, mix_14, mix_15, mix_16 };
-
+            // Animates the MixColumns step
             try { await Task.Delay(5000, _skip.Token); }
             catch (TaskCanceledException) { }
             change_color(info_shif, "#F0F8FF", 800);
@@ -1836,6 +1837,7 @@ namespace EncodeX
             title_matrix.BeginAnimation(OpacityProperty, oopac2);
             title_matrix.Content = "Round key 1 = W[4] W[5] W[6] W[7]";
             title_matrix.BeginAnimation(OpacityProperty, oopac);
+            // Animates the AddRoundKey step
             change_color(info_mix, "#F0F8FF", 800);
             change_color(info_add, "#22C55E", 800);
             W8.BeginAnimation(OpacityProperty, oopac2);
@@ -1959,6 +1961,7 @@ namespace EncodeX
 
         }
 
+        // Explains the final round of AES encryption and shows the resulting cipher text
         public async Task action7()
         {
             
@@ -1999,6 +2002,7 @@ namespace EncodeX
 
             try { await Task.Delay(30000, _skip.Token); }
             catch (TaskCanceledException) { }
+            // Hides the simulation elements and resets their states 
             encr_steps.Visibility = Visibility.Hidden;
             encr_steps_Copy1.Visibility = Visibility.Hidden;
             encr_steps_Copy2.Visibility = Visibility.Hidden;
@@ -2042,7 +2046,7 @@ namespace EncodeX
                 Duration = TimeSpan.FromMilliseconds(800),
                 FillBehavior = FillBehavior.HoldEnd
             };
-
+            // Closes the simulation and shows the encryption page
             scale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
             scale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim2);
             skip_btn.Content = "Skip";
@@ -2050,10 +2054,10 @@ namespace EncodeX
             string password = "password@1010^";
             if (password_field.IsReadOnly == false)
             {
-                password = password_field.Text;
+                password = password_field.Text; 
             }
             string text = input_field.Text;
-            encrypted_field.Text = encrypt(password, text);
+            encrypted_field.Text = encrypt(password, text);// encrypt the input text 
 
 
         }
