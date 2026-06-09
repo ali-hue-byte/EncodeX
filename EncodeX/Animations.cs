@@ -1,36 +1,51 @@
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Effects;
 
 
 namespace EncodeX
 {
     public partial class MainWindow
     {
-        public DoubleAnimation oopac = new DoubleAnimation
+        // Fade animations used across the app
+        public DoubleAnimation oopac = new DoubleAnimation // Fade in (1s)
         {
             From = 0.0,
             To = 1.0,
             Duration = TimeSpan.FromMilliseconds(1000),
         };
-        public DoubleAnimation oopac2 = new DoubleAnimation
+        public DoubleAnimation oopac2 = new DoubleAnimation // Fade out (1s)
         {
             From = 1.0,
             To = 0.0,
             Duration = TimeSpan.FromMilliseconds(1000),
         };
 
-        public DoubleAnimation oopac_h = new DoubleAnimation
+        public DoubleAnimation oopac_h = new DoubleAnimation // Fade in (1.8s)
         {
             From = 0.0,
             To = 1.0,
             Duration = TimeSpan.FromMilliseconds(1800)
         };
 
+        // Horizontal slide animations
+        public DoubleAnimation animX = new DoubleAnimation // Slide right (300ms)
+        {
+            From = 339,
+            To = 439,
+            Duration = TimeSpan.FromMilliseconds(300),
+        };
+
+        public DoubleAnimation animX2 = new DoubleAnimation // Slide left (300ms)
+        {
+            From = 439,
+            To = 339,
+            Duration = TimeSpan.FromMilliseconds(300),
+        };
+
+        // Shifts a UI element 100px to the right
         public void animation(FrameworkElement thing)
         {
             Thickness current = thing.Margin;
@@ -43,6 +58,7 @@ namespace EncodeX
             thing.BeginAnimation(FrameworkElement.MarginProperty, animation);
         }
 
+        // Moves a UI element to a specific position defined by a margin string
         public void animation2(FrameworkElement thing, string end)
         {
             string[] strings = end.Split(',');
@@ -57,6 +73,7 @@ namespace EncodeX
             thing.BeginAnimation(FrameworkElement.MarginProperty, animation);
         }
 
+        // Moves a UI element from one margin position to another
         public void move(FrameworkElement elem, String x, String y, int duration)
         {
             string[] start = x.Split(",");
@@ -70,6 +87,7 @@ namespace EncodeX
             elem.BeginAnimation(FrameworkElement.MarginProperty, move);
         }
 
+        // Changes the foreground color of an element with an animation
         public void change_color(Label elem, string x, int duration)
         {
             SolidColorBrush col = elem.Foreground as SolidColorBrush;
@@ -86,6 +104,7 @@ namespace EncodeX
             col.BeginAnimation(SolidColorBrush.ColorProperty, chan);
         }
 
+        // Animates the opacity of a UI element from x to y, with an optional tooltip handling 
         public void opacity_anim(FrameworkElement button, double x, double y, Button btn = null, int d = 400)
         {
             ToolTip tt = null;
@@ -116,6 +135,7 @@ namespace EncodeX
             }
         }
 
+        // Used to switch between encrypt and decrypt buttons with a fade animation
         public void Anim(double x, double y, Button target, Button final)
         {
             final.Visibility = Visibility.Visible;
@@ -136,9 +156,10 @@ namespace EncodeX
 
 
             target.BeginAnimation(Button.OpacityProperty, anim);
-            final.Visibility = Visibility.Visible;
 
         }
+
+        // Fades out a TextBox, clears its text, then fades it back in
         public void Anim2(TextBox textbox)
         {
             DoubleAnimation anim2 = new DoubleAnimation
@@ -161,18 +182,8 @@ namespace EncodeX
             textbox.BeginAnimation(TextBox.OpacityProperty, anim2);
         }
 
-        public void AnimatePosition(FrameworkElement element, Thickness from, Thickness to, int durationMs = 300)
-        {
-            ThicknessAnimation anim = new ThicknessAnimation
-            {
-                From = from,
-                To = to,
-                Duration = TimeSpan.FromMilliseconds(durationMs),
-                FillBehavior = FillBehavior.HoldEnd
-            };
-            element.BeginAnimation(FrameworkElement.MarginProperty, anim);
-        }
 
+        // Animates a Label's margin to create a vertical movement effect, repeating indefinitely
         public void animate(Label label, int x, int y, int t)
         {
             ThicknessAnimation mov = new ThicknessAnimation
@@ -184,6 +195,7 @@ namespace EncodeX
             };
             label.BeginAnimation(Label.MarginProperty, mov);
         }
+        // Animates the scaling of the Lock button when hovered, creating a zoom-in effect
         public void Lock_Hovered(object sender, MouseEventArgs e)
         {
             Lock.RenderTransformOrigin = new Point(0.5, 0.5);
@@ -199,6 +211,7 @@ namespace EncodeX
             ((ScaleTransform)Lock.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, scale);
         }
 
+        // Animates the scaling of the Lock button back to its original size when unhovered, creating a zoom-out effect
         public void Lock_unHovered(object sender, MouseEventArgs e)
         {
             DoubleAnimation scale2 = new DoubleAnimation
@@ -211,12 +224,14 @@ namespace EncodeX
             ((ScaleTransform)Lock.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, scale2);
         }
 
+        // Changes the text and font size of a button when hovered, providing visual feedback to the user
         public void hover_txt(Button btn, String x, int d)
         {
             btn.Content = x;
             btn.FontSize = d;
         }
 
+        // Resets the UI by fading out buttons and other elements, then hiding them 
         public void reset(Dictionary<Button, List<String>> dict)
         {
             DoubleAnimation opac = new DoubleAnimation
