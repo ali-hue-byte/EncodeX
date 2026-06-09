@@ -1,42 +1,39 @@
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions; 
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Threading;
 using System.Windows.Media.Effects;
+using System.IO;
+
 
 namespace EncodeX
 {
     public partial class MainWindow
     {
+        // Encrypt button click event handler
         public async void Button_Click(object sender, RoutedEventArgs e)
         {
 
-            string password = password_field.Text;
-            string plainText = input_field.Text;
-            string file = input_field1.Text;
+            string password = password_field.Text; // Get the password from the password field
+            string plainText = input_field.Text; // Get the plain text from the input field
+            string file = input_field1.Text; // Get the file path from the input field for file encryption
 
+           
             if (plainText == "" && choice == "text")
             {
                 encrypted_field.Text = "";
                 return;
             }
 
+            // Default password for file and folder encryption if the password is disabled
             if (password_field.IsReadOnly == true)
             {
                 errorLabel.Visibility = Visibility.Hidden;
                 password = "password@1010^";
 
             }
-
-
+            // Validate the password 
             else if (password.Length < 8 || password == "")
             {
                 errorLabel.Content = "Password must be at least 8 characters long";
@@ -81,8 +78,8 @@ namespace EncodeX
 
             }
 
-
-            if (choice == "text")
+            // Perform encryption based on the selected choice (text, file, or folder)
+            if (choice == "text") 
             {
                 RectangleGeometry clip;
                 if (arrow1.Clip == null)
@@ -97,7 +94,7 @@ namespace EncodeX
                 progress1.Visibility = Visibility.Visible;
                 double totalWidth = arrow1.ActualWidth;
 
-
+                // Animate the clipping arrow to create a progress effect
                 RectAnimation anim = new RectAnimation
                 {
                     From = new Rect(0, 0, totalWidth, arrow1.Height),
@@ -111,7 +108,7 @@ namespace EncodeX
                     RectangleGeometry clip = (RectangleGeometry)arrow1.Clip;
                     clip.Rect = new Rect(0, 0, arrow1.ActualWidth, arrow1.Height);
                     progress1.Visibility = Visibility.Hidden;
-                    encrypted_field.Text = encrypt(password, plainText);
+                    encrypted_field.Text = encrypt(password, plainText); // Call the encryption method and display the encrypted text
 
                 };
                 clip.BeginAnimation(RectangleGeometry.RectProperty, anim);
@@ -121,7 +118,7 @@ namespace EncodeX
             {
                 string filePath = "";
 
-
+                // Open a SaveFileDialog to allow the user to choose where to save the encrypted file
                 Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     Filter = "Encrypted file (*.enc)|*.enc|Text file (*.txt)|*.txt|All files (*.*)|*.*",
@@ -169,6 +166,7 @@ namespace EncodeX
             {
                 string filePath = "";
 
+                // Open a SaveFileDialog to allow the user to choose where to save the encrypted folder
 
                 Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
@@ -216,7 +214,7 @@ namespace EncodeX
                 progress1.Visibility = Visibility.Hidden;
 
             }
-            else
+            else // Learn / simulation 
             {
                 if (plainText == "")
                 {
@@ -252,25 +250,12 @@ namespace EncodeX
                 scaleAnim.Completed += async (s, e) =>
                 {
                     Entry.Visibility = Visibility.Visible;
-                    DoubleAnimation oopac = new DoubleAnimation
-                    {
-                        From = 0.0,
-                        To = 1.0,
-                        Duration = TimeSpan.FromMilliseconds(1000),
-                    };
-                    DoubleAnimation oopac2 = new DoubleAnimation
-                    {
-                        From = 1.0,
-                        To = 0.0,
-                        Duration = TimeSpan.FromMilliseconds(1000),
-                    };
-                    intro.BeginAnimation(OpacityProperty, oopac);
+                    
+                    intro.BeginAnimation(OpacityProperty, oopac); // Start encryption simulation
                     intro.Visibility = Visibility.Visible;
                     try { await Task.Delay(22000, _skip.Token); }
                     catch (TaskCanceledException) { }
                     await action0();
-
-
 
                 };
 
@@ -282,13 +267,115 @@ namespace EncodeX
             }
         }
 
+        // Decrypt button click event handler
+        private async void decrypt_txt(object sender, RoutedEventArgs e)
+        {
 
+
+            string password = password_field.Text;
+            string plainText = encrypted_field.Text;
+            string file = input_field1.Text;
+            if (plainText == "" && file == "")
+            {
+                return;
+            }
+            // Default password if the password is disabled
+            if (password_field.IsReadOnly == true)
+            {
+                errorLabel.Visibility = Visibility.Hidden;
+                password = "password@1010^";
+
+            }
+            // Validate the password
+            else if (password == "")
+            {
+                errorLabel.Visibility = Visibility.Visible;
+                Border_pss.BorderBrush = Brushes.Red;
+                return;
+            }
+            else
+            {
+                errorLabel.Visibility = Visibility.Collapsed;
+                Border_pss.BorderBrush = color;
+
+            }
+
+            // Perform decryption based on the selected choice (text, file, or folder)
+            if (choice == "text")
+            {
+                RectangleGeometry clip;
+                if (arrow1.Clip == null)
+                {
+                    clip = new RectangleGeometry(new Rect(0, 0, arrow1.ActualWidth, arrow1.Height));
+                    arrow1.Clip = clip;
+                }
+                else
+                {
+                    clip = (RectangleGeometry)arrow1.Clip;
+                }
+                progress2.Visibility = Visibility.Visible;
+                double totalWidth = arrow1.ActualWidth;
+
+
+                RectAnimation anim = new RectAnimation
+                {
+                    From = new Rect(0, 0, totalWidth, arrow1.Height),
+                    To = new Rect(totalWidth, 0, 0, arrow1.Height),
+                    Duration = TimeSpan.FromMilliseconds(200),
+                    FillBehavior = FillBehavior.Stop
+                };
+
+                anim.Completed += (s, ev) =>
+                {
+                    RectangleGeometry clip = (RectangleGeometry)arrow1.Clip;
+                    clip.Rect = new Rect(0, 0, arrow1.ActualWidth, arrow1.Height);
+                    progress2.Visibility = Visibility.Hidden;
+                    input_field.Text = decrypt(password, plainText);
+
+                };
+                clip.BeginAnimation(RectangleGeometry.RectProperty, anim);
+
+            }
+            else
+            {
+                string filePath;
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "All files (*.*)|*.*",
+                    DefaultExt = ".txt",
+                    AddExtension = false,
+                    FileName = get_name(password, file)
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+
+                    filePath = saveFileDialog.FileName;
+
+
+                }
+                filePath = saveFileDialog.FileName;
+                List<string> result = await Task.Run(() => decrypt_file(password, file, filePath));
+                try
+                {
+                    encrypted_field.Text = result[1];
+                }
+                catch (Exception ex)
+                {
+                    return;
+                }
+                progress2.Visibility = Visibility.Hidden;
+            }
+        }
+
+
+        // CancellationTokenSource to allow skipping the ongoing step in the encryption simulation
         public async void Skipping_btn(object sender, RoutedEventArgs e)
         {
             _skip.Cancel();
             _skip = new();
         }
 
+        // Event handler for the top Decrypt button click, which manages the UI transitions and state changes for decryption mode
         public void decrypt_clicked(object sender, RoutedEventArgs e)
         {
             if (button_Decrypt.Tag as String == "Clicked")
@@ -301,14 +388,12 @@ namespace EncodeX
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
                 {
                     Border_decrypt.RenderTransform = new TranslateTransform();
-                }
-                ;
+                };
 
                 if (!(File_input.RenderTransform is TranslateTransform))
                 {
                     File_input.RenderTransform = new TranslateTransform();
-                }
-                ;
+                };
 
 
                 var transform4 = (TranslateTransform)Border_decrypt.RenderTransform;
@@ -328,14 +413,14 @@ namespace EncodeX
                 opacity_anim(Select_folder, 1.0, 0.0);
                 Select_folder.Visibility = Visibility.Hidden;
 
-
             }
-            mode = "decrypt";
+            
+            mode = "decrypt"; // Set the mode to "decrypt"
             errorLabel.Visibility = Visibility.Hidden;
 
             Random random = new Random();
-            int[] options = [0, 360];
-            int choice1 = options[random.Next(options.Length)];
+            int[] options = [0, 360]; 
+            int choice1 = options[random.Next(options.Length)]; // Randomly select a rotation angle for the arrow (0 or 360 degrees)
             Anim2(input_field);
             Anim2(encrypted_field);
             button_Decrypt.Foreground = new SolidColorBrush(Colors.Gray);
@@ -365,7 +450,7 @@ namespace EncodeX
                 paste2.Visibility = Visibility.Visible;
             }
 
-
+            // Animate the color changes for various UI elements to reflect the switch to decryption mode
             button_Decrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
             button_Encrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
             Border_encrypt.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
@@ -383,6 +468,8 @@ namespace EncodeX
                 Duration = TimeSpan.FromMilliseconds(400)
             };
             effect2.BeginAnimation(DropShadowEffect.ColorProperty, dropShadowAnim);
+
+            // Switch the visibility of encrypt and decrypt buttons with an animation
             if (encrypt_btn.Opacity == 1.0)
             {
                 Anim(1.0, 0.0, encrypt_btn, decrypt_btn);
@@ -412,6 +499,7 @@ namespace EncodeX
 
             arrow.RenderTransformOrigin = new Point(0.5, 0.5);
 
+            // Rotation animation for the arrow
             DoubleAnimation rotate = new DoubleAnimation
             {
                 From = 180,
@@ -426,10 +514,11 @@ namespace EncodeX
             if (choice != "text")
             {
                 encrypted_field.IsReadOnly = true;
-            }
-           ;
+            };
             Select_file.Tag = "Blue";
         }
+
+        // Event handler for the top Encrypt button click, which manages the UI transitions and state changes for encryption mode
 
         public void encrypt_clicked(object sender, RoutedEventArgs e)
         {
@@ -438,7 +527,7 @@ namespace EncodeX
                 return;
             }
             input_field1.Text = "";
-            mode = "encrypt";
+            mode = "encrypt";// Set the mode to "encrypt"
             if (choice != "text" && choice != "learn")
             {
                 if (!(Border_decrypt.RenderTransform is TranslateTransform))
@@ -476,7 +565,7 @@ namespace EncodeX
             errorLabel.Visibility = Visibility.Hidden;
             Random random = new Random();
             int[] options = { 180, 540 };
-            int choice1 = options[random.Next(options.Length)];
+            int choice1 = options[random.Next(options.Length)]; // Randomly select a rotation angle for the arrow (180 or 540 degrees)
             input_field.IsReadOnly = false;
             encrypted_field.IsReadOnly = true;
 
@@ -508,6 +597,7 @@ namespace EncodeX
                 paste.Visibility = Visibility.Visible;
             }
 
+            // Animate the color changes for various UI elements to reflect the switch to encryption mode
             button_Decrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim);
             button_Encrypt.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
             Border_encrypt.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
@@ -526,42 +616,41 @@ namespace EncodeX
             };
             effect1.BeginAnimation(DropShadowEffect.ColorProperty, dropShadowAnim);
 
+            // Switch the visibility of encrypt and decrypt buttons with an animation
             if (decrypt_btn.Opacity == 1.0)
             {
                 Anim(1.0, 0.0, decrypt_btn, encrypt_btn);
                 Anim(0.0, 1.0, encrypt_btn, encrypt_btn);
 
-
-
             }
+
+            if (password_field.IsReadOnly == false)
             {
+                button_password.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
 
-                color = Brushes.Green;
-
-                if (password_field.IsReadOnly == false)
-                {
-                    button_password.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
-
-                    Border_pss.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
-                    errorLabel.Visibility = Visibility.Hidden;
-                }
-                button_password.Tag = "not Locked";
-                arrow.RenderTransform = new RotateTransform(0);
-
-                arrow.RenderTransformOrigin = new Point(0.5, 0.5);
-
-                DoubleAnimation rotate = new DoubleAnimation
-                {
-                    From = 360,
-                    To = choice1,
-                    Duration = TimeSpan.FromMilliseconds(400)
-                };
-                arrow.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotate);
-                button_Encrypt.Tag = "Clicked";
-                button_Decrypt.Tag = "Not Clicked";
+                Border_pss.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, text_anim2);
+                errorLabel.Visibility = Visibility.Hidden;
             }
+            button_password.Tag = "not Locked";
+            arrow.RenderTransform = new RotateTransform(0);
+
+            arrow.RenderTransformOrigin = new Point(0.5, 0.5);
+
+            DoubleAnimation rotate = new DoubleAnimation
+            {
+                From = 360,
+                To = choice1,
+                Duration = TimeSpan.FromMilliseconds(400)
+            };
+            arrow.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotate); // Rotates the arrow
+            button_Encrypt.Tag = "Clicked";
+            button_Decrypt.Tag = "Not Clicked";
+
+
+
         }
 
+        // Event handler for the "Files" button click, which manages the UI transitions and state changes for file encryption/decryption mode
         private void button_files_Click(object sender, RoutedEventArgs e)
         {
             if (choice != "file" && choice != "folder")
@@ -576,9 +665,7 @@ namespace EncodeX
                 else
                 {
                     opacity_anim(Copy2, 0.0, 1.0);
-
                     opacity_anim(paste2, 0.0, 1.0);
-
                     opacity_anim(Save2, 0.0, 1.0);
                     Copy2.Visibility = Visibility.Visible;
                     paste2.Visibility = Visibility.Visible;
@@ -598,21 +685,18 @@ namespace EncodeX
                     if (!(Border_decrypt.RenderTransform is TranslateTransform))
                     {
                         Border_decrypt.RenderTransform = new TranslateTransform();
-                    }
-                    ;
+                    };
 
                     if (!(File_input.RenderTransform is TranslateTransform))
                     {
                         File_input.RenderTransform = new TranslateTransform();
-                    }
-                    ;
+                    };
 
 
                     var transform = (TranslateTransform)Border_decrypt.RenderTransform;
                     transform.X = -405;
                     transform.Y = 0;
                     var group = (TransformGroup)Select_file.RenderTransform;
-
                     var transform2 = (TranslateTransform)group.Children[1];
                     transform2.X = 405;
                     transform2.Y = 0;
@@ -624,8 +708,8 @@ namespace EncodeX
                     opacity_anim(File_input, 0.0, 1.0);
                     Select_folder.Tag = "Blue";
                     Select_file.Tag = "Blue";
-
                 }
+
                 opacity_anim(Select_folder, 0.0, 1.0);
                 opacity_anim(Select_file, 0.0, 1.0);
                 opacity_anim(Border_encrypt, 1.0, 0.0);
@@ -646,6 +730,7 @@ namespace EncodeX
             }
 
         }
+        // Event handler for the "Learn" button click, which manages the UI transitions and state changes for the learning/simulation section
         public void Lamp_clicked(object sender, EventArgs e)
         {
             if (choice != "learn")
@@ -658,22 +743,17 @@ namespace EncodeX
                     if (!(Border_decrypt.RenderTransform is TranslateTransform))
                     {
                         Border_decrypt.RenderTransform = new TranslateTransform();
-                    }
-                    ;
-
+                    };
 
                     if (!(File_input.RenderTransform is TranslateTransform))
                     {
                         File_input.RenderTransform = new TranslateTransform();
-                    }
-                    ;
-
+                    };
 
                     var transform4 = (TranslateTransform)Border_decrypt.RenderTransform;
                     transform4.X = 1;
                     transform4.Y = 0;
                     var group = (TransformGroup)Select_file.RenderTransform;
-
                     var transform42 = (TranslateTransform)group.Children[1];
                     transform42.X = -1;
                     transform42.Y = 0;
@@ -681,8 +761,6 @@ namespace EncodeX
                     transform43.X = -1;
                     transform43.Y = 0;
                     opacity_anim(Border_decrypt, 0.0, 1.0);
-
-
                 }
                 opacity_anim(Select_folder, 1.0, 0.0);
                 opacity_anim(Select_file, 1.0, 0.0);
@@ -721,11 +799,8 @@ namespace EncodeX
                 }
             }
 
-
-
-
-
         }
+        // Manages the UI transitions and state changes for text encryption/decryption mode
         private void button_Text_Click(object sender, RoutedEventArgs e)
         {
             if (choice != "text")
@@ -752,15 +827,13 @@ namespace EncodeX
                     if (!(Border_decrypt.RenderTransform is TranslateTransform))
                     {
                         Border_decrypt.RenderTransform = new TranslateTransform();
-                    }
-                    ;
+                    };
 
 
                     if (!(File_input.RenderTransform is TranslateTransform))
                     {
                         File_input.RenderTransform = new TranslateTransform();
-                    }
-                    ;
+                    };
 
 
                     var transform4 = (TranslateTransform)Border_decrypt.RenderTransform;
@@ -811,6 +884,131 @@ namespace EncodeX
 
         }
 
+        // Pastes text from the clipboard into the encryption input field
+        private void Paste(object sender, RoutedEventArgs e)
+        {
+            if (choice == "text")
+            {
+                input_field.Text = Clipboard.GetText();
+            }
+            else
+            {
+                input_field1.Text = Clipboard.GetText();
+            }
+        }
+        // Pastes text from clipboard into the decryption input field
+        private void Paste2(object sender, RoutedEventArgs e)
+        {
+            if (choice == "text")
+            {
+                encrypted_field.Text = Clipboard.GetText();
+            }
+            else
+            {
+                input_field1.Text = Clipboard.GetText();
+            }
+
+        }
+        // Event handler for the "Save" button click, which Saves the encrypted text 
+        private void Save_File(object sender, RoutedEventArgs e)
+        {
+            if (choice == "text")
+            {
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Encrypted file (*.enc)|*.enc|Text file (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = ".enc",
+                    AddExtension = true
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        string filePath = saveFileDialog.FileName;
+                        File.WriteAllText(filePath, encrypted_field.Text);
+                    }
+                    catch (Exception)
+                    {
+                        errorLabel.Content = "Error saving file ";
+                        errorLabel.Visibility = Visibility.Visible;
+                    }
+                }
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Text file (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = ".txt",
+                    AddExtension = true
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        string filePath = saveFileDialog.FileName;
+                        File.WriteAllText(filePath, encrypted_field.Text);
+                    }
+                    catch (Exception)
+                    {
+                        errorLabel.Content = "Error saving file ";
+                        errorLabel.Visibility = Visibility.Visible;
+                    }
+                }
+            }
+
+        }
+        // Event handler for the "Save" button click, which Saves the decrypted text 
+        private void Save_File2(object sender, RoutedEventArgs e)
+        {
+            if (choice == "text")
+            {
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Text file (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = ".enc",
+                    AddExtension = true
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        string filePath = saveFileDialog.FileName;
+                        File.WriteAllText(filePath, input_field.Text);
+                    }
+                    catch (Exception)
+                    {
+                        errorLabel.Content = "Error saving file";
+                        errorLabel.Visibility = Visibility.Visible;
+                    }
+                }
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Text file (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = ".enc",
+                    AddExtension = true
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        string filePath = saveFileDialog.FileName;
+                        File.WriteAllText(filePath, encrypted_field.Text);
+                    }
+                    catch (Exception)
+                    {
+                        errorLabel.Content = "Error saving file";
+                        errorLabel.Visibility = Visibility.Visible;
+                    }
+                }
+            }
+
+        }
+
+        // Event handler for the "Copy" button click, which copies the encrypted text to the clipboard and shows a tooltip confirmation
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(encrypted_field.Text);
@@ -827,6 +1025,8 @@ namespace EncodeX
                 FontSize = 11
             };
         }
+        // Event handler for the "Copy" button click, which copies the decrypted text to the clipboard and shows a tooltip confirmation
+
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if (choice == "text")
@@ -853,6 +1053,7 @@ namespace EncodeX
             };
         }
 
+        // Starts the transition from the lock screen to the main application interface 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             Instructions.Visibility = Visibility.Collapsed;
@@ -896,6 +1097,7 @@ namespace EncodeX
 
         }
 
+        // Toogles password state between enable and disable
         private void button_password_Click(object sender, RoutedEventArgs e)
         {
             if (password_field.IsReadOnly == true)
