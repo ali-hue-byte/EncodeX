@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -7,5 +7,83 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="icons\Arrow.png" />
+    <None Remove="icons\arrow_progress.png" />
+    <None Remove="icons\binary-animation2.gif" />
+    <None Remove="icons\cursor.cur" />
+    <None Remove="icons\dec_copy.png" />
+    <None Remove="icons\dec_paste.png" />
+    <None Remove="icons\dec_save.png" />
+    <None Remove="icons\enc_copy.png" />
+    <None Remove="icons\enc_paste.png" />
+    <None Remove="icons\enc_save.png" />
+    <None Remove="icons\files_icon.png" />
+    <None Remove="icons\gif.gif" />
+    <None Remove="icons\lamp.png" />
+    <None Remove="icons\lock.png" />
+    <None Remove="icons\main_icon.ico" />
+    <None Remove="icons\progress1.png" />
+    <None Remove="icons\sim_arrow.png" />
+    <None Remove="icons\text_icon.png" />
+    <None Remove="icons\YTDown.com_YouTube_cyber-security-stock-footage-free-video_Media_Z4F3AXvrLKo_001_1080p.mp4" />
+    <None Remove="icons\YTDown.com_YouTube_cyber-security-stock-footage-free-video_Media_Z4F3AXvrLKo_001_1080p1-ezgif.com-video-to-gif-converter %281%29.gif" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="XamlAnimatedGif" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icons\Arrow.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\arrow_progress.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="icons\cursor.cur">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="icons\dec_copy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\dec_paste.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\dec_save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\enc_copy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\enc_paste.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\enc_save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\files_icon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\lamp.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\lock.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\main_icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\progress1.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\sim_arrow.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\text_icon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
 
 </Project>
