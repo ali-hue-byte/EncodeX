@@ -15,6 +15,17 @@ A simple app to **encrypt and decrypt text, files or folders (supports large fil
 - A page to learn how **Encryption** works
 
 ---
+
+### Project structure
+- **Animations.cs** : Contains multiple animation methodes
+- **Buttons_Logic.cs** : Defines button event handlers and user interaction logic
+- **Functions.cs** : Helpful functions used throughout the app
+- **Encryption.cs** : Handles file, folder and text encryption and decryption
+- **Simulation.cs** : Manages the interactive encryption learning simulation
+- **MainWindow.xaml.cs** : Main application window logic
+- **MainWindow.xaml** : Defines the appearance of the main application window
+
+---
 ### Installation / How to Run
 
 You can run EncodeX in two ways:
